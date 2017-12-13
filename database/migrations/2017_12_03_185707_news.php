@@ -18,8 +18,8 @@ class News extends Migration
 			    $table->increments('id');
 			    $table->date('date');
 			    $table->string('title', 255);
-			    $table->string('meta_key', 255);
-			    $table->string('meta_description', 255);
+			    $table->string('meta_key', 255)->nullable();
+			    $table->string('meta_description', 255)->nullable();
 			    $table->text('text');
 			    $table->boolean('active')->default(true);
 			    $table->boolean('is_delete')->default(false);
