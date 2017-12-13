@@ -17,9 +17,9 @@ class News extends Migration
 		    Schema::create('news', function (Blueprint $table) {
 			    $table->increments('id');
 			    $table->date('date');
-			    $table->string('title');
-			    $table->string('meta_key');
-			    $table->string('meta_description');
+			    $table->string('title', 255);
+			    $table->string('meta_key', 255);
+			    $table->string('meta_description', 255);
 			    $table->text('text');
 			    $table->boolean('active')->default(true);
 			    $table->boolean('is_delete')->default(false);
