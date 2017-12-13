@@ -16,7 +16,7 @@ class UserResetPassword extends Migration
         if (!Schema::hasTable('user_reset_password')) {
             Schema::create('user_reset_password', function (Blueprint $table) {
                 $table->integer('user_id')->unsigned();
-                $table->string('token', 255)->index();
+                $table->string('token', 100)->index();
                 $table->boolean('active')->default(true);
                 $table->timestamps();
             });
