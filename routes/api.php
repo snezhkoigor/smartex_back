@@ -19,22 +19,24 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		return Image::make(storage_path() . '/' . config('froala_wysiwyg.storage_path') . '/' . $filename)->response();
 	});
 
-	Route::post('/login', 'User\JwtAuthenticateController@authenticate');
-	Route::get('/logout', 'User\JwtAuthenticateController@logout');
-
-	Route::get('/users', 'User\UserController@getUsers');
-
-	Route::get('/news', 'NewsController@getNews');
-	Route::post('/news', 'NewsController@add');
-	Route::post('/news/{news_id}', 'NewsController@updateById');
-	Route::delete('/news/{news_id}', 'NewsController@changeActiveFieldById');
-
-	Route::group(['prefix' => 'user/password/reset', 'namespace' => 'User'], function () {
-		Route::post('/request', 'ResetPasswordController@request');
-		Route::get('/{token}', 'ResetPasswordController@change');
+	Route::group(['namespace' => 'User'], function () {
+		Route::post('/login', 'JwtAuthenticateController@authenticate');
+		Route::get('/logout', 'JwtAuthenticateController@logout');
+		Route::post('/user/password/reset/request', 'ResetPasswordController@request');
+		Route::get('/user/password/reset/{token}', 'ResetPasswordController@change');
 	});
 
 	Route::middleware([\App\Http\Middleware\Auth::class, 'ability:'.Role::ROLE_ADMIN.','.Role::ROLE_OPERATOR])->group(function() {
-//		Route::get('/news', 'NewsController@getNews');
+		Route::get('/users', 'User\UserController@getUsers');
+
+		// News
+		Route::get('/news', 'NewsController@getNews');
+		Route::post('/news', 'NewsController@add');
+		Route::post('/news/{news_id}', 'NewsController@updateById');
+		Route::delete('/news/{news_id}', 'NewsController@changeActiveFieldById');
+
+		// Courses
+		Route::get('/courses', 'CourseController@getCourses');
+		Route::post('/courses/{course_id}', 'CourseController@updateById');
 	});
 });

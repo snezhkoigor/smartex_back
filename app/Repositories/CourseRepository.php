@@ -2,20 +2,19 @@
 
 namespace App\Repositories;
 
-use App\Models\News;
+use App\Models\Course;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-class NewsRepository
+class CourseRepository
 {
-	public static function getNews(array $filters = [], array $sorts = [], array $relations = [], array $fields = ['*'], $search_string = null, $limit = null, $offset = null)
+	public static function getCourses(array $filters = [], array $sorts = [], array $relations = [], array $fields = ['*'], $search_string = null, $limit = null, $offset = null)
 	{
-		$query = News::query();
+		$query = Course::query();
 
 		self::applyFiltersToQuery($query, $filters);
 		self::applySearch($query, $search_string);
 		self::applySortingToQuery($query, $sorts);
-		self::applyIsDelete($query);
 
 		if (!empty($offset)) {
 			$query->skip($offset);
@@ -37,24 +36,23 @@ class NewsRepository
 
 	private static function getNewsQuery(array $filters = [], $search_string = null)
 	{
-		$query = News::query();
+		$query = Course::query();
 
 		self::applyFiltersToQuery($query, $filters);
 		self::applySearch($query, $search_string);
-		self::applyIsDelete($query);
 
 		return $query;
 	}
 
 	private static function applyFiltersToQuery(Builder $query, array $filter_parameters = [])
 	{
-		foreach ($filter_parameters as $name => $value)
-		{
-			switch ($name)
-			{
-				default:
-//					$query->where('model_type', $value);
-					break;
+		foreach ($filter_parameters as $name => $value) {
+			if (!empty($value)) {
+				switch ($name) {
+					case 'date':
+						$query->where('date', '=', $value);
+						break;
+				}
 			}
 		}
 	}
@@ -63,7 +61,9 @@ class NewsRepository
 	{
 		if (!empty($search_string)) {
 			$query->where(function(Builder $query) use ($search_string) {
-				$query->where(DB::raw('LOWER(title)'), 'LIKE', '%' . mb_strtolower($search_string) . '%');
+				$query->where(DB::raw('LOWER(in_currency)'), 'LIKE', '%' . mb_strtolower($search_string) . '%')
+					->orWhere(DB::raw('LOWER(out_currency)'), 'LIKE', '%' . mb_strtolower($search_string) . '%')
+					->orWhere(DB::raw('CONCAT(in_currency, out_currency)'), '=', mb_strtolower($search_string));
 			});
 		}
 	}
@@ -74,9 +74,10 @@ class NewsRepository
 		{
 			switch ($name)
 			{
-				case 'title':
-				case 'text':
 				case 'date':
+				case 'in_currency':
+				case 'out_currency':
+				case 'course':
 					$query->orderBy($name, $value);
 					break;
 
@@ -86,11 +87,5 @@ class NewsRepository
 			}
 
 		}
-	}
-
-	private static function applyIsDelete(Builder $query)
-	{
-		$query->where('is_delete', '=',false);
-
 	}
 }
