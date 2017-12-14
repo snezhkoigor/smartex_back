@@ -12,7 +12,7 @@ class RoleTransformer extends TransformerAbstract
 	public function transform(Role $role)
 	{
 		$data = [
-			'id' => $role->id,
+			'id' => (int)$role->id,
 			'name' => $role->name,
 			'display_name' => $role->display_name,
 			'description' => $role->description,
