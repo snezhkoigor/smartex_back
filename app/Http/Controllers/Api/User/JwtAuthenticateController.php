@@ -16,8 +16,6 @@ class JwtAuthenticateController extends Controller
 {
 	public function authenticate(Request $request)
 	{
-//		throw new NotFoundHttpException('User not found');
-
 		$credentials = $request->only('email', 'password');
 
 		try {
