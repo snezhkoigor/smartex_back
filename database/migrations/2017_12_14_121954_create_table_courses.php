@@ -16,7 +16,7 @@ class CreateTableCourses extends Migration
 	    if (!Schema::hasTable('courses')) {
 		    Schema::create('courses', function (Blueprint $table) {
 			    $table->increments('id');
-			    $table->date('date');
+			    $table->dateTime('date');
 			    $table->string('in_currency', 6);
 			    $table->string('out_currency', 6);
 			    $table->double('course', 15, 7);

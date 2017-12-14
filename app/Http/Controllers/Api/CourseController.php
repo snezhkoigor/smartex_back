@@ -46,6 +46,11 @@ class CourseController extends Controller
 
 	    $relations = $this->getRelationsFromIncludes($request);
 
+	    $lastDateInCourses = CourseRepository::getLastDateFromCourses();
+	    if ($lastDateInCourses) {
+		    $filters['date'] = $lastDateInCourses->date;
+	    }
+
 	    $news = CourseRepository::getCourses($filters, $sorts, $relations, ['*'], $search_string, $limit, $offset);
 
 	    $meta = [

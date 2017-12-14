@@ -34,6 +34,14 @@ class CourseRepository
 		return self::getNewsQuery($filters, $search_string)->count();
 	}
 
+	public static function getLastDateFromCourses()
+	{
+		return Course::query()
+			->select('date')
+			->orderBy('date', 'desc')
+			->first();
+	}
+
 	private static function getNewsQuery(array $filters = [], $search_string = null)
 	{
 		$query = Course::query();
