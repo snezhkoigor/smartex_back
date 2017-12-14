@@ -62,7 +62,7 @@ class CourseRepository
 		if (!empty($search_string)) {
 			$query->where(function(Builder $query) use ($search_string) {
 				if (strpos($search_string, '/') !== false) {
-					$query->where(DB::raw('CONCAT(in_currency, out_currency)'), '=', mb_strtolower($search_string));
+					$query->where(DB::raw('CONCAT(in_currency, \'/\', out_currency)'), '=', mb_strtolower($search_string));
 				} else {
 					$query->where(DB::raw('LOWER(in_currency)'), 'LIKE', '%' . mb_strtolower($search_string) . '%')
 						->orWhere(DB::raw('LOWER(out_currency)'), 'LIKE', '%' . mb_strtolower($search_string) . '%');
