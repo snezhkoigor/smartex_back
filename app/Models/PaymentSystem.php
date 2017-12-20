@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property string $logo
  * @property string $code
+ * @property string $fields
  * @property boolean $active
  * @property boolean $is_account_multi_line
  * @property boolean $is_deleted
@@ -49,7 +50,8 @@ class PaymentSystem extends Model
 	 */
 	protected $fillable = [
 		'name',
-		'code'
+		'code',
+		'fields'
 	];
 
 	protected $guarded = [
