@@ -55,6 +55,11 @@ return [
             'visibility' => 'public',
         ],
 
+        'froala' => [
+	        'driver' => 'local',
+	        'root' => storage_path('froala'),
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),

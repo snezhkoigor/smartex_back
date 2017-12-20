@@ -51,13 +51,13 @@ class CourseController extends Controller
 		    $filters['date'] = $lastDateInCourses->date;
 	    }
 
-	    $news = CourseRepository::getCourses($filters, $sorts, $relations, ['*'], $search_string, $limit, $offset);
+	    $courses = CourseRepository::getCourses($filters, $sorts, $relations, ['*'], $search_string, $limit, $offset);
 
 	    $meta = [
 		    'count' => CourseRepository::getNewsCount($filters, $search_string),
 	    ];
 
-	    return fractal($news, new CourseTransformer())
+	    return fractal($courses, new CourseTransformer())
 		    ->parseIncludes($includes)
 		    ->parseFieldsets($fieldsets)
 		    ->addMeta($meta)

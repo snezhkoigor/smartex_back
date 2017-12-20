@@ -26,7 +26,7 @@ class NewsService
 	private function processExternalImages($text)
 	{
 		$urls = $this->text_helper->getUrlsFromText($text);
-		$storage_urls = $this->file_helper->uploadFilesToStorage($urls, config('froala_wysiwyg.storage_path'));
+		$storage_urls = $this->file_helper->uploadFilesByFroalaToStorage($urls, config('froala_wysiwyg.storage_path'));
 		$text = $this->replaceExternalUrlsByStorageUrls($text, $storage_urls);
 
 		return $text;

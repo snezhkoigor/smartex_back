@@ -103,7 +103,7 @@ class NewsController extends Controller
 	    return $response;
     }
 
-    public function changeActiveFieldById(Request $request, $news_id)
+    public function deleteById($news_id)
     {
 	    $news = News::find($news_id);
 	    if ($news === null) {
@@ -112,10 +112,10 @@ class NewsController extends Controller
 
 	    try
 	    {
-		    $news->is_delete = true;
+		    $news->is_deleted = true;
 		    $news->save([], true);
 
-		    $response = response()->json(['message' => $news->active ? 'Success activate news' : 'Success deactivate news'], Response::HTTP_OK);
+		    $response = response()->json(['Success news delete'], Response::HTTP_OK);
 	    }
 	    catch (\Exception $e)
 	    {

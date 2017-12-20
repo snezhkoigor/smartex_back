@@ -7,13 +7,18 @@
     "require": {
         "php": ">=5.6.4",
         "barryvdh/laravel-ide-helper": "^2.4",
+        "charlesassets/laravel-perfectmoney": "^1.0",
+        "delatbabel/elocryptfive": "1.5.*",
         "intervention/image": "^2.4",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "league/fractal": "0.17",
         "spatie/laravel-fractal": "4.5",
         "tymon/jwt-auth": "^0.5.12",
-        "zizaco/entrust": "dev-2.0-dev"
+        "zizaco/entrust": "dev-2.0-dev",
+        "aleksandrzhiliaev/omnipay-advcash": "1.*",
+        "aleksandrzhiliaev/omnipay-payeer": "1.*",
+        "aleksandrzhiliaev/omnipay-perfectmoney": "1.4.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

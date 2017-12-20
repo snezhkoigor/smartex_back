@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $meta_description
  * @property string $password
  * @property boolean $active
- * @property boolean $is_delete
+ * @property boolean $is_deleted
  * @property string $created_at
  * @property string $updated_at
  *
@@ -40,7 +40,7 @@ class News extends Model
 	protected $guarded = [
         'active',
         'text',
-        'is_delete'
+        'is_deleted'
     ];
 
     protected $dates = [

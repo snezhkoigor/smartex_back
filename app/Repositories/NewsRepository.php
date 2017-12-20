@@ -90,7 +90,6 @@ class NewsRepository
 
 	private static function applyIsDelete(Builder $query)
 	{
-		$query->where('is_delete', '=',false);
-
+		return $query->where('is_deleted', '=',false);
 	}
 }

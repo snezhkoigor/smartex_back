@@ -183,6 +183,7 @@ return [
 
         Intervention\Image\ImageServiceProvider::class,
 
+        Delatbabel\Elocrypt\ElocryptServiceProvider::class,
     ],
 
     /*
@@ -236,8 +237,6 @@ return [
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Entrust' => Zizaco\Entrust\EntrustServiceProvider::class,
 
-        'Image' => Intervention\Image\Facades\Image::class
-
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
-
 ];

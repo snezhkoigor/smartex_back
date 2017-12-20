@@ -2,9 +2,11 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Storage;
+
 class FileHelper
 {
-	public function uploadFilesToStorage($urls, $storage_path)
+	public function uploadFilesByFroalaToStorage($urls, $storage_path)
 	{
 		$storage_urls = [];
 
@@ -16,7 +18,7 @@ class FileHelper
 					$file_name = $this->getFileNameFromUrl(parse_url($url)['path']);
 
 					if (!empty($file_name)) {
-						file_put_contents(storage_path() . '/' . $storage_path . '/' . $file_name, $file);
+						Storage::disk('froala')->put($file_name, $file);
 					}
 
 					$storage_urls[$url] = $file_name;
