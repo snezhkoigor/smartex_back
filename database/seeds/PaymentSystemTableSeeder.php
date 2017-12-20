@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use \App\Models\PaymentSystem;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use App\Models\PaymentSystem;
 
-class PaymentSystemSeeder extends Seeder
+class PaymentSystemTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,6 +14,9 @@ class PaymentSystemSeeder extends Seeder
      */
     public function run()
     {
+	    Model::unguard();
+	    DB::table('payment_systems')->delete();
+
 	    $payment_system = new PaymentSystem();
 	    $payment_system->name = 'Bank';
 	    $payment_system->code = 'bank';
@@ -47,5 +52,7 @@ class PaymentSystemSeeder extends Seeder
 	    $payment_system->code = 'eth';
 	    $payment_system->fields = 'secret,user,password';
 	    $payment_system->save();
+
+	    Model::reguard();
     }
 }

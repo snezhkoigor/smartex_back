@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use \App\Models\Role;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use App\Models\Role;
 
-class UserRoleSeeder extends Seeder
+class RoleTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,6 +14,9 @@ class UserRoleSeeder extends Seeder
      */
     public function run()
     {
+	    Model::unguard();
+	    DB::table('roles')->delete();
+
 	    $role = new Role();
 	    $role->name = Role::ROLE_ADMIN;
 	    $role->save();
@@ -19,5 +24,7 @@ class UserRoleSeeder extends Seeder
 	    $role = new Role();
 	    $role->name = Role::ROLE_OPERATOR;
 	    $role->save();
+
+	    Model::reguard();
     }
 }

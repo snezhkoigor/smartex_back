@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use \App\Models\User;
-use \App\Models\Role;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Models\Role;
 
-class UserAssignRole extends Seeder
+class UserRoleTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,12 +15,16 @@ class UserAssignRole extends Seeder
      */
     public function run()
     {
-	    $users = User::all();
+	    Model::unguard();
+	    DB::table('role_user')->delete();
 
+	    $users = User::all();
 	    $role = Role::where('name', '=', Role::ROLE_ADMIN)->first();
 
 	    foreach ($users as $user) {
 		    $user->roles()->attach($role->id);
 	    }
+
+	    Model::reguard();
     }
 }
