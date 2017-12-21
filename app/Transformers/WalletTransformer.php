@@ -16,7 +16,7 @@ class WalletTransformer extends TransformerAbstract
 		$data = [
 			'id' => (int)$wallet->id,
 			'ps_type' => $wallet->ps_type,
-			'payment_system_id' => $wallet->payment_system_id,
+			'payment_system_id' => (int)$wallet->payment_system_id,
 			'currency' => $wallet->currency,
 			'prefix' => PaymentSystemRepository::getAvailableCurrencies()[$wallet->currency]['prefix'],
 			'user' => $wallet->user,
