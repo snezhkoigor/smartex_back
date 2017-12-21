@@ -61,6 +61,25 @@ class PaymentSystemController extends Controller
 		    ->respond();
     }
 
+	public function getPaymentSystemById($payment_system_id)
+	{
+		$payment_system = PaymentSystem::find($payment_system_id);
+		if ($payment_system === null) {
+			throw new NotFoundHttpException('Payment system not found');
+		}
+
+		$filters = ['id' => $payment_system_id];
+		$meta = [
+			'required' => PaymentSystemRepository::getRequireFields($filters),
+			'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems($filters)),
+			'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+		];
+
+		return fractal($payment_system, new PaymentSystemTransformer())
+			->addMeta($meta)
+			->respond();
+	}
+
     public function add(Request $request)
     {
     	$this->validate($request, $this->rules(), $this->messages());

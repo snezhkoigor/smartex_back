@@ -53,14 +53,17 @@ class PaymentSystemRepository
 
 
 	/**
+	 * @param array $filters
 	 * @return array
 	 */
-	public static function getAvailablePaymentSystems()
+	public static function getAvailablePaymentSystems(array $filters = [])
 	{
 		$result = [];
 
-		$payment_systems = PaymentSystem::query()->get(['name', 'id', 'code']);
+		$query = PaymentSystem::query();
+		self::applyFiltersToQuery($query, $filters);
 
+		$payment_systems = $query->get(['name', 'id', 'code']);
 		foreach ($payment_systems as $payment_system) {
 			$result[$payment_system['id']] = $payment_system;
 		}
@@ -104,20 +107,16 @@ class PaymentSystemRepository
 
 
 	/**
-	 * @param null $payment_system_id
+	 * @param array $filters
 	 * @return array
 	 */
-	public static function getRequireFields($payment_system_id = null)
+	public static function getRequireFields(array $filters = [])
 	{
 		$result = [];
 		$query = PaymentSystem::query();
-
-		if ($payment_system_id) {
-			$query->where('id', $payment_system_id);
-		}
+		self::applyFiltersToQuery($query, $filters);
 
 		$fields = $query->get(['fields', 'id']);
-
 		foreach ($fields as $field) {
 			$result[(int)$field['id']] = explode(',', $field['fields']);
 		}
@@ -162,12 +161,7 @@ class PaymentSystemRepository
 	{
 		foreach ($filter_parameters as $name => $value)
 		{
-			switch ($name)
-			{
-				default:
-//					$query->where('model_type', $value);
-					break;
-			}
+			$query->where($name, $value);
 		}
 
 		return $query;

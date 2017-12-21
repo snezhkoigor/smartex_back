@@ -62,6 +62,25 @@ class WalletController extends Controller
 		    ->respond();
     }
 
+    public function getWalletById($wallet_id)
+    {
+	    $wallet = Wallet::find($wallet_id);
+	    if ($wallet === null) {
+		    throw new NotFoundHttpException('Payment system wallet not found');
+	    }
+
+	    $filters = ['id' => $wallet->payment_system_id];
+	    $meta = [
+		    'required' => PaymentSystemRepository::getRequireFields($filters),
+		    'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems($filters)),
+		    'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+	    ];
+
+	    return fractal($wallet, new WalletTransformer())
+		    ->addMeta($meta)
+		    ->respond();
+    }
+
     public function add(Request $request, $payment_system_id)
     {
 	    $payment_system = PaymentSystem::find($payment_system_id);

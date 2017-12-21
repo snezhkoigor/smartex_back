@@ -17,7 +17,7 @@ use \Illuminate\Support\Facades\Storage;
 use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  => 'Api'], function() {
-	Route::get('{storage}/{filename}', function ($storage, $filename) {
+	Route::get('/files/{storage}/{filename}', function ($storage, $filename) {
 		if (Storage::disk($storage)->exists($filename)) {
 			return Image::make(Storage::disk($storage)->get($filename))->response();
 		}
@@ -48,11 +48,13 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 
 		//Payment_systems
 		Route::get('/payment_systems', 'PaymentSystemController@getPaymentSystems');
+		Route::get('/payment_systems/{payment_system_id}', 'PaymentSystemController@getPaymentSystemById');
 		Route::post('/payment_systems', 'PaymentSystemController@add');
 		Route::post('/payment_systems/{payment_system_id}', 'PaymentSystemController@updateById');
 		Route::delete('/payment_systems/{payment_system_id}', 'PaymentSystemController@deleteById');
 
 		// Wallets
+		Route::get('/payment_systems/wallets/{wallet_id}', 'WalletController@getWalletById');
 		Route::get('/payment_systems/{payment_system_id}/wallets', 'WalletController@getWallets');
 		Route::post('/payment_systems/{payment_system_id}/wallets/check', 'WalletController@checkAccess');
 		Route::post('/payment_systems/{payment_system_id}/wallets', 'WalletController@add');

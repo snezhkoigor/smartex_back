@@ -47,11 +47,11 @@ class PaymentSystemTableSeeder extends Seeder
 	    $payment_system->fields = 'secret,user,password';
 	    $payment_system->save();
 
-	    $payment_system = new PaymentSystem();
-	    $payment_system->name = 'ETH';
-	    $payment_system->code = 'eth';
-	    $payment_system->fields = 'secret,user,password';
-	    $payment_system->save();
+//	    $payment_system = new PaymentSystem();
+//	    $payment_system->name = 'ETH';
+//	    $payment_system->code = 'eth';
+//	    $payment_system->fields = 'secret,user,password';
+//	    $payment_system->save();
 
 	    Model::reguard();
     }

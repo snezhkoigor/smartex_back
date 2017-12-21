@@ -36,7 +36,7 @@ class NewsService
 	{
 		if ($urls) {
 			foreach ($urls as $path => $name) {
-				$text = str_replace($path, url('api/froala', ['filename' => $name]), $text);
+				$text = str_replace($path, url('api/files/' . config('froala_wysiwyg.storage_path'), ['filename' => $name]), $text);
 			}
 		}
 
