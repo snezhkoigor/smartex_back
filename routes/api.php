@@ -38,6 +38,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 
 		// News
 		Route::get('/news', 'NewsController@getNews');
+		Route::get('/news/{news_id}', 'NewsController@getNewsById');
 		Route::post('/news', 'NewsController@add');
 		Route::post('/news/{news_id}', 'NewsController@updateById');
 		Route::delete('/news/{news_id}', 'NewsController@deleteById');

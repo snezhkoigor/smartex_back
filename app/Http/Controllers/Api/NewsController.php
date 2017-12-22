@@ -55,6 +55,17 @@ class NewsController extends Controller
 		    ->respond();
     }
 
+	public function getNewsById($news_id)
+	{
+		$news = News::find($news_id);
+		if ($news === null) {
+			throw new NotFoundHttpException('News not found');
+		}
+
+		return fractal($news, new NewsTransformer())
+			->respond();
+	}
+
     public function add(Request $request)
     {
     	$this->validate($request, $this->rules(), $this->messages());
