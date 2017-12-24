@@ -23,6 +23,8 @@ use Delatbabel\Elocrypt\Elocrypt;
  * @property string $created_at
  * @property string $updated_at
  *
+ * @property PaymentSystem $paymentSystem
+ *
  * Class PaymentAccount
  * @package App\Models
  */
@@ -79,4 +81,14 @@ class Wallet extends Model
 		'created_at',
 		'updated_at'
 	];
+
+	public function commissions()
+	{
+		return $this->hasMany(Commission::class);
+	}
+
+	public function paymentSystem()
+	{
+		return $this->belongsTo(PaymentSystem::class);
+	}
 }

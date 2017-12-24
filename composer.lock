@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9e375a2a705c3900b696a496751bf44a",
-    "content-hash": "b0e71db0bd4883631fce772d3a5044bf",
+    "hash": "e960e0daadcbae2469154802fb2994fb",
+    "content-hash": "997bc435549bcb497614cb071830f390",
     "packages": [
         {
             "name": "aleksandrzhiliaev/omnipay-advcash",
@@ -57,57 +57,6 @@
                 "purchase"
             ],
             "time": "2017-05-26 18:24:45"
-        },
-        {
-            "name": "aleksandrzhiliaev/omnipay-btc-e",
-            "version": "2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/aleksandrzhiliaev/omnipay-btc-e.git",
-                "reference": "660d48add16174cd434c0e2813df6819478eec1e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/aleksandrzhiliaev/omnipay-btc-e/zipball/660d48add16174cd434c0e2813df6819478eec1e",
-                "reference": "660d48add16174cd434c0e2813df6819478eec1e",
-                "shasum": ""
-            },
-            "require": {
-                "omnipay/common": "~2.0"
-            },
-            "require-dev": {
-                "omnipay/tests": "~2.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Omnipay\\Btce\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Aleksandr Zhiliaev",
-                    "email": "sassoftinc@gmail.com"
-                }
-            ],
-            "description": "BTC-E gateway for Omnipay payment processing library",
-            "homepage": "http://sassoft.ru",
-            "keywords": [
-                "btc-e",
-                "gateway",
-                "merchant",
-                "omnipay",
-                "pay",
-                "payment",
-                "purchase"
-            ],
-            "time": "2017-09-21 20:01:49"
         },
         {
             "name": "aleksandrzhiliaev/omnipay-payeer",

@@ -4,12 +4,14 @@ namespace App\Transformers;
 
 use App\Models\Wallet;
 use App\Repositories\PaymentSystemRepository;
-use Illuminate\Support\Facades\Crypt;
 use League\Fractal\TransformerAbstract;
 
 class WalletTransformer extends TransformerAbstract
 {
-	protected $availableIncludes = [];
+	protected $availableIncludes = [
+		'commissions',
+		'paymentSystem'
+	];
 
 	public function transform(Wallet $wallet)
 	{
@@ -31,5 +33,18 @@ class WalletTransformer extends TransformerAbstract
 		];
 
 		return $data;
+	}
+
+	public function includeCommissions(Wallet $wallet)
+	{
+		$commissions = $wallet->commissions()
+			->where('is_deleted', 0)->get();
+
+		return $this->collection($commissions, new CommissionTransformer(), 'commissions');
+	}
+
+	public function includePaymentSystem(Wallet $wallet)
+	{
+		return $this->item($wallet->paymentSystem, new PaymentSystemTransformer(), 'paymentSystem');
 	}
 }

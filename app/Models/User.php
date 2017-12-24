@@ -14,6 +14,7 @@ use Zizaco\Entrust\Traits\EntrustUserTrait;
  * @property string $email
  * @property string $password
  * @property boolean $active
+ * @property boolean $is_verified
  * @property string $created_at
  * @property string $updated_at
  *

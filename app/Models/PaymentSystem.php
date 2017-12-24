@@ -71,7 +71,7 @@ class PaymentSystem extends Model
 		return $this->hasMany(Wallet::class);
 	}
 
-	public static function walletRulesById($payment_system_id)
+	public static function walletRulesById($payment_system_id = null)
 	{
 		$result = [
 			'currency' => 'required|in:' . implode(',', array_keys(PaymentSystemRepository::getAvailableCurrencies())),
@@ -81,27 +81,32 @@ class PaymentSystem extends Model
 		];
 		$fields = PaymentSystemRepository::getRequireFields();
 
-		foreach ($fields[$payment_system_id] as $field) {
-			switch ($field) {
-				case 'user':
-					$result[$field] = 'required';
-					break;
+		if ($payment_system_id)
+		{
+			foreach ($fields[$payment_system_id] as $field)
+			{
+				switch ($field)
+				{
+					case 'user':
+						$result[$field] = 'required';
+						break;
 
-				case 'secret':
-					$result[$field] = 'required';
-					break;
+					case 'secret':
+						$result[$field] = 'required';
+						break;
 
-				case 'password':
-					$result[$field] = 'required';
-					break;
+					case 'password':
+						$result[$field] = 'required';
+						break;
 
-				case 'adv_sci':
-					$result[$field] = 'required';
-					break;
+					case 'adv_sci':
+						$result[$field] = 'required';
+						break;
 
-				case 'id_payee':
-					$result[$field] = 'required';
-					break;
+					case 'id_payee':
+						$result[$field] = 'required';
+						break;
+				}
 			}
 		}
 

@@ -9,16 +9,16 @@ use Illuminate\Database\Eloquent\Builder;
 class WalletRepository
 {
 	/**
-	 * @param PaymentSystem $payment_system
+	 * @param array $filters
 	 * @param array $relations
 	 * @param array $fields
-	 * @return \Illuminate\Database\Eloquent\Collection|static[]|Wallet[]
+	 * @return \Illuminate\Database\Eloquent\Collection|static[]
 	 */
-	public static function getWallets(PaymentSystem $payment_system, array $relations = [], array $fields = ['*'])
+	public static function getWallets(array $filters = [], array $relations = [], array $fields = ['*'])
 	{
 		$query = Wallet::query();
 
-		self::applyFiltersToQuery($query, ['payment_system_id' => $payment_system->id]);
+		self::applyFiltersToQuery($query, $filters);
 		self::applyIsDelete($query);
 
 		$query->with($relations);

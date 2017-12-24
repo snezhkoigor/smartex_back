@@ -37,22 +37,17 @@ class WalletController extends Controller
 		];
 	}
 
-    public function getWallets(Request $request, $payment_system_id)
+    public function getWallets(Request $request)
     {
-	    $payment_system = PaymentSystem::find($payment_system_id);
-	    if ($payment_system === null) {
-		    throw new NotFoundHttpException('Payment system not found');
-	    }
-
 	    $fieldsets = $this->getFieldsets($request);
 	    $includes = $this->getIncludes($request);
 
 	    $relations = $this->getRelationsFromIncludes($request);
 
-	    $wallets = WalletRepository::getWallets($payment_system, $relations, ['*'], $fieldsets);
+	    $wallets = WalletRepository::getWallets([], $relations, ['*'], $fieldsets);
 
 	    $meta = [
-		    'count' => WalletRepository::getWalletCount($payment_system),
+//		    'count' => WalletRepository::getWalletCount($payment_system),
 	    ];
 
 	    return fractal($wallets, new WalletTransformer())
@@ -81,21 +76,16 @@ class WalletController extends Controller
 		    ->respond();
     }
 
-    public function add(Request $request, $payment_system_id)
+    public function add(Request $request)
     {
-	    $payment_system = PaymentSystem::find($payment_system_id);
-	    if ($payment_system === null) {
-		    throw new NotFoundHttpException('Payment system not found');
-	    }
-
-    	$this->validate($request, PaymentSystem::walletRulesById($payment_system_id), $this->messages());
+	    $this->validate($request, PaymentSystem::walletRulesById($request->get('payment_system_id')), $this->messages());
 
     	try
 	    {
-	    	$payment_system = PaymentSystemRepository::getById($payment_system_id);
+	    	$payment_system = PaymentSystemRepository::getById($request->get('payment_system_id'));
 		    $wallet = new Wallet();
 		    $wallet->fill($request->all());
-		    $wallet->payment_system_id = $payment_system_id;
+		    $wallet->payment_system_id = $request->get('payment_system_id');
 		    // TODO убрать потом это, потому что можно связывать по идентификатору!
 		    $wallet->ps_type = $payment_system->code;
 		    $wallet->active = $request->get('active', true);
@@ -112,24 +102,20 @@ class WalletController extends Controller
 	    return $response;
     }
 
-    public function updateById(Request $request, $payment_system_id, $wallet_id)
+    public function updateById(Request $request, $wallet_id)
     {
-	    $payment_system = PaymentSystem::find($payment_system_id);
-	    if ($payment_system === null) {
-		    throw new NotFoundHttpException('Payment system not found');
-	    }
-	    $this->validate($request, PaymentSystem::walletRulesById($payment_system_id), $this->messages());
-
 	    $wallet = Wallet::find($wallet_id);
 	    if ($wallet === null) {
 		    throw new NotFoundHttpException('Wallet not found');
 	    }
 
+	    $this->validate($request, PaymentSystem::walletRulesById($request->get('payment_system_id')), $this->messages());
+
 	    try
 	    {
 		    $payment_system = PaymentSystemRepository::getById($request->get('payment_system_id'));
 		    $wallet->fill($request->all());
-		    $wallet->payment_system_id = $payment_system_id;
+		    $wallet->payment_system_id = $request->get('payment_system_id');
 		    // TODO убрать потом это, потому что можно связывать по идентификатору!
 		    $wallet->ps_type = $payment_system->code;
 		    $wallet->active = $request->get('active', true);
@@ -145,9 +131,9 @@ class WalletController extends Controller
 	    return $response;
     }
 
-	public function checkAccess(Request $request, $payment_system_id)
+	public function checkAccess(Request $request)
 	{
-		$payment_system = PaymentSystem::find($payment_system_id);
+		$payment_system = PaymentSystem::find($request->get('payment_system_id'));
 		if ($payment_system === null) {
 			throw new NotFoundHttpException('Payment system not found');
 		}
@@ -175,13 +161,8 @@ class WalletController extends Controller
 		}
 	}
 
-	public function deleteById($payment_system_id, $wallet_id)
+	public function deleteById($wallet_id)
 	{
-		$payment_system = PaymentSystem::find($payment_system_id);
-		if ($payment_system === null) {
-			throw new NotFoundHttpException('Payment system not found');
-		}
-
 		$wallet = Wallet::find($wallet_id);
 		if ($wallet === null) {
 			throw new NotFoundHttpException('Wallet not found');

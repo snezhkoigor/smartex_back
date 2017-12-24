@@ -55,11 +55,14 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::delete('/payment_systems/{payment_system_id}', 'PaymentSystemController@deleteById');
 
 		// Wallets
-		Route::get('/payment_systems/wallets/{wallet_id}', 'WalletController@getWalletById');
-		Route::get('/payment_systems/{payment_system_id}/wallets', 'WalletController@getWallets');
-		Route::post('/payment_systems/{payment_system_id}/wallets/check', 'WalletController@checkAccess');
-		Route::post('/payment_systems/{payment_system_id}/wallets', 'WalletController@add');
-		Route::post('/payment_systems/{payment_system_id}/wallets/{wallet_id}', 'WalletController@updateById');
-		Route::delete('/payment_systems/{payment_system_id}/wallets/{wallet_id}', 'WalletController@deleteById');
+		Route::get('/wallets/{wallet_id}', 'WalletController@getWalletById');
+		Route::get('/wallets', 'WalletController@getWallets');
+		Route::post('/wallets/check', 'WalletController@checkAccess');
+		Route::post('/wallets', 'WalletController@add');
+		Route::post('/wallets/{wallet_id}', 'WalletController@updateById');
+		Route::delete('/wallets/{wallet_id}', 'WalletController@deleteById');
+
+		// Commissions
+		Route::get('/commissions', 'CommissionController@getCommissions');
 	});
 });
