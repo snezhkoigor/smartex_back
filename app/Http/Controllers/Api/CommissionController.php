@@ -26,21 +26,24 @@ class CommissionController extends Controller
 
     public function getCommissions(Request $request)
     {
+	    $filters = $this->getFilters($request);
 	    $fieldsets = $this->getFieldsets($request);
+	    $search_string = $this->getSearchString($request);
 	    $includes = $this->getIncludes($request);
 	    $relations = $this->getRelationsFromIncludes($request);
 
-	    $commissions = CommissionRepository::getCommissions($relations, ['*']);
+	    $commissions = CommissionRepository::getCommissions($filters, $relations, ['*'], $search_string);
 
-	    $data = fractal($commissions, new CommissionTransformer())
+	    $meta = [
+		    'count' => CommissionRepository::getCommissionsCount($filters),
+		    'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems()),
+		    'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+	    ];
+
+	    return fractal($commissions, new CommissionTransformer())
 		    ->parseIncludes($includes)
 		    ->parseFieldsets($fieldsets)
+		    ->addMeta($meta)
 		    ->toArray();
-
-	    foreach ($data['data'] as $item) {
-	    	$result['data'][$item['wallet_id']][] = $item;
-	    }
-
-	    return $result;
     }
 }

@@ -52,6 +52,12 @@ class WalletRepository
 		return $query;
 	}
 
+
+	/**
+	 * @param Builder $query
+	 * @param $search_string
+	 * @return Builder
+	 */
 	private static function applySearch(Builder $query, $search_string)
 	{
 		if (!empty($search_string)) {
