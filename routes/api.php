@@ -67,7 +67,10 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::delete('/wallets/{wallet_id}', 'WalletController@deleteById');
 
 		// Commissions
+		Route::get('/commissions/{commission_id}', 'CommissionController@getCommissionById');
 		Route::get('/commissions', 'CommissionController@getCommissions');
+		Route::post('/commissions', 'CommissionController@add');
+		Route::post('/commissions/{commission_id}', 'CommissionController@updateById');
 		Route::delete('/commissions/{commission_id}', 'CommissionController@deleteById');
 	});
 });
