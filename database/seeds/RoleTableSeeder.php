@@ -19,10 +19,12 @@ class RoleTableSeeder extends Seeder
 
 	    $role = new Role();
 	    $role->name = Role::ROLE_ADMIN;
+	    $role->display_name = 'Administrator';
 	    $role->save();
 
 	    $role = new Role();
 	    $role->name = Role::ROLE_OPERATOR;
+	    $role->display_name = 'Operator';
 	    $role->save();
 
 	    Model::reguard();
