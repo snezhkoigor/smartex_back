@@ -39,15 +39,18 @@ class WalletController extends Controller
 
     public function getWallets(Request $request)
     {
+	    $filters = $this->getFilters($request);
+	    $search_string = $this->getSearchString($request);
 	    $fieldsets = $this->getFieldsets($request);
 	    $includes = $this->getIncludes($request);
 
 	    $relations = $this->getRelationsFromIncludes($request);
 
-	    $wallets = WalletRepository::getWallets([], $relations, ['*'], $fieldsets);
+	    $wallets = WalletRepository::getWallets($filters, $relations, ['*'], $search_string);
 
 	    $meta = [
-//		    'count' => WalletRepository::getWalletCount($payment_system),
+		    'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems()),
+		    'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
 	    ];
 
 	    return fractal($wallets, new WalletTransformer())

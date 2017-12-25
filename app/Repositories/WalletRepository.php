@@ -12,13 +12,15 @@ class WalletRepository
 	 * @param array $filters
 	 * @param array $relations
 	 * @param array $fields
+	 * @param null $search_string
 	 * @return \Illuminate\Database\Eloquent\Collection|static[]
 	 */
-	public static function getWallets(array $filters = [], array $relations = [], array $fields = ['*'])
+	public static function getWallets(array $filters = [], array $relations = [], array $fields = ['*'], $search_string = null)
 	{
 		$query = Wallet::query();
 
 		self::applyFiltersToQuery($query, $filters);
+		self::applySearch($query, $search_string);
 		self::applyIsDelete($query);
 
 		$query->with($relations);
@@ -50,6 +52,16 @@ class WalletRepository
 		return $query;
 	}
 
+	private static function applySearch(Builder $query, $search_string)
+	{
+		if (!empty($search_string)) {
+			$query->where(function(Builder $query) use ($search_string) {
+				$query->where(DB::raw('LOWER(account)'), 'LIKE', '%' . mb_strtolower($search_string) . '%');
+			});
+		}
+
+		return $query;
+	}
 
 	/**
 	 * @param Builder $query
@@ -61,6 +73,10 @@ class WalletRepository
 		{
 			switch ($name)
 			{
+				case 'currency':
+					$query->where('currency', $value);
+					break;
+
 				case 'payment_system_id':
 					$query->where('payment_system_id', $value);
 					break;
