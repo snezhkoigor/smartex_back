@@ -46,8 +46,8 @@ class PaymentSystemController extends Controller
 	    $meta = [
 		    'count' => PaymentSystemRepository::getPaymentSystemsCount($filters, $search_string),
 		    'required' => PaymentSystemRepository::getRequireFields(),
-		    'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems()),
-		    'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+		    'payment_systems' => PaymentSystemRepository::getAvailablePaymentSystems(),
+		    'currencies' => PaymentSystemRepository::getAvailableCurrencies()
 	    ];
 
 	    return fractal($payment_systems, new PaymentSystemTransformer())
@@ -87,15 +87,13 @@ class PaymentSystemController extends Controller
 //		    $payment_system->logo = app()->make('news_service')->getProcessedNewsText($request->get('text'));
 		    $payment_system->active = $request->get('active', true);
 		    $payment_system->save([], true);
-
-		    $response = response()->json(['message' => 'Success created'], Response::HTTP_OK);
 	    }
 	    catch (\Exception $e)
 	    {
 		    throw new SystemErrorException('Adding payment system failed', $e);
 	    }
 
-	    return $response;
+	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
     public function updateById(Request $request, $payment_system_id)
@@ -113,15 +111,13 @@ class PaymentSystemController extends Controller
 		    $payment_system->active = $request->get('active');
 //		    $payment_system->logo = app()->make('news_service')->getProcessedNewsText($request->get('text'));
 		    $payment_system->save([], true);
-
-		    $response = response()->json(['message' => 'Success updated'], Response::HTTP_OK);
 	    }
 	    catch (\Exception $e)
 	    {
 		    throw new SystemErrorException('Updating payment system failed', $e);
 	    }
 
-	    return $response;
+	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
     public function deleteById($payment_system_id)
@@ -135,14 +131,12 @@ class PaymentSystemController extends Controller
 	    {
 		    $payment_system->is_deleted = true;
 		    $payment_system_id->save([], true);
-
-		    $response = response()->json(['Success deleted payment system'], Response::HTTP_OK);
 	    }
 	    catch (\Exception $e)
 	    {
 		    throw new SystemErrorException('Updating payment system failed', $e);
 	    }
 
-	    return $response;
+	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 }

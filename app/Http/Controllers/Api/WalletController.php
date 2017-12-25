@@ -60,6 +60,17 @@ class WalletController extends Controller
 		    ->respond();
     }
 
+	public function getFormMeta()
+	{
+		return fractal(null, new WalletTransformer())
+			->addMeta([
+				'required' => PaymentSystemRepository::getRequireFields(),
+				'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems()),
+				'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+			])
+			->respond();
+	}
+
     public function getWalletById($wallet_id)
     {
 	    $wallet = Wallet::find($wallet_id);
@@ -94,15 +105,13 @@ class WalletController extends Controller
 		    $wallet->active = $request->get('active', true);
 
 		    $wallet->save([], true);
-
-		    $response = response()->json(['message' => 'Success created'], Response::HTTP_OK);
 	    }
 	    catch (\Exception $e)
 	    {
 		    throw new SystemErrorException('Adding wallet failed', $e);
 	    }
 
-	    return $response;
+	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
     public function updateById(Request $request, $wallet_id)
@@ -123,15 +132,13 @@ class WalletController extends Controller
 		    $wallet->ps_type = $payment_system->code;
 		    $wallet->active = $request->get('active', true);
 		    $wallet->save([], true);
-
-		    $response = response()->json(['message' => 'Success updated'], Response::HTTP_OK);
 	    }
 	    catch (\Exception $e)
 	    {
 		    throw new SystemErrorException('Updating wallet failed', $e);
 	    }
 
-	    return $response;
+	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
 	public function checkAccess(Request $request)
@@ -175,14 +182,12 @@ class WalletController extends Controller
 		{
 			$wallet->is_deleted = true;
 			$wallet->save([], true);
-
-			$response = response()->json(['Success deleted payment system wallet'], Response::HTTP_OK);
 		}
 		catch (\Exception $e)
 		{
 			throw new SystemErrorException('Updating payment system wallet failed', $e);
 		}
 
-		return $response;
+		return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
 	}
 }

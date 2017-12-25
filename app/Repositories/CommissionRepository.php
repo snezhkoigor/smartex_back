@@ -14,15 +14,25 @@ class CommissionRepository
 	 * @param array $relations
 	 * @param array $fields
 	 * @param null $search_string
+	 * @param null $limit
+	 * @param null $offset
 	 * @return \Illuminate\Database\Eloquent\Collection|static[]
 	 */
-	public static function getCommissions(array $filters = [], array $relations = [], array $fields = ['*'], $search_string = null)
+	public static function getCommissions(array $filters = [], array $relations = [], array $fields = ['*'], $search_string = null, $limit = null, $offset = null)
 	{
 		$query = Commission::query();
 
 		self::applyFiltersToQuery($query, $filters);
 		self::applySearch($query, $search_string);
 		self::applyIsDelete($query);
+
+		if (!empty($offset)) {
+			$query->skip($offset);
+		}
+
+		if (!empty($limit)) {
+			$query->take($limit);
+		}
 
 		$query->with($relations);
 

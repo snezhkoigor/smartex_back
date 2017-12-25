@@ -36,6 +36,10 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 	Route::middleware([\App\Http\Middleware\Auth::class, 'ability:'.Role::ROLE_ADMIN.','.Role::ROLE_OPERATOR])->group(function() {
 		Route::get('/users', 'User\UserController@getUsers');
 
+		//Meta
+		Route::get('/meta/wallets', 'WalletController@getFormMeta');
+		Route::get('/meta/commissions', 'CommissionController@getFormMeta');
+
 		// News
 		Route::get('/news', 'NewsController@getNews');
 		Route::get('/news/{news_id}', 'NewsController@getNewsById');
@@ -64,5 +68,6 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 
 		// Commissions
 		Route::get('/commissions', 'CommissionController@getCommissions');
+		Route::delete('/commissions/{commission_id}', 'CommissionController@deleteById');
 	});
 });

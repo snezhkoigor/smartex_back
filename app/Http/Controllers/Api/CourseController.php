@@ -77,14 +77,12 @@ class CourseController extends Controller
 	    {
 		    $course->fill($request->all());
 		    $course->save([], true);
-
-		    $response = response()->json(['message' => 'Success updated'], Response::HTTP_OK);
 	    }
 	    catch (\Exception $e)
 	    {
 		    throw new SystemErrorException('Updating course failed', $e);
 	    }
 
-	    return $response;
+	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 }

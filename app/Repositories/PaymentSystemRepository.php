@@ -25,6 +25,7 @@ class PaymentSystemRepository
 		self::applyFiltersToQuery($query, $filters);
 		self::applySearch($query, $search_string);
 		self::applySortingToQuery($query, $sorts);
+		self::applyIsDelete($query);
 
 		if (!empty($offset)) {
 			$query->skip($offset);
@@ -62,6 +63,7 @@ class PaymentSystemRepository
 
 		$query = PaymentSystem::query();
 		self::applyFiltersToQuery($query, $filters);
+		self::applyIsDelete($query);
 
 		$payment_systems = $query->get(['name', 'id', 'code']);
 		foreach ($payment_systems as $payment_system) {
@@ -115,10 +117,11 @@ class PaymentSystemRepository
 		$result = [];
 		$query = PaymentSystem::query();
 		self::applyFiltersToQuery($query, $filters);
+		self::applyIsDelete($query);
 
 		$fields = $query->get(['fields', 'id']);
 		foreach ($fields as $field) {
-			$result[(int)$field['id']] = explode(',', $field['fields']);
+			$result[$field['id']] = explode(',', $field['fields']);
 		}
 
 		return $result;
@@ -147,6 +150,7 @@ class PaymentSystemRepository
 
 		self::applyFiltersToQuery($query, $filters);
 		self::applySearch($query, $search_string);
+		self::applyIsDelete($query);
 
 		return $query;
 	}
@@ -208,5 +212,14 @@ class PaymentSystemRepository
 		}
 
 		return $query;
+	}
+
+
+	/**
+	 * @param Builder $query
+	 */
+	private static function applyIsDelete(Builder $query)
+	{
+		$query->where('is_deleted', '=',false);
 	}
 }

@@ -77,15 +77,13 @@ class NewsController extends Controller
 		    $news->text = app()->make('news_service')->getProcessedNewsText($request->get('text'));
 		    $news->active = $request->get('active', true);
 		    $news->save([], true);
-
-		    $response = response()->json(['message' => 'Success created'], Response::HTTP_OK);
 	    }
 	    catch (\Exception $e)
 	    {
 		    throw new SystemErrorException('Adding news failed', $e);
 	    }
 
-	    return $response;
+	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
     public function updateById(Request $request, $news_id)
@@ -103,15 +101,13 @@ class NewsController extends Controller
 		    $news->active = $request->get('active');
 		    $news->text = app()->make('news_service')->getProcessedNewsText($request->get('text'));
 		    $news->save([], true);
-
-		    $response = response()->json(['message' => 'Success updated'], Response::HTTP_OK);
 	    }
 	    catch (\Exception $e)
 	    {
 		    throw new SystemErrorException('Updating news failed', $e);
 	    }
 
-	    return $response;
+	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
     public function deleteById($news_id)
@@ -125,14 +121,12 @@ class NewsController extends Controller
 	    {
 		    $news->is_deleted = true;
 		    $news->save([], true);
-
-		    $response = response()->json(['Success news delete'], Response::HTTP_OK);
 	    }
 	    catch (\Exception $e)
 	    {
 		    throw new SystemErrorException('Updating news failed', $e);
 	    }
 
-	    return $response;
+	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 }

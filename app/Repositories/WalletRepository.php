@@ -39,6 +39,22 @@ class WalletRepository
 	}
 
 
+	public static function getAvailableWallets(array $filters = [])
+	{
+		$result = [];
+
+		$query = Wallet::query();
+		self::applyFiltersToQuery($query, $filters);
+		self::applyIsDelete($query);
+
+		$wallets = $query->get(['account', 'id']);
+		foreach ($wallets as $wallet) {
+			$result[$wallet['id']] = $wallet;
+		}
+
+		return $result;
+	}
+
 	/**
 	 * @param PaymentSystem $payment_system
 	 * @return Builder
