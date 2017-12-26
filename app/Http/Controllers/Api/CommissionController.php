@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\SystemErrorException;
 use App\Models\Commission;
+use App\Models\PaymentSystem;
+use App\Models\Wallet;
 use App\Repositories\CommissionRepository;
 use App\Repositories\PaymentSystemRepository;
 use App\Repositories\WalletRepository;
@@ -130,9 +132,20 @@ class CommissionController extends Controller
 
 		try
 		{
+			//TODO удалить это после переделывания внешнего сайта
+			$wallet = Wallet::find($request->get('wallet_id'));
+			$payment_system = PaymentSystem::find($request->get('payment_system_id'));
+
 			$commission = new Commission();
 			$commission->fill($request->all());
 			$commission->active = $request->get('active', true);
+
+			//TODO удалить это после переделывания внешнего сайта
+			$commission->ps_in_type = $wallet->ps_type;
+			$commission->ps_out_type = $payment_system->code;
+			$commission->ps_out_currency = $request->get('currency');
+			$commission->ps_in_currency = $wallet->currency;
+
 			$commission->save([], true);
 		}
 		catch (\Exception $e)
@@ -154,8 +167,19 @@ class CommissionController extends Controller
 
 		try
 		{
+			//TODO удалить это после переделывания внешнего сайта
+			$wallet = Wallet::find($request->get('wallet_id'));
+			$payment_system = PaymentSystem::find($request->get('payment_system_id'));
+
 			$commission->fill($request->all());
 			$commission->active = $request->get('active', true);
+
+			//TODO удалить это после переделывания внешнего сайта
+			$commission->ps_in_type = $wallet->ps_type;
+			$commission->ps_out_type = $payment_system->code;
+			$commission->ps_out_currency = $request->get('currency');
+			$commission->ps_in_currency = $wallet->currency;
+
 			$commission->save([], true);
 		}
 		catch (\Exception $e)

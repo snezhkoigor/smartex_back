@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Exceptions\SystemErrorException;
 use App\Http\Controllers\Controller;
-use App\Mail\ResetPasswordChanged;
-use App\Mail\ResetPasswordRequest;
 use App\Models\User;
 use App\Services\ResetPasswordService;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
 
 class ResetPasswordController extends Controller
 {
-	protected $resetPasswordService;
+	private $reset_password_service;
+
+	public function __construct(ResetPasswordService $reset_password_service)
+	{
+		$this->reset_password_service = $reset_password_service;
+	}
 
 	public function rules()
 	{
 		return [
-			'email' => 'required|exists:users|email'
+			'email' => 'required|email|exists:users'
 		];
 	}
 
@@ -33,49 +36,22 @@ class ResetPasswordController extends Controller
 		];
 	}
 
-	public function __construct(ResetPasswordService $resetPasswordService)
-	{
-		$this->resetPasswordService = $resetPasswordService;
-	}
-
-	public function request(Request $request)
+	public function resetPassword(Request $request)
 	{
 		$this->validate($request, $this->rules(), $this->messages());
-		$user = User::where('email', $request->get('email'))->first();
 
-		if (null === $user) {
+		$user = User::where('email', $request->get('email'))->first();
+		if ($user === null) {
 			throw new NotFoundHttpException('User not found');
 		}
 
-		$token = $this->resetPasswordService->token($user);
-
-		if (null === $token) {
-			return response()->json([ 'message' => 'We has already sent you email for continue' ], Response::HTTP_BAD_REQUEST);
+		try {
+			$user->password = Hash::make($this->reset_password_service->getProcessedResetPassword($user));
+			$user->save([], true);
+		} catch (\Exception $e) {
+			throw new SystemErrorException('Reset password reset failed', $e);
 		}
 
-		Mail::to($user->email)
-			->send(new ResetPasswordRequest($token));
-
-		return response()->json([ 'message' => 'Check your email for continue' ], Response::HTTP_OK);
-	}
-
-	public function change($token)
-	{
-		$data = $this->resetPasswordService->getByToken($token);
-		if (!$data) {
-			throw new NotFoundHttpException('Bad activation token');
-		}
-
-		$user = User::findOrFial($data->user_id);
-		$password = User::generate_password(5);
-		$user->password = Hash::make($password);
-		$user->save();
-
-		Mail::to($user->email)
-			->send(new ResetPasswordChanged($password));
-
-		$this->resetPasswordService->delete($token);
-
-		return response()->json([ 'message' => 'Check your email to see new password' ], Response::HTTP_OK);
+		return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
 	}
 }

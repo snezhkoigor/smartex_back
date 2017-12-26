@@ -41,12 +41,19 @@ class Commission extends Model
 	protected $guarded = [
 		'active',
 		'is_deleted',
+
+		'ps_in_type',
+		'ps_out_type',
+		'ps_in_currency',
+		'ps_out_currency',
 	];
 
 	protected $dates = [
 		'created_at',
 		'updated_at'
 	];
+
+	protected $table = 'ps_commission';
 
 	public function paymentSystem()
 	{

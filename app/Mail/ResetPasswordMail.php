@@ -2,24 +2,23 @@
 
 namespace App\Mail;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ResetPasswordChanged extends Mailable
+class ResetPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $password;
+    private $password;
 
-    /**
-     * Create a new message instance.
-     *
-     * @param string $password
-     *
-     * @return void
-     */
+
+	/**
+	 * ResetPasswordMail constructor.
+	 * @param $password
+	 */
     public function __construct($password)
     {
         $this->password = $password;
@@ -32,8 +31,11 @@ class ResetPasswordChanged extends Mailable
      */
     public function build()
     {
-	    return $this->view('emails.user.password.changed')->with([
-		    'password' => $this->password,
-	    ])->subject(config('frontend.name') . ' :: ' . 'New password.');
+        return $this->view('emails.user.password.html.reset')
+	        ->with([
+	            'password' => $this->password,
+            ])
+	        ->subject('Reset password on ' . config('app.name') . '.')
+	        ->text('emails.user.password.plain.reset');
     }
 }

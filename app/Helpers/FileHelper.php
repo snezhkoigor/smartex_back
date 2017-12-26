@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Storage;
 
 class FileHelper
 {
-	public function uploadFilesByFroalaToStorage($urls, $storage_path)
+	public function uploadFilesByFraolaToStorage($urls, $storage_path)
 	{
 		$storage_urls = [];
 

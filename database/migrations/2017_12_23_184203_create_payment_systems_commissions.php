@@ -13,8 +13,8 @@ class CreatePaymentSystemsCommissions extends Migration
      */
     public function up()
     {
-	    if (!Schema::hasTable('commissions')) {
-		    Schema::create('commissions', function (Blueprint $table) {
+	    if (!Schema::hasTable('ps_commission')) {
+		    Schema::create('ps_commission', function (Blueprint $table) {
 			    $table->increments('id');
 			    $table->integer('wallet_id');
 			    $table->integer('payment_system_id');
@@ -34,6 +34,6 @@ class CreatePaymentSystemsCommissions extends Migration
      */
     public function down()
     {
-	    Schema::dropIfExists('commissions');
+	    Schema::dropIfExists('ps_commission');
     }
 }

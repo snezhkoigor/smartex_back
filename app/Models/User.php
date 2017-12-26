@@ -54,7 +54,7 @@ class User extends Authenticatable
 	    return $this->belongsToMany(Role::class);
     }
 
-	public static function generate_password($number)
+	public static function generatePassword($number)
 	{
 		$result = '';
 		$arr = array('a','b','c','d','e','f',

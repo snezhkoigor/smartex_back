@@ -41,21 +41,6 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
-$app->singleton('text_helper',
-	function() {
-		return new \App\Helpers\TextHelper;
-	});
-
-$app->singleton('file_helper',
-	function() {
-		return new \App\Helpers\FileHelper;
-	});
-
-$app->singleton('news_service',
-	function() use ($app) {
-		return new \App\Services\NewsService($app->make('text_helper'), $app->make('file_helper'));
-	});
-
 /*
 |--------------------------------------------------------------------------
 | Return The Application

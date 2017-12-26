@@ -24,13 +24,11 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 
 		throw new NotFoundHttpException('Image not found');
 	});
-	Route::get('/dictionary', 'JwtAuthenticateController@logout');
 
 	Route::group(['namespace' => 'User'], function () {
 		Route::post('/login', 'JwtAuthenticateController@authenticate');
 		Route::get('/logout', 'JwtAuthenticateController@logout');
-		Route::post('/user/password/reset/request', 'ResetPasswordController@request');
-		Route::get('/user/password/reset/{token}', 'ResetPasswordController@change');
+		Route::post('/user/password/reset', 'ResetPasswordController@resetPassword');
 	});
 
 	Route::middleware([\App\Http\Middleware\Auth::class, 'ability:'.Role::ROLE_ADMIN.','.Role::ROLE_OPERATOR])->group(function() {

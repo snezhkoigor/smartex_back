@@ -14,6 +14,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class NewsController extends Controller
 {
+	private $news_service;
+
+	public function __construct(NewsService $news_service)
+	{
+		$this->news_service = $news_service;
+	}
+
 	public function rules()
 	{
 		return [
@@ -74,7 +81,7 @@ class NewsController extends Controller
 	    {
 		    $news = new News();
 		    $news->fill($request->all());
-		    $news->text = app()->make('news_service')->getProcessedNewsText($request->get('text'));
+		    $news->text = $this->news_service->getProcessedNewsText($request->get('text'));
 		    $news->active = $request->get('active', true);
 		    $news->save([], true);
 	    }
@@ -99,7 +106,7 @@ class NewsController extends Controller
 	    {
 		    $news->fill($request->all());
 		    $news->active = $request->get('active');
-		    $news->text = app()->make('news_service')->getProcessedNewsText($request->get('text'));
+		    $news->text = $this->news_service->getProcessedNewsText($request->get('text'));
 		    $news->save([], true);
 	    }
 	    catch (\Exception $e)

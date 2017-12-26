@@ -1,4 +1,4 @@
-@extends('emails.layouts.index')
+@extends('emails.layouts.html.index')
 
 @section('content')
 	<p>

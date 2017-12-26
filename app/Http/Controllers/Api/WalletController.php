@@ -96,7 +96,7 @@ class WalletController extends Controller
 
     	try
 	    {
-	    	$payment_system = PaymentSystemRepository::getById($request->get('payment_system_id'));
+	    	$payment_system = PaymentSystem::find($request->get('payment_system_id'));
 		    $wallet = new Wallet();
 		    $wallet->fill($request->all());
 		    $wallet->payment_system_id = $request->get('payment_system_id');
@@ -125,7 +125,7 @@ class WalletController extends Controller
 
 	    try
 	    {
-		    $payment_system = PaymentSystemRepository::getById($request->get('payment_system_id'));
+		    $payment_system = PaymentSystem::find($request->get('payment_system_id'));
 		    $wallet->fill($request->all());
 		    $wallet->payment_system_id = $request->get('payment_system_id');
 		    // TODO убрать потом это, потому что можно связывать по идентификатору!

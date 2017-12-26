@@ -18,7 +18,8 @@
         "zizaco/entrust": "dev-2.0-dev",
         "aleksandrzhiliaev/omnipay-advcash": "1.*",
         "aleksandrzhiliaev/omnipay-payeer": "1.*",
-        "aleksandrzhiliaev/omnipay-perfectmoney": "1.4.*"
+        "aleksandrzhiliaev/omnipay-perfectmoney": "1.4.*",
+        "guzzlehttp/guzzle": "6.3.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
