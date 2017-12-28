@@ -4,8 +4,21 @@ namespace App\Services;
 
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
+/**
+ * Class PerfectMoneyService
+ * @package App\Services
+ */
 class PerfectMoneyService
 {
+	/**
+	 * @param $user
+	 * @param $password
+	 * @param $wallet
+	 *
+	 * @throws UnprocessableEntityHttpException
+	 *
+	 * @return float|null|UnprocessableEntityHttpException
+	 */
 	public static function getWalletBalance($user, $password, $wallet)
 	{
 		$balance = null;

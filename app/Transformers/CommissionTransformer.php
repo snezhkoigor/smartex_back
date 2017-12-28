@@ -3,7 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\Commission;
-use App\Repositories\PaymentSystemRepository;
+use App\Repositories\CurrencyRepository;
 use League\Fractal\TransformerAbstract;
 
 class CommissionTransformer extends TransformerAbstract
@@ -20,7 +20,7 @@ class CommissionTransformer extends TransformerAbstract
 			'wallet_id' => (int)$commission->wallet_id,
 			'payment_system_id' => (int)$commission->payment_system_id,
 			'currency' => $commission->currency,
-			'prefix' => PaymentSystemRepository::getAvailableCurrencies()[$commission->currency]['prefix'],
+			'prefix' => CurrencyRepository::getAvailableCurrencies()[$commission->currency]['prefix'],
 			'commission' => (float)$commission->commission,
 			'active' => (bool)$commission->active,
 			'is_deleted' => (bool)$commission->is_deleted,

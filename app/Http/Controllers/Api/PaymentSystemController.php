@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\SystemErrorException;
 use App\Models\PaymentSystem;
+use App\Repositories\CurrencyRepository;
 use App\Repositories\PaymentSystemRepository;
 use App\Services\authDTO;
 use App\Services\MerchantWebService;
@@ -47,7 +48,7 @@ class PaymentSystemController extends Controller
 		    'count' => PaymentSystemRepository::getPaymentSystemsCount($filters, $search_string),
 		    'required' => PaymentSystemRepository::getRequireFields(),
 		    'payment_systems' => PaymentSystemRepository::getAvailablePaymentSystems(),
-		    'currencies' => PaymentSystemRepository::getAvailableCurrencies()
+		    'currencies' => CurrencyRepository::getAvailableCurrencies()
 	    ];
 
 	    return fractal($payment_systems, new PaymentSystemTransformer())
@@ -68,7 +69,7 @@ class PaymentSystemController extends Controller
 		$meta = [
 			'required' => PaymentSystemRepository::getRequireFields($filters),
 			'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems($filters)),
-			'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+			'currencies' => array_values(CurrencyRepository::getAvailableCurrencies())
 		];
 
 		return fractal($payment_system, new PaymentSystemTransformer())

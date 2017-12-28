@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Repositories\CurrencyRepository;
 use App\Repositories\PaymentSystemRepository;
 use App\Services\MerchantWebService;
 use Illuminate\Database\Eloquent\Model;
@@ -25,24 +26,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PaymentSystem extends Model
 {
-	const CURRENCY_USD = 'usd';
-	const CURRENCY_USD_PREFIX = '$';
-
-	const CURRENCY_EUR = 'eur';
-	const CURRENCY_EUR_PREFIX = '€';
-
-	const CURRENCY_CZK = 'czk';
-	const CURRENCY_CZK_PREFIX = 'Kč';
-
-	const CURRENCY_BTC = 'btc';
-	const CURRENCY_BTC_PREFIX = 'btc';
-
-	const CURRENCY_ETH = 'eth';
-	const CURRENCY_ETH_PREFIX = 'eth';
-
-	const CURRENCY_RUB = 'rub';
-	const CURRENCY_RUB_PREFIX = '₽';
-
 	/**
 	 * The attributes that are mass assignable.
 	 *
@@ -74,7 +57,7 @@ class PaymentSystem extends Model
 	public static function walletRulesById($payment_system_id = null)
 	{
 		$result = [
-			'currency' => 'required|in:' . implode(',', array_keys(PaymentSystemRepository::getAvailableCurrencies())),
+			'currency' => 'required|in:' . implode(',', array_keys(CurrencyRepository::getAvailableCurrencies())),
 			'balance' => 'required|numeric',
 			'account' => 'required',
 			'payment_system_id' => 'required',

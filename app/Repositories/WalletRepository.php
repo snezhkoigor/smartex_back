@@ -2,10 +2,16 @@
 
 namespace App\Repositories;
 
+use App\Helpers\StringHelper;
 use App\Models\PaymentSystem;
 use App\Models\Wallet;
+use App\Transformers\WalletTransformer;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Class WalletRepository
+ * @package App\Repositories
+ */
 class WalletRepository
 {
 	/**
@@ -39,6 +45,10 @@ class WalletRepository
 	}
 
 
+	/**
+	 * @param array $filters
+	 * @return array
+	 */
 	public static function getAvailableWallets(array $filters = [])
 	{
 		$result = [];
@@ -47,9 +57,36 @@ class WalletRepository
 		self::applyFiltersToQuery($query, $filters);
 		self::applyIsDelete($query);
 
-		$wallets = $query->get(['account', 'id']);
+		$wallets = $query
+			->where('is_deleted', 0)
+			->get(['account', 'id']);
 		foreach ($wallets as $wallet) {
 			$result[$wallet['id']] = $wallet;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @param array $filters
+	 * @return array
+	 */
+	public static function getAvailableWalletsForCommission(array $filters = [])
+	{
+		$query = Wallet::query();
+		self::applyFiltersToQuery($query, $filters);
+		self::applyIsDelete($query);
+
+		$wallets = $query
+			->where('is_deleted', 0)
+			->with('paymentSystem')
+			->get(['account', 'id', 'currency', 'payment_system_id']);
+
+		foreach ($wallets as $wallet) {
+			$result[$wallet['id']] = [
+				'account' => $wallet->paymentSystem['name'] . ', ' . CurrencyRepository::getAvailableCurrencies()[$wallet['currency']]['prefix'] . ' (' . StringHelper::truncate($wallet['account'], 25) . ')',
+				'id' => $wallet['id']
+			];
 		}
 
 		return $result;

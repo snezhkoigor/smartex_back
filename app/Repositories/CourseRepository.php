@@ -6,8 +6,22 @@ use App\Models\Course;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class CourseRepository
+ * @package App\Repositories
+ */
 class CourseRepository
 {
+	/**
+	 * @param array $filters
+	 * @param array $sorts
+	 * @param array $relations
+	 * @param array $fields
+	 * @param null $search_string
+	 * @param null $limit
+	 * @param null $offset
+	 * @return \Illuminate\Database\Eloquent\Collection|static[]
+	 */
 	public static function getCourses(array $filters = [], array $sorts = [], array $relations = [], array $fields = ['*'], $search_string = null, $limit = null, $offset = null)
 	{
 		$query = Course::query();
@@ -29,11 +43,21 @@ class CourseRepository
 		return $query->get($fields);
 	}
 
+
+	/**
+	 * @param array $filters
+	 * @param null $search_string
+	 * @return int
+	 */
 	public static function getNewsCount(array $filters = [], $search_string = null)
 	{
 		return self::getNewsQuery($filters, $search_string)->count();
 	}
 
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Model|null|static
+	 */
 	public static function getLastDateFromCourses()
 	{
 		return Course::query()
@@ -42,6 +66,12 @@ class CourseRepository
 			->first();
 	}
 
+
+	/**
+	 * @param array $filters
+	 * @param null $search_string
+	 * @return Builder
+	 */
 	private static function getNewsQuery(array $filters = [], $search_string = null)
 	{
 		$query = Course::query();
@@ -52,6 +82,11 @@ class CourseRepository
 		return $query;
 	}
 
+
+	/**
+	 * @param Builder $query
+	 * @param array $filter_parameters
+	 */
 	private static function applyFiltersToQuery(Builder $query, array $filter_parameters = [])
 	{
 		foreach ($filter_parameters as $name => $value) {
@@ -65,6 +100,11 @@ class CourseRepository
 		}
 	}
 
+
+	/**
+	 * @param Builder $query
+	 * @param $search_string
+	 */
 	private static function applySearch(Builder $query, $search_string)
 	{
 		if (!empty($search_string)) {
@@ -79,6 +119,11 @@ class CourseRepository
 		}
 	}
 
+
+	/**
+	 * @param Builder $query
+	 * @param array $sorts
+	 */
 	private static function applySortingToQuery(Builder $query, array $sorts = [])
 	{
 		foreach ($sorts as $name => $value)

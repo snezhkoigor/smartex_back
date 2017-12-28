@@ -6,6 +6,10 @@ use App\Models\PaymentSystem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class PaymentSystemRepository
+ * @package App\Repositories
+ */
 class PaymentSystemRepository
 {
 	/**
@@ -71,40 +75,6 @@ class PaymentSystemRepository
 		}
 
 		return $result;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public static function getAvailableCurrencies()
-	{
-		return [
-			PaymentSystem::CURRENCY_USD => [
-				'name' => PaymentSystem::CURRENCY_USD,
-				'prefix' => PaymentSystem::CURRENCY_USD_PREFIX
-			],
-			PaymentSystem::CURRENCY_EUR => [
-				'name' => PaymentSystem::CURRENCY_EUR,
-				'prefix' => PaymentSystem::CURRENCY_EUR_PREFIX
-			],
-			PaymentSystem::CURRENCY_RUB => [
-				'name' => PaymentSystem::CURRENCY_RUB,
-				'prefix' => PaymentSystem::CURRENCY_RUB_PREFIX
-			],
-			PaymentSystem::CURRENCY_CZK => [
-				'name' => PaymentSystem::CURRENCY_CZK,
-				'prefix' => PaymentSystem::CURRENCY_CZK_PREFIX
-			],
-			PaymentSystem::CURRENCY_ETH => [
-				'name' => PaymentSystem::CURRENCY_ETH,
-				'prefix' => PaymentSystem::CURRENCY_ETH_PREFIX
-			],
-			PaymentSystem::CURRENCY_BTC => [
-				'name' => PaymentSystem::CURRENCY_BTC,
-				'prefix' => PaymentSystem::CURRENCY_BTC_PREFIX
-			],
-		];
 	}
 
 

@@ -7,6 +7,7 @@ use App\Models\Commission;
 use App\Models\PaymentSystem;
 use App\Models\Wallet;
 use App\Repositories\CommissionRepository;
+use App\Repositories\CurrencyRepository;
 use App\Repositories\PaymentSystemRepository;
 use App\Repositories\WalletRepository;
 use App\Transformers\CommissionTransformer;
@@ -22,7 +23,7 @@ class CommissionController extends Controller
 		return [
 			'wallet_id' => 'required|exists:payment_account,id|' . $this->checkUniqueCommission($request),
 			'payment_system_id' => 'required|exists:payment_systems,id',
-			'currency' => 'required|in:' . implode(',', array_keys(PaymentSystemRepository::getAvailableCurrencies())),
+			'currency' => 'required|in:' . implode(',', array_keys(CurrencyRepository::getAvailableCurrencies())),
 			'commission' => 'required|numeric',
 			'active' => 'boolean',
 			'is_deleted' => 'boolean',
@@ -87,7 +88,7 @@ class CommissionController extends Controller
 	    $meta = [
 		    'count' => CommissionRepository::getCommissionsCount($filters),
 		    'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems()),
-		    'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+		    'currencies' => array_values(CurrencyRepository::getAvailableCurrencies())
 	    ];
 
 	    return fractal($commissions, new CommissionTransformer())
@@ -101,9 +102,9 @@ class CommissionController extends Controller
 	{
 		return fractal(null, new CommissionTransformer())
 			->addMeta([
-				'wallets' => array_values(WalletRepository::getAvailableWallets()),
+				'wallets' => array_values(WalletRepository::getAvailableWalletsForCommission()),
 				'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems()),
-				'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+				'currencies' => array_values(CurrencyRepository::getAvailableCurrencies())
 			])
 			->respond();
 	}
@@ -116,9 +117,9 @@ class CommissionController extends Controller
 		}
 
 		$meta = [
-			'wallets' => array_values(WalletRepository::getAvailableWallets()),
+			'wallets' => array_values(WalletRepository::getAvailableWalletsForCommission()),
 			'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems()),
-			'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+			'currencies' => array_values(CurrencyRepository::getAvailableCurrencies())
 		];
 
 		return fractal($commission, new CommissionTransformer())

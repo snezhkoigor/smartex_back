@@ -58,6 +58,13 @@ return [
         'froala' => [
 	        'driver' => 'local',
 	        'root' => storage_path('froala'),
+	        'url' => env('APP_URL') . '/files/froala'
+        ],
+
+        'avatars' => [
+	        'driver' => 'local',
+	        'root' => storage_path('avatars'),
+	        'url' => env('APP_URL') . '/files/avatars/'
         ],
 
         's3' => [

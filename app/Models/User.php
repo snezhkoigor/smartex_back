@@ -12,6 +12,7 @@ use Zizaco\Entrust\Traits\EntrustUserTrait;
  * @property string $first_name
  * @property string $last_name
  * @property string $email
+ * @property string $avatar
  * @property string $password
  * @property boolean $active
  * @property boolean $is_verified
@@ -34,9 +35,13 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'email',
-        'password',
-        'active'
     ];
+
+	protected $guarded = [
+		'active',
+		'password',
+		'avatar'
+	];
 
     /**
      * The attributes that should be hidden for arrays.

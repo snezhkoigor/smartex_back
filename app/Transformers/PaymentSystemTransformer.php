@@ -5,12 +5,21 @@ namespace App\Transformers;
 use App\Models\PaymentSystem;
 use League\Fractal\TransformerAbstract;
 
+/**
+ * Class PaymentSystemTransformer
+ * @package App\Transformers
+ */
 class PaymentSystemTransformer extends TransformerAbstract
 {
 	protected $availableIncludes = [
 		'wallets'
 	];
 
+
+	/**
+	 * @param PaymentSystem $payment_system
+	 * @return array
+	 */
 	public function transform(PaymentSystem $payment_system)
 	{
 		$data = [
@@ -26,6 +35,11 @@ class PaymentSystemTransformer extends TransformerAbstract
 		return $data;
 	}
 
+
+	/**
+	 * @param PaymentSystem $payment_system
+	 * @return \League\Fractal\Resource\Collection
+	 */
 	public function includeWallets(PaymentSystem $payment_system)
 	{
 		$wallets = $payment_system->wallets()

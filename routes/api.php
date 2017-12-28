@@ -25,14 +25,14 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		throw new NotFoundHttpException('Image not found');
 	});
 
-	Route::group(['namespace' => 'User'], function () {
-		Route::post('/login', 'JwtAuthenticateController@authenticate');
-		Route::get('/logout', 'JwtAuthenticateController@logout');
-		Route::post('/user/password/reset', 'ResetPasswordController@resetPassword');
-	});
+	Route::get('/logout', 'User\JwtAuthenticateController@logout');
+	Route::post('/login', 'User\JwtAuthenticateController@authenticate');
 
 	Route::middleware([\App\Http\Middleware\Auth::class, 'ability:'.Role::ROLE_ADMIN.','.Role::ROLE_OPERATOR])->group(function() {
-		Route::get('/users', 'User\UserController@getUsers');
+		//User
+		Route::get('/me', 'User\UserController@profile');
+		Route::post('/user/password/reset', 'User\UserController@resetPassword');
+		Route::post('/me', 'User\UserController@updateProfile');
 
 		//Meta
 		Route::get('/meta/wallets', 'WalletController@getFormMeta');

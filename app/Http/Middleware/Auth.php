@@ -19,7 +19,11 @@ class Auth
 	 */
 	public function handle($request, Closure $next)
 	{
-		$user = JWTAuth::toUser(JWTAuth::getToken());
+		$jwt_user = JWTAuth::toUser(JWTAuth::getToken());
+
+		$user = User::where('id', $jwt_user['id'])
+			->with(['roles'])
+			->first();
 
 		return $this->response($request, $next, $user);
 	}
@@ -35,7 +39,6 @@ class Auth
 		$response = $next($request);
 
 		$data = json_decode($response->getContent(), true);
-
 		if (!empty($data)) {
 			$data['auth_user_data'] = $user;
 

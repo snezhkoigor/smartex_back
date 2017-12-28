@@ -4,8 +4,17 @@ namespace App\Services;
 
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
+/**
+ * Class BtcService
+ * @package App\Services
+ */
 class BtcService
 {
+	/**
+	 * @param $user
+	 * @param null $wallet
+	 * @return float
+	 */
 	public static function getWalletBalance($user, $wallet = null)
 	{
 		$balance = null;

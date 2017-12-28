@@ -3,9 +3,13 @@
 namespace App\Transformers;
 
 use App\Models\Wallet;
-use App\Repositories\PaymentSystemRepository;
+use App\Repositories\CurrencyRepository;
 use League\Fractal\TransformerAbstract;
 
+/**
+ * Class WalletTransformer
+ * @package App\Transformers
+ */
 class WalletTransformer extends TransformerAbstract
 {
 	protected $availableIncludes = [
@@ -13,6 +17,11 @@ class WalletTransformer extends TransformerAbstract
 		'paymentSystem'
 	];
 
+
+	/**
+	 * @param Wallet $wallet
+	 * @return array
+	 */
 	public function transform(Wallet $wallet)
 	{
 		$data = [
@@ -20,7 +29,7 @@ class WalletTransformer extends TransformerAbstract
 			'ps_type' => $wallet->ps_type,
 			'payment_system_id' => (int)$wallet->payment_system_id,
 			'currency' => $wallet->currency,
-			'prefix' => PaymentSystemRepository::getAvailableCurrencies()[$wallet->currency]['prefix'],
+			'prefix' => CurrencyRepository::getAvailableCurrencies()[$wallet->currency]['prefix'],
 			'user' => $wallet->user,
 			'password' => $wallet->password,
 			'secret' => $wallet->secret,
@@ -35,6 +44,11 @@ class WalletTransformer extends TransformerAbstract
 		return $data;
 	}
 
+
+	/**
+	 * @param Wallet $wallet
+	 * @return \League\Fractal\Resource\Collection
+	 */
 	public function includeCommissions(Wallet $wallet)
 	{
 		$commissions = $wallet->commissions()
@@ -43,6 +57,11 @@ class WalletTransformer extends TransformerAbstract
 		return $this->collection($commissions, new CommissionTransformer(), 'commissions');
 	}
 
+
+	/**
+	 * @param Wallet $wallet
+	 * @return \League\Fractal\Resource\Item
+	 */
 	public function includePaymentSystem(Wallet $wallet)
 	{
 		return $this->item($wallet->paymentSystem, new PaymentSystemTransformer(), 'paymentSystem');

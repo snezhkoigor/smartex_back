@@ -33,19 +33,7 @@ class JwtAuthenticateController extends Controller
 			return response()->json(['message' => 'Could not create token'], Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
 
-		$user = User::where('email', '=', $request->get('email'))
-			->with(['roles'])
-			->first();
-
-		if (!$user->hasRole([ Role::ROLE_ADMIN, Role::ROLE_OPERATOR ])) {
-			throw new BadRequestHttpException('Bad permissions');
-		}
-
-		if (null === $user) {
-			throw new NotFoundHttpException('User not found');
-		}
-
-		return response()->json(['data' => compact('token'), 'auth_user_data' => $user ], Response::HTTP_OK);
+		return response()->json(['data' => compact('token') ], Response::HTTP_OK);
 	}
 
 	public function logout()

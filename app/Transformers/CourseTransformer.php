@@ -5,10 +5,19 @@ namespace App\Transformers;
 use App\Models\Course;
 use League\Fractal\TransformerAbstract;
 
+/**
+ * Class CourseTransformer
+ * @package App\Transformers
+ */
 class CourseTransformer extends TransformerAbstract
 {
 	protected $availableIncludes = [];
 
+
+	/**
+	 * @param Course $course
+	 * @return array
+	 */
 	public function transform(Course $course)
 	{
 		$data = [
@@ -23,9 +32,4 @@ class CourseTransformer extends TransformerAbstract
 
 		return $data;
 	}
-
-//	public function includeVisibleForTeams(Application $app)
-//	{
-//		return $this->collection($app->visible_for_teams, new TeamTransformer($this->user), 'visible_for_teams');
-//	}
 }

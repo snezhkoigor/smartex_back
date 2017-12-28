@@ -4,8 +4,23 @@ namespace App\Services;
 
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
+/**
+ * Class PayeerService
+ * @package App\Services
+ */
 class PayeerService
 {
+	/**
+	 * @param $user
+	 * @param $password
+	 * @param $wallet
+	 * @param $currency
+	 *
+	 * @throws UnprocessableEntityHttpException
+	 *
+	 * @return null|float
+	 *
+	 */
 	public static function getWalletBalance($user, $password, $wallet, $currency)
 	{
 		$balance = null;
@@ -24,6 +39,15 @@ class PayeerService
 		return $balance;
 	}
 
+
+	/**
+	 * @param $arPost
+	 *
+	 * @throws UnprocessableEntityHttpException
+	 *
+	 * @return mixed
+	 *
+	 */
 	protected static function getResponse($arPost)
 	{
 		$data = [];

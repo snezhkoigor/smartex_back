@@ -5,10 +5,19 @@ namespace App\Transformers;
 use App\Models\News;
 use League\Fractal\TransformerAbstract;
 
+/**
+ * Class NewsTransformer
+ * @package App\Transformers
+ */
 class NewsTransformer extends TransformerAbstract
 {
 	protected $availableIncludes = [];
 
+
+	/**
+	 * @param News $news
+	 * @return array
+	 */
 	public function transform(News $news)
 	{
 		$data = [
@@ -25,9 +34,4 @@ class NewsTransformer extends TransformerAbstract
 
 		return $data;
 	}
-
-//	public function includeVisibleForTeams(Application $app)
-//	{
-//		return $this->collection($app->visible_for_teams, new TeamTransformer($this->user), 'visible_for_teams');
-//	}
 }

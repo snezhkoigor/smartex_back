@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\SystemErrorException;
 use App\Models\PaymentSystem;
 use App\Models\Wallet;
+use App\Repositories\CurrencyRepository;
 use App\Repositories\PaymentSystemRepository;
 use App\Repositories\WalletRepository;
 use App\Services\Advcash\AdvcashService;
@@ -50,7 +51,7 @@ class WalletController extends Controller
 
 	    $meta = [
 		    'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems()),
-		    'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+		    'currencies' => array_values(CurrencyRepository::getAvailableCurrencies())
 	    ];
 
 	    return fractal($wallets, new WalletTransformer())
@@ -66,7 +67,7 @@ class WalletController extends Controller
 			->addMeta([
 				'required' => PaymentSystemRepository::getRequireFields(),
 				'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems()),
-				'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+				'currencies' => array_values(CurrencyRepository::getAvailableCurrencies())
 			])
 			->respond();
 	}
@@ -82,7 +83,7 @@ class WalletController extends Controller
 	    $meta = [
 		    'required' => PaymentSystemRepository::getRequireFields($filters),
 		    'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems($filters)),
-		    'currencies' => array_values(PaymentSystemRepository::getAvailableCurrencies())
+		    'currencies' => array_values(CurrencyRepository::getAvailableCurrencies())
 	    ];
 
 	    return fractal($wallet, new WalletTransformer())

@@ -19,7 +19,7 @@ class CreatePaymentSystemsCommissions extends Migration
 			    $table->integer('wallet_id');
 			    $table->integer('payment_system_id');
 			    $table->string('currency', 6);
-			    $table->double('commission', 15, 7);
+			    $table->double('commission', 3, 1);
 			    $table->boolean('active')->default(true);
 			    $table->boolean('is_deleted')->default(false);
 			    $table->timestamps();
