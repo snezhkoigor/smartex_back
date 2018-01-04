@@ -107,12 +107,12 @@ class ClientRepository
 			case 'month':
 				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%m.%Y\') as date'));
 				$query->groupBy(DB::raw('DATE_FORMAT(date, \'%m.%Y\')'));
-				$query->whereBetween('date', [ Carbon::today(), Carbon::today()->subMonths(12) ]);
+				$query->whereBetween('date', [ Carbon::today()->subMonths(12), Carbon::today() ]);
 				break;
 			default:
 				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%d.%m.%Y\') as date'));
 				$query->groupBy(DB::raw('DATE_FORMAT(date, \'%d.%m.%Y\')'));
-				$query->whereBetween('date', [ Carbon::today(), Carbon::today()->subDays(7) ]);
+				$query->whereBetween('date', [ Carbon::today()->subDays(7), Carbon::today() ]);
 				break;
 		}
 
