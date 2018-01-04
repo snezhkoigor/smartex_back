@@ -69,9 +69,15 @@ class PaymentSystemRepository
 		self::applyFiltersToQuery($query, $filters);
 		self::applyIsDelete($query);
 
-		$payment_systems = $query->get(['name', 'id', 'code']);
+		$payment_systems = $query
+			->where([
+				['active', 1],
+				['is_deleted', 0]
+			])
+			->get(['id', 'name', 'code', 'is_account_multi_line', 'fields']);
 		foreach ($payment_systems as $payment_system) {
-			$result[$payment_system['id']] = $payment_system;
+			$result[(int)$payment_system['id']] = $payment_system;
+			$result[(int)$payment_system['id']]['fields'] = explode(',', $payment_system['fields']);
 		}
 
 		return $result;

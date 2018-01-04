@@ -58,7 +58,7 @@ class PaymentSystem extends Model
 	{
 		$result = [
 			'currency' => 'required|in:' . implode(',', array_keys(CurrencyRepository::getAvailableCurrencies())),
-			'balance' => 'required|numeric',
+			'balance' => 'nullable|numeric',
 			'account' => 'required',
 			'payment_system_id' => 'required',
 		];

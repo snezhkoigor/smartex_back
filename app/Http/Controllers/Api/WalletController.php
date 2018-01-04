@@ -16,7 +16,6 @@ use App\Transformers\WalletTransformer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
-use Mockery\Exception;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WalletController extends Controller
@@ -27,7 +26,7 @@ class WalletController extends Controller
 			'payment_system_id.required' => 'Enter wallet payment system',
 			'currency.required' => 'Enter wallet currency',
 			'currency.in' => 'We can not find your currency in available list',
-			'balance.required' => 'Enter wallet balance',
+//			'balance.required' => 'Enter wallet balance',
 			'balance.numeric' => 'Wallet balance must be numeric',
 			'user.required' => 'Enter wallet user login in payment system website',
 			'password.required' => 'Enter payment account password for login in payment system website',
@@ -65,7 +64,7 @@ class WalletController extends Controller
 	{
 		return fractal(null, new WalletTransformer())
 			->addMeta([
-				'required' => PaymentSystemRepository::getRequireFields(),
+				'settings' => PaymentSystemRepository::getAvailablePaymentSystems(),
 				'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems()),
 				'currencies' => array_values(CurrencyRepository::getAvailableCurrencies())
 			])
@@ -81,7 +80,7 @@ class WalletController extends Controller
 
 	    $filters = ['id' => $wallet->payment_system_id];
 	    $meta = [
-		    'required' => PaymentSystemRepository::getRequireFields($filters),
+		    'settings' => PaymentSystemRepository::getAvailablePaymentSystems($filters),
 		    'payment_systems' => array_values(PaymentSystemRepository::getAvailablePaymentSystems($filters)),
 		    'currencies' => array_values(CurrencyRepository::getAvailableCurrencies())
 	    ];

@@ -27,11 +27,11 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 
 	Route::get('/logout', 'User\JwtAuthenticateController@logout');
 	Route::post('/login', 'User\JwtAuthenticateController@authenticate');
+	Route::post('/user/password/reset', 'User\ResetPasswordController@resetPassword');
 
 	Route::middleware([\App\Http\Middleware\Auth::class, 'ability:'.Role::ROLE_ADMIN.','.Role::ROLE_OPERATOR])->group(function() {
 		//User
 		Route::get('/me', 'User\UserController@profile');
-		Route::post('/user/password/reset', 'User\UserController@resetPassword');
 		Route::post('/me', 'User\UserController@updateProfile');
 
 		//Meta
@@ -70,5 +70,9 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::post('/commissions', 'CommissionController@add');
 		Route::post('/commissions/{commission_id}', 'CommissionController@updateById');
 		Route::delete('/commissions/{commission_id}', 'CommissionController@deleteById');
+
+		//Widgets
+		Route::get('/widgets/clients/totalRegistrations', 'WidgetController@totalClientRegistrations');
+		Route::get('/widgets/clients/totalRegistrationsAndActivations/{period_type?}', 'WidgetController@totalClientRegistrationsAndActivations');
 	});
 });

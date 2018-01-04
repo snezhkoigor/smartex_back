@@ -19,17 +19,15 @@ class UserController extends Controller
 	private $reset_password_service;
 	private $user_service;
 
-	public function __construct(ResetPasswordService $reset_password_service, UserService $user_service)
+	public function __construct(UserService $user_service)
 	{
-//		$this->middleware('jwt.auth', ['except' => ['resetPassword']]);
-		$this->reset_password_service = $reset_password_service;
 		$this->user_service = $user_service;
 	}
 
 	public function rules(Request $request, User $user)
 	{
 		return [
-			'email' => 'required|exists:users|email',
+			'email' => 'required|email|' . $this->emailRulesByChanging($request, $user),
 			'current_password' => 'required_with:new_password|' . $this->checkCurrentPassword($request, $user)
 		];
 	}
@@ -38,6 +36,14 @@ class UserController extends Controller
 	{
 		if ($request->get('new_password') && !Hash::check($request->get('current_password'), $user->password)) {
 			return 'same:password';
+		}
+	}
+
+	public function emailRulesByChanging(Request $request, User $user)
+	{
+		$email = $request->get('email');
+		if ($user && $email !== $user->email) {
+			return User::where('email', '=', $email)->exists() ? 'unique:users' : '';
 		}
 	}
 
@@ -54,7 +60,7 @@ class UserController extends Controller
 
 	public function resetPassword(Request $request)
 	{
-		$this->validate($request, $this->rules(), $this->messages());
+		$this->validate($request, $this->rules($request), $this->messages());
 
 		$user = User::where('email', $request->get('email'))->first();
 		if ($user === null) {
