@@ -72,7 +72,7 @@ class ClientRepository
 		if ($data) {
 			$result['name'] = 'Clients';
 			foreach ($data as $item) {
-				$result['data'][] = [ $item['country'] ?: 'unknown', $item['count'] ];
+				$result['data'][] = [ $item['country'] ?: 'unknown', (int)$item['count'] ];
 			}
 		}
 
