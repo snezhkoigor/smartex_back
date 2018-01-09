@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Delatbabel\Elocrypt\Elocrypt;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * @property integer $id
@@ -19,18 +21,18 @@ use Delatbabel\Elocrypt\Elocrypt;
  * @property string $id_payee
  * @property double $balance
  * @property boolean $active
- * @property boolean $is_deleted
  * @property string $created_at
  * @property string $updated_at
  *
  * @property PaymentSystem $paymentSystem
+ * @property Commission $commissions
  *
  * Class PaymentAccount
  * @package App\Models
  */
 class Wallet extends Model
 {
-	use Elocrypt;
+	use Elocrypt, LogsActivity;
 
 	/**
 	 * The attributes that are mass assignable.
@@ -38,7 +40,6 @@ class Wallet extends Model
 	 * @var array
 	 */
 	protected $fillable = [
-		'name',
 		'currency',
 		'payment_system_id',
 		'adv_sci',
@@ -55,7 +56,6 @@ class Wallet extends Model
 	protected $guarded = [
 		'active',
 		'ps_type',
-		'is_deleted',
 	];
 
 	/**
@@ -81,6 +81,37 @@ class Wallet extends Model
 		'created_at',
 		'updated_at'
 	];
+
+	protected static $ignoreChangedAttributes = [
+		'updated_at'
+	];
+
+	protected static $logAttributes = [
+		'name',
+		'currency',
+		'payment_system_id',
+		'adv_sci',
+		'id_payee',
+		'account',
+		'balance',
+		'user',
+		'secret',
+		'password',
+		'active',
+		'ps_type'
+	];
+
+	protected static $logOnlyDirty = true;
+
+	public function getDescriptionForEvent($eventName)
+	{
+		return 'This wallet "' . $this->account . '" has been ' . $eventName;
+	}
+
+	public function getLogNameToUse($eventName = '')
+	{
+		return $eventName;
+	}
 
 	public function commissions()
 	{

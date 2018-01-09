@@ -29,7 +29,6 @@ class PaymentSystemRepository
 		self::applyFiltersToQuery($query, $filters);
 		self::applySearch($query, $search_string);
 		self::applySortingToQuery($query, $sorts);
-		self::applyIsDelete($query);
 
 		if (!empty($offset)) {
 			$query->skip($offset);
@@ -47,7 +46,7 @@ class PaymentSystemRepository
 
 	/**
 	 * @param $id
-	 * @return PaymentSystem
+	 * @return \Illuminate\Database\Eloquent\Model|null|static
 	 */
 	public static function getById($id)
 	{
@@ -67,13 +66,9 @@ class PaymentSystemRepository
 
 		$query = PaymentSystem::query();
 		self::applyFiltersToQuery($query, $filters);
-		self::applyIsDelete($query);
 
 		$payment_systems = $query
-			->where([
-				['active', 1],
-				['is_deleted', 0]
-			])
+			->where('active', 1)
 			->get(['id', 'name', 'code', 'is_account_multi_line', 'fields']);
 		foreach ($payment_systems as $payment_system) {
 			$result[(int)$payment_system['id']] = $payment_system;
@@ -93,7 +88,6 @@ class PaymentSystemRepository
 		$result = [];
 		$query = PaymentSystem::query();
 		self::applyFiltersToQuery($query, $filters);
-		self::applyIsDelete($query);
 
 		$fields = $query->get(['fields', 'id']);
 		foreach ($fields as $field) {
@@ -126,7 +120,6 @@ class PaymentSystemRepository
 
 		self::applyFiltersToQuery($query, $filters);
 		self::applySearch($query, $search_string);
-		self::applyIsDelete($query);
 
 		return $query;
 	}
@@ -188,14 +181,5 @@ class PaymentSystemRepository
 		}
 
 		return $query;
-	}
-
-
-	/**
-	 * @param Builder $query
-	 */
-	private static function applyIsDelete(Builder $query)
-	{
-		$query->where('is_deleted', '=',false);
 	}
 }

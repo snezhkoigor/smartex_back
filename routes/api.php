@@ -29,23 +29,19 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 	Route::post('/login', 'User\JwtAuthenticateController@authenticate');
 	Route::post('/user/password/reset', 'User\ResetPasswordController@resetPassword');
 
-	Route::middleware([\App\Http\Middleware\Auth::class, 'ability:'.Role::ROLE_ADMIN.','.Role::ROLE_OPERATOR])->group(function() {
-		//User
-		Route::get('/me', 'User\UserController@profile');
-		Route::post('/me', 'User\UserController@updateProfile');
-
+	Route::middleware([\App\Http\Middleware\Auth::class, 'ability:'.Role::ROLE_ADMIN])->group(function() {
 		//Meta
 		Route::get('/meta/wallets', 'WalletController@getFormMeta');
 		Route::get('/meta/commissions', 'CommissionController@getFormMeta');
 
-		// News
+		//News
 		Route::get('/news', 'NewsController@getNews');
 		Route::get('/news/{news_id}', 'NewsController@getNewsById');
 		Route::post('/news', 'NewsController@add');
 		Route::post('/news/{news_id}', 'NewsController@updateById');
 		Route::delete('/news/{news_id}', 'NewsController@deleteById');
 
-		// Courses
+		//Courses
 		Route::get('/courses', 'CourseController@getCourses');
 		Route::post('/courses/{course_id}', 'CourseController@updateById');
 
@@ -56,7 +52,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::post('/payment_systems/{payment_system_id}', 'PaymentSystemController@updateById');
 		Route::delete('/payment_systems/{payment_system_id}', 'PaymentSystemController@deleteById');
 
-		// Wallets
+		//Wallets
 		Route::get('/wallets/{wallet_id}', 'WalletController@getWalletById');
 		Route::get('/wallets', 'WalletController@getWallets');
 		Route::post('/wallets/check', 'WalletController@checkAccess');
@@ -64,12 +60,22 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::post('/wallets/{wallet_id}', 'WalletController@updateById');
 		Route::delete('/wallets/{wallet_id}', 'WalletController@deleteById');
 
-		// Commissions
+		//Commissions
 		Route::get('/commissions/{commission_id}', 'CommissionController@getCommissionById');
 		Route::get('/commissions', 'CommissionController@getCommissions');
 		Route::post('/commissions', 'CommissionController@add');
 		Route::post('/commissions/{commission_id}', 'CommissionController@updateById');
 		Route::delete('/commissions/{commission_id}', 'CommissionController@deleteById');
+
+		//Log activities
+		Route::get('/logs', 'LogActivityController@getLogActivities');
+		Route::get('/logs/{log_id}', 'LogActivityController@getLogActivityById');
+	});
+
+	Route::middleware([\App\Http\Middleware\Auth::class, 'ability:'.Role::ROLE_ADMIN.','.Role::ROLE_OPERATOR])->group(function() {
+		//User
+		Route::get('/me', 'User\UserController@profile');
+		Route::post('/me', 'User\UserController@updateProfile');
 
 		//Widgets
 		Route::get('/widgets/clients/totalRegistrations', 'WidgetController@totalClientRegistrations');

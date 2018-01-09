@@ -21,7 +21,6 @@ class CreatePaymentSystemsCommissions extends Migration
 			    $table->string('currency', 6);
 			    $table->double('commission', 3, 1);
 			    $table->boolean('active')->default(true);
-			    $table->boolean('is_deleted')->default(false);
 			    $table->timestamps();
 		    });
 	    }

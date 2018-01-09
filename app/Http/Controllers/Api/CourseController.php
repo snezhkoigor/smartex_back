@@ -64,6 +64,14 @@ class CourseController extends Controller
 		    ->respond();
     }
 
+
+	/**
+	 * @param Request $request
+	 * @param $course_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
     public function updateById(Request $request, $course_id)
     {
 	    $this->validate($request, $this->rules(), $this->messages());

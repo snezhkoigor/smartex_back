@@ -71,6 +71,13 @@ class WalletController extends Controller
 			->respond();
 	}
 
+
+	/**
+	 * @param $wallet_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
     public function getWalletById($wallet_id)
     {
 	    $wallet = Wallet::find($wallet_id);
@@ -90,6 +97,13 @@ class WalletController extends Controller
 		    ->respond();
     }
 
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
     public function add(Request $request)
     {
 	    $this->validate($request, PaymentSystem::walletRulesById($request->get('payment_system_id')), $this->messages());
@@ -114,6 +128,14 @@ class WalletController extends Controller
 	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
+
+	/**
+	 * @param Request $request
+	 * @param $wallet_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
     public function updateById(Request $request, $wallet_id)
     {
 	    $wallet = Wallet::find($wallet_id);
@@ -141,6 +163,13 @@ class WalletController extends Controller
 	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
 	public function checkAccess(Request $request)
 	{
 		$payment_system = PaymentSystem::find($request->get('payment_system_id'));
@@ -171,6 +200,13 @@ class WalletController extends Controller
 		}
 	}
 
+
+	/**
+	 * @param $wallet_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
 	public function deleteById($wallet_id)
 	{
 		$wallet = Wallet::find($wallet_id);
@@ -180,8 +216,8 @@ class WalletController extends Controller
 
 		try
 		{
-			$wallet->is_deleted = true;
-			$wallet->save([], true);
+			$wallet->commissions()->delete();
+			$wallet->delete();
 		}
 		catch (\Exception $e)
 		{

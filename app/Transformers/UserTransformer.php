@@ -9,21 +9,34 @@ use Illuminate\Support\Facades\Storage;
 class UserTransformer extends TransformerAbstract
 {
 	protected $availableIncludes = [
-		'roles'
+		'roles',
+		'activities'
 	];
 
 	public function transform(User $user)
 	{
 		$data = [
 			'id' => (int)$user->id,
-			'first_name' => $user->first_name,
-			'last_name' => $user->last_name,
+			'name' => $user->name,
+			'family' => $user->family,
 			'email' => $user->email,
 			'avatar' => $user->avatar,
 			'avatar_link' => $user->avatar ? Storage::disk('avatars')->url($user->avatar) : '',
-			'active' => (bool)$user->active,
-			'created_at' => $user->created_at,
-			'updated_at' => $user->updated_at
+			'activation' => (bool)$user->activation,
+			'date' => $user->date,
+			'refer' => $user->refer,
+			'lang' => $user->lang,
+			'country' => $user->country,
+			'auth_err' => $user->auth_err,
+			'auth_err_date' => $user->auth_err_date,
+			'auth_err_ip' => $user->auth_err_ip,
+			'ip' => $user->ip,
+			'online' => $user->online,
+			'discount' => $user->discount,
+			'total_exchange' => $user->total_exchange,
+			'document_number' => $user->document_number,
+			'verification_image' => $user->verification_image ? Storage::disk('verifications')->url($user->verification_image) : '',
+			'verification_ok' => (bool)$user->verification_ok,
 		];
 
 		return $data;
@@ -32,5 +45,10 @@ class UserTransformer extends TransformerAbstract
 	public function includeRoles(User $user)
 	{
 		return $this->collection($user->roles, new RoleTransformer(), 'roles');
+	}
+
+	public function includeActivities(User $user)
+	{
+		return $this->collection($user->activities, new LogActivityTransformer(), 'activities');
 	}
 }

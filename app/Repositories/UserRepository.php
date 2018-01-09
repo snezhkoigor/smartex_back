@@ -2,8 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Models\LogActivity;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class UserRepository
@@ -51,6 +54,103 @@ class UserRepository
 	public static function getUsersCount(array $filters = [], $search_string = null)
 	{
 		return self::getUsersQuery($filters, $search_string)->count();
+	}
+
+
+	public static function getAvailableUsersInLogActivitiesForMeta()
+	{
+		$result = [];
+
+		$users = User::query()
+			->whereIn('id', LogActivity::all()->pluck('causer_id')->toArray())
+			->get(['id', 'name', 'family']);
+
+		if ($users) {
+			foreach ($users as $user) {
+				$result[$user['id']] = [
+					'id' => $user['id'],
+					'name' => $user['name'] . ' ' . $user['family']
+				];
+			}
+		}
+
+		return $result;
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	public static function widgetsTotalRegistrations()
+	{
+		$result = [];
+
+		$data = User::query()
+			->select(DB::raw('COUNT(id) as count, country'))
+			->groupBy('country')
+			->orderBy('count')
+			->get();
+
+		if ($data) {
+			$result['name'] = 'Clients';
+			foreach ($data as $item) {
+				$result['data'][] = [ $item['country'] ?: 'unknown', (int)$item['count'] ];
+			}
+		}
+
+		return $result;
+	}
+
+
+	/**
+	 * @param null $period_type
+	 * @return array
+	 */
+	public static function widgetsRegistrationsAndActivations($period_type = null)
+	{
+		$result = [
+			'categories' => [],
+			'registrations' => [
+				'name' => 'Registrations',
+				'data' => []
+			],
+			'activations' => [
+				'name' => 'Activations',
+				'data' => []
+			]
+		];
+
+		$query = User::query();
+		switch ($period_type) {
+			case 'year':
+				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%Y\') as date'));
+				$query->groupBy(DB::raw('DATE_FORMAT(date, \'%Y\')'));
+				break;
+			case 'month':
+				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%m.%Y\') as date'));
+				$query->groupBy(DB::raw('DATE_FORMAT(date, \'%m.%Y\')'));
+				$query->whereBetween('date', [ Carbon::today()->subMonths(12), Carbon::today() ]);
+				break;
+			default:
+				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%d.%m.%Y\') as date'));
+				$query->groupBy(DB::raw('DATE_FORMAT(date, \'%d.%m.%Y\')'));
+				$query->whereBetween('date', [ Carbon::today()->subDays(7), Carbon::today() ]);
+				break;
+		}
+
+		$data = $query
+			->orderBy('date')
+			->get();
+
+		if ($data) {
+			foreach ($data as $item) {
+				$result['categories'][] = $item['date'];
+				$result['registrations']['data'][] = (int)$item['count'];
+				$result['activations']['data'][] = (int)$item['activations'];
+			}
+		}
+
+		return $result;
 	}
 
 

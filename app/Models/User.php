@@ -4,27 +4,44 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Spatie\Activitylog\Models\Activity;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  *
  * @property integer $id
- * @property string $first_name
- * @property string $last_name
- * @property string $email
+ * @property integer $refer
  * @property string $avatar
+ * @property string $email
  * @property string $password
- * @property boolean $active
- * @property boolean $is_verified
- * @property string $created_at
- * @property string $updated_at
+ * @property string $name
+ * @property string $family
+ * @property string $lang
+ * @property string $country
+ * @property string $date
+ * @property boolean $activation
+ * @property integer $auth_err
+ * @property string $auth_err_date
+ * @property string $auth_err_ip
+ * @property string $ip
+ * @property string $online
+ * @property string $role
+ * @property integer $discount
+ * @property double $total_exchange
+ * @property string $document_number
+ * @property string $verification_image
+ * @property boolean $verification_ok
+ *
+ * @property Role[] $roles
+ * @property Activity[] $activities
  *
  * Class User
  * @package App\Models
  */
 class User extends Authenticatable
 {
-	use CanResetPassword, EntrustUserTrait;
+	use CanResetPassword, EntrustUserTrait, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -32,15 +49,30 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
+    	'refer',
+        'name',
+        'family',
         'email',
+	    'lang',
+	    'country',
+	    'date',
+	    'auth_err',
+	    'auth_err_date',
+	    'auth_err_ip',
+	    'ip',
+	    'online',
+	    'role',
+	    'discount',
+	    'total_exchange',
+	    'document_number',
+	    'verification_image',
+	    'verification_ok',
     ];
 
 	protected $guarded = [
-		'active',
+		'activation',
 		'password',
-		'avatar'
+		'avatar',
 	];
 
     /**
@@ -53,14 +85,58 @@ class User extends Authenticatable
     ];
 
     protected $dates = [
-    	'created_at',
-	    'updated_at'
+    	'online',
+	    'auth_err_date',
     ];
+
+	protected static $ignoreChangedAttributes = [
+		'password'
+	];
+
+	protected static $logAttributes = [
+		'refer',
+		'name',
+		'family',
+		'email',
+		'lang',
+		'country',
+		'date',
+		'auth_err',
+		'auth_err_date',
+		'auth_err_ip',
+		'ip',
+		'online',
+		'role',
+		'discount',
+		'total_exchange',
+		'document_number',
+		'verification_image',
+		'verification_ok',
+		'activation',
+		'avatar',
+	];
+
+	protected static $logOnlyDirty = true;
+
+	public function getDescriptionForEvent($eventName)
+	{
+		return 'This user "' . $this->email . '" has been ' . $eventName;
+	}
+
+	public function getLogNameToUse($eventName = '')
+	{
+		return $eventName;
+	}
 
     public function roles()
     {
 	    return $this->belongsToMany(Role::class);
     }
+
+	public function activities()
+	{
+		return $this->hasMany(Activity::class, 'causer_id', 'id');
+	}
 
 	public static function generatePassword($number)
 	{

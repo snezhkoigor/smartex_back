@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\ClientRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Response;
+use Spatie\Activitylog\Models\Activity;
 
 /**
  * Class WidgetController
@@ -17,7 +18,7 @@ class WidgetController extends Controller
 	 */
 	public function totalClientRegistrations()
 	{
-		return response()->json(['data' => ClientRepository::widgetsTotalRegistrations()], Response::HTTP_OK);
+		return response()->json(['data' => UserRepository::widgetsTotalRegistrations()], Response::HTTP_OK);
 	}
 
 
@@ -27,6 +28,6 @@ class WidgetController extends Controller
 	 */
 	public function totalClientRegistrationsAndActivations($period_type = null)
 	{
-		return response()->json(['data' => ClientRepository::widgetsRegistrationsAndActivations($period_type)], Response::HTTP_OK);
+		return response()->json(['data' => UserRepository::widgetsRegistrationsAndActivations($period_type)], Response::HTTP_OK);
 	}
 }

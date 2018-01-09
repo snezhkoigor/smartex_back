@@ -27,7 +27,6 @@ class CreatePaymentAccountTable extends Migration
 			    $table->string('id_payee', 100)->nullable();
 			    $table->double('balance', 15, 8)->default(0)->nullable();
 			    $table->boolean('active')->default(true);
-			    $table->boolean('is_deleted')->default(false);
 			    $table->timestamps();
 		    });
 	    }

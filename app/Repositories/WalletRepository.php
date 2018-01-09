@@ -27,7 +27,6 @@ class WalletRepository
 
 		self::applyFiltersToQuery($query, $filters);
 		self::applySearch($query, $search_string);
-		self::applyIsDelete($query);
 
 		$query->with($relations);
 
@@ -55,11 +54,8 @@ class WalletRepository
 
 		$query = Wallet::query();
 		self::applyFiltersToQuery($query, $filters);
-		self::applyIsDelete($query);
 
-		$wallets = $query
-			->where('is_deleted', 0)
-			->get(['account', 'id']);
+		$wallets = $query->get(['account', 'id']);
 		foreach ($wallets as $wallet) {
 			$result[$wallet['id']] = $wallet;
 		}
@@ -73,12 +69,11 @@ class WalletRepository
 	 */
 	public static function getAvailableWalletsForCommission(array $filters = [])
 	{
+		$result = [];
 		$query = Wallet::query();
 		self::applyFiltersToQuery($query, $filters);
-		self::applyIsDelete($query);
 
 		$wallets = $query
-			->where('is_deleted', 0)
 			->with('paymentSystem')
 			->get(['account', 'id', 'currency', 'payment_system_id']);
 
@@ -100,7 +95,6 @@ class WalletRepository
 	{
 		$query = Wallet::query();
 		self::applyFiltersToQuery($query, ['payment_system_id' => $payment_system->id]);
-		self::applyIsDelete($query);
 
 		return $query;
 	}
@@ -141,14 +135,5 @@ class WalletRepository
 					break;
 			}
 		}
-	}
-
-
-	/**
-	 * @param Builder $query
-	 */
-	private static function applyIsDelete(Builder $query)
-	{
-		$query->where('is_deleted', '=',false);
 	}
 }

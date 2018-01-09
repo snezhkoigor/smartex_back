@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Repositories\CurrencyRepository;
 use App\Repositories\PaymentSystemRepository;
-use App\Services\MerchantWebService;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * @property integer $id
@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $fields
  * @property boolean $active
  * @property boolean $is_account_multi_line
- * @property boolean $is_deleted
  * @property string $created_at
  * @property string $updated_at
  *
@@ -26,6 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PaymentSystem extends Model
 {
+	use LogsActivity;
+
 	/**
 	 * The attributes that are mass assignable.
 	 *
@@ -40,14 +41,38 @@ class PaymentSystem extends Model
 	protected $guarded = [
 		'logo',
 		'active',
-		'is_account_multi_line',
-		'is_deleted'
+		'is_account_multi_line'
 	];
 
 	protected $dates = [
 		'created_at',
 		'updated_at'
 	];
+
+	protected static $ignoreChangedAttributes = [
+		'updated_at'
+	];
+
+	protected static $logAttributes = [
+		'name',
+		'code',
+		'fields',
+		'logo',
+		'active',
+		'is_account_multi_line'
+	];
+
+	protected static $logOnlyDirty = true;
+
+	public function getDescriptionForEvent($eventName)
+	{
+		return 'This payment system "' . $this->name . '" has been ' . $eventName;
+	}
+
+	public function getLogNameToUse($eventName = '')
+	{
+		return $eventName;
+	}
 
 	public function wallets()
 	{

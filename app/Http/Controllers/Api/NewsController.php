@@ -62,6 +62,13 @@ class NewsController extends Controller
 		    ->respond();
     }
 
+
+	/**
+	 * @param $news_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
 	public function getNewsById($news_id)
 	{
 		$news = News::find($news_id);
@@ -73,6 +80,13 @@ class NewsController extends Controller
 			->respond();
 	}
 
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
     public function add(Request $request)
     {
     	$this->validate($request, $this->rules(), $this->messages());
@@ -93,6 +107,14 @@ class NewsController extends Controller
 	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
+
+	/**
+	 * @param Request $request
+	 * @param $news_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
     public function updateById(Request $request, $news_id)
     {
 	    $this->validate($request, $this->rules(), $this->messages());
@@ -117,6 +139,13 @@ class NewsController extends Controller
 	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
+
+	/**
+	 * @param $news_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
     public function deleteById($news_id)
     {
 	    $news = News::find($news_id);
@@ -126,8 +155,7 @@ class NewsController extends Controller
 
 	    try
 	    {
-		    $news->is_deleted = true;
-		    $news->save([], true);
+		    $news->delete();
 	    }
 	    catch (\Exception $e)
 	    {

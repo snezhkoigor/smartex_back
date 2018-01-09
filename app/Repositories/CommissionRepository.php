@@ -24,7 +24,6 @@ class CommissionRepository
 
 		self::applyFiltersToQuery($query, $filters);
 		self::applySearch($query, $search_string);
-		self::applyIsDelete($query);
 
 		if (!empty($offset)) {
 			$query->skip($offset);
@@ -37,15 +36,6 @@ class CommissionRepository
 		$query->with($relations);
 
 		return $query->get($fields);
-	}
-
-
-	/**
-	 * @param Builder $query
-	 */
-	private static function applyIsDelete(Builder $query)
-	{
-		$query->where('is_deleted', '=',false);
 	}
 
 

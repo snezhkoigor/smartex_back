@@ -22,7 +22,6 @@ class CreatePaymentSystemsTable extends Migration
 			    $table->string('code', 16)->nullable();
 			    $table->boolean('active')->default(true);
 			    $table->boolean('is_account_multi_line')->default(false);
-			    $table->boolean('is_deleted')->default(false);
 			    $table->timestamps();
 		    });
 	    }

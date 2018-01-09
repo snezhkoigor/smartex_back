@@ -67,6 +67,12 @@ return [
 	        'url' => env('APP_URL') . '/files/avatars/'
         ],
 
+        'verifications' => [
+	        'driver' => 'local',
+	        'root' => storage_path('verifications'),
+	        'url' => env('APP_URL') . '/files/verifications/'
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),

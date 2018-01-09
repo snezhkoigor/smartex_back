@@ -58,6 +58,13 @@ class PaymentSystemController extends Controller
 		    ->respond();
     }
 
+
+	/**
+	 * @param $payment_system_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
 	public function getPaymentSystemById($payment_system_id)
 	{
 		$payment_system = PaymentSystem::find($payment_system_id);
@@ -77,6 +84,13 @@ class PaymentSystemController extends Controller
 			->respond();
 	}
 
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
     public function add(Request $request)
     {
     	$this->validate($request, $this->rules(), $this->messages());
@@ -97,6 +111,14 @@ class PaymentSystemController extends Controller
 	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
+
+	/**
+	 * @param Request $request
+	 * @param $payment_system_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
     public function updateById(Request $request, $payment_system_id)
     {
 	    $this->validate($request, $this->rules(), $this->messages());
@@ -121,6 +143,13 @@ class PaymentSystemController extends Controller
 	    return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
     }
 
+
+	/**
+	 * @param $payment_system_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
     public function deleteById($payment_system_id)
     {
 	    $payment_system = PaymentSystem::find($payment_system_id);
@@ -130,8 +159,7 @@ class PaymentSystemController extends Controller
 
 	    try
 	    {
-		    $payment_system->is_deleted = true;
-		    $payment_system_id->save([], true);
+		    $payment_system->delete();
 	    }
 	    catch (\Exception $e)
 	    {

@@ -58,6 +58,13 @@ class UserController extends Controller
 		];
 	}
 
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
 	public function resetPassword(Request $request)
 	{
 		$this->validate($request, $this->rules($request), $this->messages());
@@ -77,8 +84,18 @@ class UserController extends Controller
 		return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
 	}
 
-	public function profile()
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
+	public function profile(Request $request)
 	{
+		$fieldsets = $this->getFieldsets($request);
+		$includes = $this->getIncludes($request);
+
 		$user = JWTAuth::toUser(JWTAuth::getToken());
 
 		if ($user === null) {
@@ -86,10 +103,18 @@ class UserController extends Controller
 		}
 
 		return fractal($user, new UserTransformer())
-			->parseIncludes('roles')
+			->parseIncludes($includes)
+			->parseFieldsets($fieldsets)
 			->respond();
 	}
 
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
 	public function updateProfile(Request $request)
 	{
 		$user = JWTAuth::toUser(JWTAuth::getToken());
@@ -105,8 +130,10 @@ class UserController extends Controller
 			if ($request->get('new_password')) {
 				$user->password = $request->get('new_password') ? Hash::make($request->get('new_password')) : $user->password;
 			}
+			if ($request->get('logo_64_base')) {
+				$user->avatar = $this->user_service->getProcessedUserAvatar($request->get('logo_64_base'));
+			}
 
-			$user->avatar = $this->user_service->getProcessedUserAvatar($request->get('logo_64_base'));
 			$user->save([], true);
 		} catch (\Exception $e) {
 			throw new SystemErrorException('Update user profile failed', $e);

@@ -25,8 +25,7 @@ class CommissionController extends Controller
 			'payment_system_id' => 'required|exists:payment_systems,id',
 			'currency' => 'required|in:' . implode(',', array_keys(CurrencyRepository::getAvailableCurrencies())),
 			'commission' => 'required|numeric',
-			'active' => 'boolean',
-			'is_deleted' => 'boolean',
+			'active' => 'boolean'
 		];
 	}
 
@@ -41,8 +40,7 @@ class CommissionController extends Controller
 			$query = Commission::query()
 				->where('wallet_id', $wallet_id)
 				->where('payment_system_id', $payment_system_id)
-				->where('currency', $currency)
-				->where('is_deleted', '=', 0);
+				->where('currency', $currency);
 
 			if ($id) {
 				$query->where('id', '<>', $id);
@@ -68,8 +66,7 @@ class CommissionController extends Controller
 			'currency.in' => 'Wrong payment system currency',
 			'commission.required' => 'Enter transaction commission',
 			'commission.numeric' => 'Wrong format transaction commission, use digits',
-			'active.boolean' => 'Wrong format',
-			'is_deleted.boolean' => 'Wrong format',
+			'active.boolean' => 'Wrong format'
 		];
 	}
 
@@ -109,6 +106,13 @@ class CommissionController extends Controller
 			->respond();
 	}
 
+
+	/**
+	 * @param $commission_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
 	public function getCommissionById($commission_id)
 	{
 		$commission = Commission::find($commission_id);
@@ -127,6 +131,13 @@ class CommissionController extends Controller
 			->respond();
 	}
 
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
 	public function add(Request $request)
 	{
 		$this->validate($request, $this->rules($request), $this->messages());
@@ -157,6 +168,14 @@ class CommissionController extends Controller
 		return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
 	}
 
+
+	/**
+	 * @param Request $request
+	 * @param $commission_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
 	public function updateById(Request $request, $commission_id)
 	{
 		$commission = Commission::find($commission_id);
@@ -191,6 +210,13 @@ class CommissionController extends Controller
 		return response()->json(['data' => null], Response::HTTP_NO_CONTENT);
 	}
 
+
+	/**
+	 * @param $commission_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
 	public function deleteById($commission_id)
 	{
 		$commission = Commission::find($commission_id);
@@ -200,8 +226,7 @@ class CommissionController extends Controller
 
 		try
 		{
-			$commission->is_deleted = true;
-			$commission->save([], true);
+			$commission->delete();
 		}
 		catch (\Exception $e)
 		{

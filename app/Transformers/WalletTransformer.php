@@ -37,8 +37,7 @@ class WalletTransformer extends TransformerAbstract
 			'id_payee' => $wallet->id_payee,
 			'account' => $wallet->account,
 			'balance' => (float)$wallet->balance,
-			'active' => (bool)$wallet->active,
-			'is_deleted' => (bool)$wallet->is_deleted,
+			'active' => (bool)$wallet->active
 		];
 
 		return $data;
@@ -51,10 +50,7 @@ class WalletTransformer extends TransformerAbstract
 	 */
 	public function includeCommissions(Wallet $wallet)
 	{
-		$commissions = $wallet->commissions()
-			->where('is_deleted', 0)->get();
-
-		return $this->collection($commissions, new CommissionTransformer(), 'commissions');
+		return $this->collection($wallet->commissions, new CommissionTransformer(), 'commissions');
 	}
 
 

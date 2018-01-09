@@ -42,9 +42,6 @@ class PaymentSystemTransformer extends TransformerAbstract
 	 */
 	public function includeWallets(PaymentSystem $payment_system)
 	{
-		$wallets = $payment_system->wallets()
-			->where('is_deleted', 0)->get();
-
-		return $this->collection($wallets, new WalletTransformer(), 'wallets');
+		return $this->collection($payment_system->wallets, new WalletTransformer(), 'wallets');
 	}
 }

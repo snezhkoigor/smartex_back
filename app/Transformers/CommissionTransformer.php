@@ -22,8 +22,7 @@ class CommissionTransformer extends TransformerAbstract
 			'currency' => $commission->currency,
 			'prefix' => CurrencyRepository::getAvailableCurrencies()[$commission->currency]['prefix'],
 			'commission' => (float)$commission->commission,
-			'active' => (bool)$commission->active,
-			'is_deleted' => (bool)$commission->is_deleted,
+			'active' => (bool)$commission->active
 		];
 
 		return $data;

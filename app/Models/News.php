@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  *
@@ -14,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $meta_description
  * @property string $password
  * @property boolean $active
- * @property boolean $is_deleted
  * @property string $created_at
  * @property string $updated_at
  *
@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class News extends Model
 {
+	use LogsActivity;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -39,12 +41,36 @@ class News extends Model
 
 	protected $guarded = [
         'active',
-        'text',
-        'is_deleted'
+        'text'
     ];
 
     protected $dates = [
     	'created_at',
 	    'updated_at'
     ];
+
+	protected static $ignoreChangedAttributes = [
+		'updated_at'
+	];
+
+	protected static $logAttributes = [
+		'title',
+		'meta_key',
+		'meta_description',
+		'date',
+		'active',
+		'text'
+	];
+
+	protected static $logOnlyDirty = true;
+
+	public function getDescriptionForEvent($eventName)
+	{
+		return 'This news "' . $this->title . '" has been ' . $eventName;
+	}
+
+	public function getLogNameToUse($eventName = '')
+	{
+		return $eventName;
+	}
 }

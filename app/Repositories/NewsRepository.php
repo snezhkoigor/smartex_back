@@ -29,7 +29,6 @@ class NewsRepository
 		self::applyFiltersToQuery($query, $filters);
 		self::applySearch($query, $search_string);
 		self::applySortingToQuery($query, $sorts);
-		self::applyIsDelete($query);
 
 		if (!empty($offset)) {
 			$query->skip($offset);
@@ -67,7 +66,6 @@ class NewsRepository
 
 		self::applyFiltersToQuery($query, $filters);
 		self::applySearch($query, $search_string);
-		self::applyIsDelete($query);
 
 		return $query;
 	}
@@ -127,15 +125,5 @@ class NewsRepository
 			}
 
 		}
-	}
-
-
-	/**
-	 * @param Builder $query
-	 * @return $this
-	 */
-	private static function applyIsDelete(Builder $query)
-	{
-		return $query->where('is_deleted', '=',false);
 	}
 }

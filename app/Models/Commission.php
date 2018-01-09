@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  *
@@ -12,7 +13,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $currency
  * @property double $commission
  * @property boolean $active
- * @property boolean $is_deleted
  * @property string $created_at
  * @property string $updated_at
  *
@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Commission extends Model
 {
+	use LogsActivity;
+
 	/**
 	 * The attributes that are mass assignable.
 	 *
@@ -34,14 +36,10 @@ class Commission extends Model
 		'payment_system_id',
 		'currency',
 		'commission',
-		'created_at',
-		'updated_at'
 	];
 
 	protected $guarded = [
 		'active',
-		'is_deleted',
-
 		'ps_in_type',
 		'ps_out_type',
 		'ps_in_currency',
@@ -54,6 +52,34 @@ class Commission extends Model
 	];
 
 	protected $table = 'ps_commission';
+
+	protected static $ignoreChangedAttributes = [
+		'updated_at'
+	];
+
+	protected static $logAttributes = [
+		'wallet_id',
+		'payment_system_id',
+		'currency',
+		'commission',
+		'active',
+		'ps_in_type',
+		'ps_out_type',
+		'ps_in_currency',
+		'ps_out_currency',
+	];
+
+	protected static $logOnlyDirty = true;
+
+	public function getDescriptionForEvent($eventName)
+	{
+		return 'This commission "from ' . $this->wallet->paymentSystem->name . ', ' . $this->wallet->currency . ' (' . $this->wallet->account . ')' . ' to ' . $this->paymentSystem->name . ', ' . $this->currency . ', ' . $this->commission . '" has been ' . $eventName;
+	}
+
+	public function getLogNameToUse($eventName = '')
+	{
+		return $eventName;
+	}
 
 	public function paymentSystem()
 	{

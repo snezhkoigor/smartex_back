@@ -177,13 +177,14 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * Additional
+         */
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
-
         Zizaco\Entrust\EntrustServiceProvider::class,
-
         Intervention\Image\ImageServiceProvider::class,
-
         Delatbabel\Elocrypt\ElocryptServiceProvider::class,
+
     ],
 
     /*
@@ -233,10 +234,12 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        /*
+         * Additional
+         */
         'JWTAuth'   => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Entrust' => Zizaco\Entrust\EntrustServiceProvider::class,
-
-        'Image' => Intervention\Image\Facades\Image::class,
+        'Image' => Intervention\Image\Facades\Image::class
     ],
 ];
