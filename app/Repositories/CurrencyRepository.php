@@ -48,6 +48,18 @@ class CurrencyRepository
 				'label' => Currency::CURRENCY_BTC_PREFIX,
 				'value' => Currency::CURRENCY_BTC
 			],
+			Currency::CURRENCY_DSH => [
+				'name' => Currency::CURRENCY_DSH,
+				'prefix' => Currency::CURRENCY_DSH_PREFIX,
+				'label' => Currency::CURRENCY_DSH_PREFIX,
+				'value' => Currency::CURRENCY_DSH
+			],
+			Currency::CURRENCY_LTC => [
+				'name' => Currency::CURRENCY_LTC,
+				'prefix' => Currency::CURRENCY_LTC_PREFIX,
+				'label' => Currency::CURRENCY_LTC_PREFIX,
+				'value' => Currency::CURRENCY_LTC
+			],
 		];
 	}
 }

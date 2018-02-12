@@ -185,8 +185,8 @@ class UserRepository
 		{
 			switch ($name)
 			{
-				default:
-//					$query->where('model_type', $value);
+				case 'verification_ok':
+					$query->where('verification_ok', (int)$value);
 					break;
 			}
 		}
@@ -201,8 +201,10 @@ class UserRepository
 	{
 		if (!empty($search_string)) {
 			$query->where(function(Builder $query) use ($search_string) {
-//				$query->where('name', 'regexp', '/.*' . $search_string . '.*/i')
-//					->orWhereIn('company_id', $companies_ids);
+				$query->where(DB::raw('LOWER(name)'), 'LIKE', '%' . mb_strtolower($search_string) . '%')
+					->orWhere(DB::raw('LOWER(family)'), 'LIKE', '%' . mb_strtolower($search_string) . '%')
+					->orWhere(DB::raw('LOWER(email)'), 'LIKE', '%' . mb_strtolower($search_string) . '%')
+					->orWhere('id', (int)$search_string);
 			});
 		}
 	}
@@ -225,6 +227,8 @@ class UserRepository
 				case 'created_at':
 				case 'updated_at':
 				case 'active':
+				case 'date':
+				case 'comment':
 					$query->orderBy($name, $value);
 					break;
 			}

@@ -29,6 +29,9 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property string $out_batch
  * @property string $out_date
  *
+ * @property Payment $inPayment
+ * @property Payment $outPayment
+ *
  * @method static Exchange|QueryBuilder|EloquentBuilder query()
  *
  * Class Exchange
@@ -68,4 +71,14 @@ class Exchange extends Model
 		'date',
 		'out_date'
 	];
+	
+	public function inPayment()
+	{
+		return $this->hasOne(Payment::class, 'id', 'in_id_pay');
+	}
+
+	public function outPayment()
+	{
+		return $this->hasOne(Payment::class, 'id', 'out_id_pay');
+	}
 }

@@ -41,6 +41,7 @@ class UserTransformer extends TransformerAbstract
 			'discount' => $user->discount,
 			'total_exchange' => $user->total_exchange,
 			'document_number' => $user->document_number,
+			'comment' => $user->comment,
 			'verification_image' => $user->verification_image ? Storage::disk('verifications')->url($user->verification_image) : '',
 			'verification_ok' => (bool)$user->verification_ok,
 		];

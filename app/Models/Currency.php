@@ -25,4 +25,10 @@ class Currency
 
 	const CURRENCY_RUB = 'rub';
 	const CURRENCY_RUB_PREFIX = '₽';
+	
+	const CURRENCY_DSH = 'dsh';
+	const CURRENCY_DSH_PREFIX = 'dsh';
+
+	const CURRENCY_LTC = 'ltc';
+	const CURRENCY_LTC_PREFIX = 'ltc';
 }

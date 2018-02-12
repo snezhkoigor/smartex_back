@@ -182,6 +182,8 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
         Optimus\ApiConsumer\Provider\LaravelServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
+        Lanin\Laravel\ApiDebugger\ServiceProvider::class,
 
     ],
 
@@ -234,7 +236,8 @@ return [
 
         // Additional
         'Entrust' => Zizaco\Entrust\EntrustServiceProvider::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class
 
     ],
 

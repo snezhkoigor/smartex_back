@@ -161,7 +161,7 @@ class NewsController extends Controller
 	    }
 	    catch (\Exception $e)
 	    {
-		    throw new SystemErrorException('Updating news failed', $e);
+		    throw new SystemErrorException('Deleting news failed', $e);
 	    }
 
 	    return response()->json(null, Response::HTTP_NO_CONTENT);

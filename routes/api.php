@@ -17,9 +17,16 @@ use \Illuminate\Support\Facades\Storage;
 use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  => 'Api'], function() {
-	Route::get('/files/{storage}/{filename}', function ($storage, $filename) {
+	Route::get('/files/{storage}/{filename}/{fit_size?}', function ($storage, $filename, $fit_size = null) {
 		if (Storage::disk($storage)->exists($filename)) {
-			return Image::make(Storage::disk($storage)->get($filename))->response();
+			$image = Image::make(Storage::disk($storage)->get($filename));
+			
+			if ($fit_size)
+			{
+				$image->fit($fit_size);
+			}
+
+			return $image->response();
 		}
 
 		throw new NotFoundHttpException('Image not found');
@@ -38,18 +45,18 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::get('/news', 'NewsController@getNews');
 		Route::get('/news/{news_id}', 'NewsController@getNewsById');
 		Route::post('/news', 'NewsController@add');
-		Route::post('/news/{news_id}', 'NewsController@updateById');
+		Route::put('/news/{news_id}', 'NewsController@updateById');
 		Route::delete('/news/{news_id}', 'NewsController@deleteById');
 
 		//Courses
 		Route::get('/courses', 'CourseController@getCourses');
-		Route::post('/courses/{course_id}', 'CourseController@updateById');
+		Route::put('/courses/{course_id}', 'CourseController@updateById');
 
 		//Payment_systems
 		Route::get('/payment_systems', 'PaymentSystemController@getPaymentSystems');
 		Route::get('/payment_systems/{payment_system_id}', 'PaymentSystemController@getPaymentSystemById');
 		Route::post('/payment_systems', 'PaymentSystemController@add');
-		Route::post('/payment_systems/{payment_system_id}', 'PaymentSystemController@updateById');
+		Route::put('/payment_systems/{payment_system_id}', 'PaymentSystemController@updateById');
 		Route::delete('/payment_systems/{payment_system_id}', 'PaymentSystemController@deleteById');
 
 		//Wallets
@@ -57,14 +64,14 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::get('/wallets', 'WalletController@getWallets');
 		Route::post('/wallets/check', 'WalletController@checkAccess');
 		Route::post('/wallets', 'WalletController@add');
-		Route::post('/wallets/{wallet_id}', 'WalletController@updateById');
+		Route::put('/wallets/{wallet_id}', 'WalletController@updateById');
 		Route::delete('/wallets/{wallet_id}', 'WalletController@deleteById');
 
 		//Commissions
 		Route::get('/commissions/{commission_id}', 'CommissionController@getCommissionById');
 		Route::get('/commissions', 'CommissionController@getCommissions');
 		Route::post('/commissions', 'CommissionController@add');
-		Route::post('/commissions/{commission_id}', 'CommissionController@updateById');
+		Route::put('/commissions/{commission_id}', 'CommissionController@updateById');
 		Route::delete('/commissions/{commission_id}', 'CommissionController@deleteById');
 
 		//Log activities
@@ -74,9 +81,15 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.'|'.Role::ROLE_OPERATOR.','])->group(function() {
 		//User
-		Route::get('/me', 'User\UserController@profile');
-		Route::post('/me', 'User\UserController@updateProfile');
+		Route::get('/me', 'User\ProfileController@profile');
+		Route::put('/me', 'User\ProfileController@updateProfile');
 		Route::post('/refresh', 'User\LoginController@refresh');
+		Route::get('/users', 'User\UserController@getUsers');
+		Route::put('/users/{user_id}', 'User\UserController@updateById');
+		Route::delete('/users/{user_id}', 'User\UserController@deleteById');
+
+		//Exchanges
+		Route::get('/exchanges', 'ExchangeController@getExchanges');
 
 		//Widgets
 		Route::get('/widgets/clients/totalRegistrations', 'WidgetController@totalClientRegistrations');

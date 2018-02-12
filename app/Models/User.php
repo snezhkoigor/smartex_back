@@ -30,6 +30,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property string $ip
  * @property string $online
  * @property string $role
+ * @property string $comment
  * @property integer $discount
  * @property double $total_exchange
  * @property string $document_number
@@ -47,6 +48,8 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 class User extends Authenticatable
 {
 	use HasApiTokens, CanResetPassword, EntrustUserTrait, LogsActivity;
+
+	public $timestamps = [ 'updated_at' ];
 
     /**
      * The attributes that are mass assignable.
@@ -72,6 +75,7 @@ class User extends Authenticatable
 	    'document_number',
 	    'verification_image',
 	    'verification_ok',
+	    'comment'
     ];
 
 	protected $guarded = [
@@ -90,8 +94,8 @@ class User extends Authenticatable
     ];
 
     protected $dates = [
-    	'online',
-	    'auth_err_date',
+//    	'online',
+//	    'auth_err_date',
     ];
 
 	protected static $ignoreChangedAttributes = [
@@ -146,20 +150,22 @@ class User extends Authenticatable
 	public static function generatePassword($number)
 	{
 		$result = '';
-		$arr = array('a','b','c','d','e','f',
-		             'g','h','i','j','k','l',
-		             'm','n','o','p','r','s',
-		             't','u','v','x','y','z',
-		             'A','B','C','D','E','F',
-		             'G','H','I','J','K','L',
-		             'M','N','O','P','R','S',
-		             'T','U','V','X','Y','Z',
-		             '1','2','3','4','5','6',
-		             '7','8','9','0','.',',',
-		             '(',')','[',']','!','?',
-		             '&','^','%','@','*','$',
-		             '<','>','/','|','+','-',
-		             '{','}','`','~');
+		$arr = [
+			'a','b','c','d','e','f',
+			'g','h','i','j','k','l',
+			'm','n','o','p','r','s',
+			't','u','v','x','y','z',
+			'A','B','C','D','E','F',
+			'G','H','I','J','K','L',
+			'M','N','O','P','R','S',
+			'T','U','V','X','Y','Z',
+			'1','2','3','4','5','6',
+			'7','8','9','0','.',',',
+			'(',')','[',']','!','?',
+			'&','^','%','@','*','$',
+			'<','>','/','|','+','-',
+			'{','}','`','~'
+		];
 
 		for($i = 0; $i < $number; $i++) {
 			$index = random_int(0, \count($arr) - 1);

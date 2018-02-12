@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 
@@ -25,6 +26,9 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property string $comment
  * @property integer $confirm
  * @property integer $btc_check
+ *
+ * @property User $user
+ * @property PaymentSystem $paymentSystem
  *
  * @method static Payment|QueryBuilder|EloquentBuilder query()
  *
@@ -57,10 +61,30 @@ class Payment extends Model
 		'btc_check'
 	];
 
+
 	protected $guarded = [];
+
 
 	protected $dates = [
 		'date',
 		'date_confirm'
 	];
+	
+	
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function user(): HasOne
+	{
+		return $this->hasOne(User::class, 'id', 'in_user');
+	}
+	
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function paymentSystem(): HasOne
+	{
+		return $this->hasOne(PaymentSystem::class, 'code', 'payment_system');
+	}
 }

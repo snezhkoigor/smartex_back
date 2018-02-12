@@ -173,6 +173,10 @@ class LogActivityRepository
 				case 'created_at':
 					$query->orderBy($name, $value);
 					break;
+					
+				default:
+					$query->orderBy('id');
+					break;
 			}
 
 		}

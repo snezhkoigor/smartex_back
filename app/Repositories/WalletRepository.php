@@ -66,6 +66,12 @@ class WalletRepository
 		return $result;
 	}
 
+
+	public function getWalletIn()
+	{
+	
+	}
+
 	/**
 	 * @param array $filters
 	 * @return array
@@ -91,6 +97,7 @@ class WalletRepository
 
 		return $result;
 	}
+
 
 	/**
 	 * @param PaymentSystem $payment_system
@@ -120,6 +127,7 @@ class WalletRepository
 
 		return $query;
 	}
+
 
 	/**
 	 * @param Builder $query

@@ -15,17 +15,17 @@ class RoleTableSeeder extends Seeder
     public function run()
     {
 	    Model::unguard();
-	    DB::table('roles')->delete();
-
-	    $role = new Role();
-	    $role->name = Role::ROLE_ADMIN;
-	    $role->display_name = 'Administrator';
-	    $role->save();
-
-	    $role = new Role();
-	    $role->name = Role::ROLE_OPERATOR;
-	    $role->display_name = 'Operator';
-	    $role->save();
+		    DB::table('roles')->delete();
+	
+		    $role = new Role();
+		    $role->name = Role::ROLE_ADMIN;
+		    $role->display_name = 'Administrator';
+		    $role->save();
+	
+		    $role = new Role();
+		    $role->name = Role::ROLE_OPERATOR;
+		    $role->display_name = 'Operator';
+		    $role->save();
 
 	    Model::reguard();
     }

@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "smartex/crm",
+    "description": "Smartex CRM.",
+    "keywords": ["Smartex", "CRM"],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -9,11 +9,14 @@
         "aleksandrzhiliaev/omnipay-advcash": "1.0.0.*",
         "aleksandrzhiliaev/omnipay-payeer": "1.0.*",
         "aleksandrzhiliaev/omnipay-perfectmoney": "1.4.*",
+        "barryvdh/laravel-debugbar": "^3.1",
         "delatbabel/elocryptfive": "1.5.*",
         "doctrine/dbal": "^2.6",
         "fideloper/proxy": "~3.3",
+        "fzaninotto/faker": "^1.7",
         "guzzlehttp/guzzle": "6.3.*",
         "intervention/image": "2.4.*",
+        "lanin/laravel-api-debugger": "3.1.*",
         "laravel/framework": "5.5.*",
         "laravel/passport": "^4.0",
         "laravel/tinker": "~1.0",
@@ -25,8 +28,8 @@
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.4",
         "filp/whoops": "~2.0",
-        "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
+        "nunomaduro/collision": "^1.1",
         "phpunit/phpunit": "~6.0",
         "symfony/thanks": "^1.0"
     },
@@ -67,6 +70,9 @@
             "php artisan ide-helper:generate",
             "php artisan ide-helper:meta",
             "php artisan optimize"
+        ],
+        "test" : [
+            "vendor/bin/phpunit"
         ]
     },
     "config": {
