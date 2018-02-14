@@ -128,16 +128,16 @@ class UserRepository
 		$query = User::query();
 		switch ($period_type) {
 			case 'year':
-				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%Y\') as date'));
+				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%Y\') as date_'));
 				$query->groupBy(DB::raw('DATE_FORMAT(date, \'%Y\')'));
 				break;
 			case 'month':
-				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%m.%Y\') as date'));
+				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%m.%Y\') as date_'));
 				$query->groupBy(DB::raw('DATE_FORMAT(date, \'%m.%Y\')'));
 				$query->whereBetween('date', [ Carbon::today()->subMonths(12), Carbon::today() ]);
 				break;
 			default:
-				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%d.%m.%Y\') as date'));
+				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%d.%m.%Y\') as date_'));
 				$query->groupBy(DB::raw('DATE_FORMAT(date, \'%d.%m.%Y\')'));
 				$query->whereBetween('date', [ Carbon::today()->subDays(7), Carbon::today() ]);
 				break;
@@ -149,7 +149,7 @@ class UserRepository
 
 		if ($data) {
 			foreach ($data as $item) {
-				$result['categories'][] = $item['date'];
+				$result['categories'][] = (string)$item['date_'];
 				$result['registrations']['data'][] = (int)$item['count'];
 				$result['activations']['data'][] = (int)$item['activations'];
 			}

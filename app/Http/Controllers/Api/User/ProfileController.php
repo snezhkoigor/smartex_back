@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Exceptions\SystemErrorException;
 use App\Models\User;
-use App\Repositories\UserRepository;
 use App\Services\UserService;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;

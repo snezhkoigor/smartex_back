@@ -49,7 +49,7 @@ class User extends Authenticatable
 {
 	use HasApiTokens, CanResetPassword, EntrustUserTrait, LogsActivity;
 
-	public $timestamps = [ 'updated_at' ];
+	const CREATED_AT = 'date';
 
     /**
      * The attributes that are mass assignable.

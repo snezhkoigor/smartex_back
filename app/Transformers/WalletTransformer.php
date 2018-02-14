@@ -39,7 +39,12 @@ class WalletTransformer extends TransformerAbstract
 			'id_payee' => $wallet->id_payee,
 			'account' => $wallet->account,
 			'balance' => (float)$wallet->balance,
-			'active' => (bool)$wallet->active
+			'active' => (bool)$wallet->active,
+			'statistic' => [
+				'income' => Wallet::getIn($wallet->ps_type, $wallet->currency)['income'],
+				'outcome' => Wallet::getOut($wallet->ps_type, $wallet->currency)['outcome'],
+				'fee' => Wallet::getFees($wallet->ps_type, $wallet->currency)['fee']
+			]
 		];
 
 		return $data;

@@ -85,8 +85,11 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::put('/me', 'User\ProfileController@updateProfile');
 		Route::post('/refresh', 'User\LoginController@refresh');
 		Route::get('/users', 'User\UserController@getUsers');
+		Route::post('/users', 'User\UserController@add');
 		Route::put('/users/{user_id}', 'User\UserController@updateById');
 		Route::delete('/users/{user_id}', 'User\UserController@deleteById');
+		Route::get('/meta/users', 'User\UserController@getFormMeta');
+		Route::get('/users/{user_id}', 'User\UserController@getUserById');
 
 		//Exchanges
 		Route::get('/exchanges', 'ExchangeController@getExchanges');

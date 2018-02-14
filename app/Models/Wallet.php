@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Delatbabel\Elocrypt\Elocrypt;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -124,5 +125,38 @@ class Wallet extends Model
 	public function paymentSystem()
 	{
 		return $this->belongsTo(PaymentSystem::class);
+	}
+
+	public static function getIn($ps_code, $currency)
+	{
+		return Payment::query()
+			->select(DB::raw('SUM(amount) as income'))
+			->where('payment_system', $ps_code)
+			->where('currency', strtoupper($currency))
+			->where('confirm', 1)
+			->where('type', 1)
+			->first();
+	}
+
+	public static function getOut($ps_code, $currency)
+	{
+		return Payment::query()
+			->select(DB::raw('SUM(amount) as outcome'))
+			->where('payment_system', $ps_code)
+			->where('currency', strtoupper($currency))
+			->where('confirm', 1)
+			->where('type', 2)
+			->first();
+	}
+	
+	public static function getFees($ps_code, $currency)
+	{
+		return Payment::query()
+			->select(DB::raw('SUM(fee) as fee'))
+			->where('payment_system', $ps_code)
+			->where('currency', strtoupper($currency))
+			->where('confirm', 1)
+			->whereIn('type', [1, 2])
+			->first();
 	}
 }

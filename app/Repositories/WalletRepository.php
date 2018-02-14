@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Helpers\StringHelper;
 use App\Models\PaymentSystem;
 use App\Models\Wallet;
-use App\Transformers\WalletTransformer;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -66,11 +65,6 @@ class WalletRepository
 		return $result;
 	}
 
-
-	public function getWalletIn()
-	{
-	
-	}
 
 	/**
 	 * @param array $filters

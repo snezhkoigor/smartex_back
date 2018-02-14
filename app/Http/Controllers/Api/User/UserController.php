@@ -3,21 +3,26 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Exceptions\SystemErrorException;
+use App\Models\Role;
 use App\Models\User;
+use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
 use App\Transformers\UserTransformer;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-	public function rules(Request $request, $user)
+	public function rules(Request $request, $user = null)
 	{
 		return [
-			'email' => 'required|email|' . $this->emailRulesByChanging($request, $user)
+			'email' => 'required|email' . ($user ? $this->emailRulesByChanging($request, $user) : '')
 		];
 	}
 
@@ -26,7 +31,7 @@ class UserController extends Controller
 	{
 		$email = $request->get('email');
 		if ($user && $email !== $user->email) {
-			return User::query()->where('email', '=', $email)->exists() ? 'unique:users' : '';
+			return User::query()->where('email', '=', $email)->exists() ? '|unique:users' : '';
 		}
 	}
 
@@ -69,8 +74,78 @@ class UserController extends Controller
 		    ->addMeta($meta)
 		    ->respond();
     }
-	
-	
+
+
+    public function getFormMeta()
+	{
+		return fractal(null, new UserTransformer())
+			->addMeta([
+				'roles' => array_values(RoleRepository::getAvailableRoles())
+			])
+			->respond();
+	}
+
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
+    public function add(Request $request): JsonResponse
+    {
+	    $this->validate($request, $this->rules($request), $this->messages());
+
+	    try
+	    {
+	    	$user = new User();
+		    $user->fill($request->all());
+		    $user->activation = (bool)$request->get('activation');
+		    $user->verification_ok = true;
+		    $user->date = Carbon::now()->toDateTimeString();
+
+		    if ($request->get('password'))
+		    {
+		    	$user->password = Hash::make($request->get('password'));
+		    }
+
+		    $user->save();
+
+		    if ($request->get('role_id'))
+		    {
+		        $user->roles()->attach($request->get('role_id'));
+		    }
+	    }
+	    catch (\Exception $e)
+	    {
+		    throw new SystemErrorException('Adding user failed', $e);
+	    }
+
+	    return response()->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+
+    /**
+	 * @param $news_id
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
+	public function getUserById($news_id): JsonResponse
+	{
+		$user = User::query()->find($news_id);
+		if ($user === null) {
+			throw new NotFoundHttpException('User not found');
+		}
+
+		return fractal($user, new UserTransformer())
+			->addMeta([
+				'roles' => array_values(RoleRepository::getAvailableRoles())
+			])
+			->respond();
+	}
+
+
 	/**
 	 * @param Request $request
 	 * @param $user_id
@@ -90,8 +165,35 @@ class UserController extends Controller
 	    try
 	    {
 		    $user->fill($request->all());
-		    $user->verification_ok = $request->get('verification_ok');
+
+		    if ($request->get('activation'))
+		    {
+		        $user->activation = (bool)$request->get('activation');
+		    }
+		    if ($request->get('password'))
+		    {
+		    	$user->password = Hash::make($request->get('password'));
+		    }
+		    if ($request->get('verification_ok'))
+		    {
+		    	$user->verification_ok = $request->get('verification_ok');
+		    }
+
 		    $user->save();
+
+		    if ($request->get('role_id'))
+		    {
+		    	DB::table('role_user')
+				    ->where('user_id', $user->id)
+				    ->delete();
+
+		    	$role = Role::query()->where('id', $request->get('role_id'))->first();
+		    	
+		    	if ($role && !$user->hasRole($role->id))
+			    {
+			        $user->roles()->attach($request->get('role_id'));
+			    }
+		    }
 	    }
 	    catch (\Exception $e)
 	    {
