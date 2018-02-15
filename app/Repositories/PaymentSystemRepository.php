@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Models\Payment;
 use App\Models\PaymentSystem;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
@@ -101,6 +103,42 @@ class PaymentSystemRepository
 		return $result;
 	}
 
+
+	/**
+	 * @param $date_from
+	 * @param $date_to
+	 * @return array
+	 */
+	public static function getPaymentSystemsPayments($date_from = null, $date_to = null): array
+	{
+		$result = [];
+		$date_from = $date_from ?: Carbon::now()->subMonth()->format('Y-m-d 00:00:00');
+		$date_to = $date_to ?: Carbon::now()->format('Y-m-d 23:59:59');
+
+		$data = Payment::query()
+			->select(DB::raw('payment_systems.name, COUNT(payments.id) as count'))
+			->join('payment_systems', 'payments.payment_system', '=', 'payment_systems.code')
+			->where('currency', '<>', '')
+			->whereBetween('date', [$date_from, $date_to])
+			->groupBy('payment_systems.name')
+			->get()
+			->toArray();
+		
+		if ($data)
+		{
+			foreach ($data as $item)
+			{
+				$result['categories'][] = $item['name'];
+				$result['data']['data'][] = [
+					'name' => $item['name'],
+		            'y' => $item['count']
+				];
+			}
+			$result['data']['name'] = 'Payment systems';
+		}
+
+		return $result;
+	}
 
 	/**
 	 * @param array $filters

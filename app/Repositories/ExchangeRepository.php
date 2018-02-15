@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Exchange;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
@@ -52,6 +53,142 @@ class ExchangeRepository
 	public static function getExchangesCount(array $filters = [], $search_string = null): int
 	{
 		return self::getExchangesQuery($filters, $search_string)->count();
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public static function getFinishedExchages(): array
+	{
+		$allCount = Exchange::query()
+			->select(DB::raw('COUNT(id) as count'))
+			->first();
+
+		$finishedCount = Exchange::query()
+			->select(DB::raw('COUNT(id) as count'))
+			->where('in_id_pay', '<>', 0)
+			->where('out_id_pay', '<>', 0)
+			->first();
+
+		return [
+			'all' => $allCount ? $allCount['count'] : 0,
+			'finished' => $finishedCount ? $finishedCount['count'] : 0,
+			'conversion' => $allCount ? round($finishedCount['count'] * 100 / $allCount['count'], 0) : 0
+		];
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public static function getStartedExchages(): array
+	{
+		$allCount = Exchange::query()
+			->select(DB::raw('COUNT(id) as count'))
+			->first();
+
+		$finishedCount = Exchange::query()
+			->select(DB::raw('COUNT(id) as count'))
+			->where('in_id_pay', '<>', 0)
+			->where('out_id_pay', 0)
+			->first();
+
+		return [
+			'all' => $allCount ? $allCount['count'] : 0,
+			'finished' => $finishedCount ? $finishedCount['count'] : 0,
+			'conversion' => $allCount ? round($finishedCount['count'] * 100 / $allCount['count'], 0) : 0
+		];
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public static function getNewExchages(): array
+	{
+		$allCount = Exchange::query()
+			->select(DB::raw('COUNT(id) as count'))
+			->first();
+
+		$finishedCount = Exchange::query()
+			->select(DB::raw('COUNT(id) as count'))
+			->where('in_id_pay', 0)
+			->where('out_id_pay', 0)
+			->first();
+
+		return [
+			'all' => $allCount ? $allCount['count'] : 0,
+			'finished' => $finishedCount ? $finishedCount['count'] : 0,
+			'conversion' => $allCount ? round($finishedCount['count'] * 100 / $allCount['count'], 0) : 0
+		];
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public static function getExchagesDynamic($date_from = null, $date_to = null): array
+	{
+		$result = [
+			'categories' => [],
+			'finished' => [
+				'name' => 'Finished',
+				'data' => []
+			],
+			'not' => [
+				'name' => 'Others',
+				'data' => []
+			]
+		];
+		$date_from = $date_from ?: Carbon::now()->subMonth()->format('Y-m-d 00:00:00');
+		$date_to = $date_to ?: Carbon::now()->format('Y-m-d 23:59:59');
+
+		$finished = Exchange::query()
+			->select(DB::raw('DATE_FORMAT(date, \'%d.%m.%Y\') as date_, COUNT(id) as count'))
+			->where('in_id_pay', '<>', 0)
+			->where('out_id_pay', '<>', 0)
+			->whereBetween('date', [$date_from, $date_to])
+			->groupBy(DB::raw('DATE_FORMAT(date, \'%d.%m.%Y\')'))
+			->orderBy('date')
+			->get()
+			->toArray();
+
+		$started = Exchange::query()
+			->select(DB::raw('DATE_FORMAT(date, \'%d.%m.%Y\') as date_, COUNT(id) as count'))
+			->where(function ($query) {
+				$query->where('in_id_pay', 0)
+					->orWhere('out_id_pay', 0);
+			})
+			->whereBetween('date', [$date_from, $date_to])
+			->groupBy(DB::raw('DATE_FORMAT(date, \'%d.%m.%Y\')'))
+			->orderBy('date')
+			->get()
+			->toArray();
+		
+		foreach ($finished as $item)
+		{
+			$result['categories'][$item['date_']] = $item['date_'];
+			$result['finished']['data'][$item['date_']] = $item['count'];
+			$result['not']['data'][$item['date_']] = 0;
+		}
+		foreach ($started as $item)
+		{
+			if (!array_key_exists($item['date_'], array_keys($result['categories'])))
+			{
+				$result['categories'][$item['date_']] = $item['date_'];
+			}
+			if (!isset($result['finished']['data'][$item['date_']]))
+			{
+				$result['finished']['data'][$item['date_']] = 0;
+			}
+			$result['not']['data'][$item['date_']] = $item['count'];
+		}
+
+		$result['finished']['data'] = array_values($result['finished']['data']);
+		$result['not']['data'] = array_values($result['not']['data']);
+
+		return $result;
 	}
 
 

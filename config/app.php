@@ -184,6 +184,7 @@ return [
         Optimus\ApiConsumer\Provider\LaravelServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Lanin\Laravel\ApiDebugger\ServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -237,7 +238,8 @@ return [
         // Additional
         'Entrust' => Zizaco\Entrust\EntrustServiceProvider::class,
         'Image' => Intervention\Image\Facades\Image::class,
-        'Debugbar' => Barryvdh\Debugbar\Facade::class
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

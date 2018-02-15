@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.5.33 on 2018-02-05.
+ * Generated for Laravel 5.5.33 on 2018-02-15.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -12763,6 +12763,149 @@ namespace Barryvdh\Debugbar {
  
 }
 
+namespace Barryvdh\DomPDF { 
+
+    class Facade {
+        
+        /**
+         * Get the DomPDF instance
+         *
+         * @return \Barryvdh\DomPDF\Dompdf 
+         * @static 
+         */ 
+        public static function getDomPDF()
+        {
+            return \Barryvdh\DomPDF\PDF::getDomPDF();
+        }
+        
+        /**
+         * Set the paper size (default A4)
+         *
+         * @param string $paper
+         * @param string $orientation
+         * @return $this 
+         * @static 
+         */ 
+        public static function setPaper($paper, $orientation = 'portrait')
+        {
+            return \Barryvdh\DomPDF\PDF::setPaper($paper, $orientation);
+        }
+        
+        /**
+         * Show or hide warnings
+         *
+         * @param bool $warnings
+         * @return $this 
+         * @static 
+         */ 
+        public static function setWarnings($warnings)
+        {
+            return \Barryvdh\DomPDF\PDF::setWarnings($warnings);
+        }
+        
+        /**
+         * Load a HTML string
+         *
+         * @param string $string
+         * @param string $encoding Not used yet
+         * @return static 
+         * @static 
+         */ 
+        public static function loadHTML($string, $encoding = null)
+        {
+            return \Barryvdh\DomPDF\PDF::loadHTML($string, $encoding);
+        }
+        
+        /**
+         * Load a HTML file
+         *
+         * @param string $file
+         * @return static 
+         * @static 
+         */ 
+        public static function loadFile($file)
+        {
+            return \Barryvdh\DomPDF\PDF::loadFile($file);
+        }
+        
+        /**
+         * Load a View and convert to HTML
+         *
+         * @param string $view
+         * @param array $data
+         * @param array $mergeData
+         * @param string $encoding Not used yet
+         * @return static 
+         * @static 
+         */ 
+        public static function loadView($view, $data = array(), $mergeData = array(), $encoding = null)
+        {
+            return \Barryvdh\DomPDF\PDF::loadView($view, $data, $mergeData, $encoding);
+        }
+        
+        /**
+         * Set/Change an option in DomPdf
+         *
+         * @param array $options
+         * @return static 
+         * @static 
+         */ 
+        public static function setOptions($options)
+        {
+            return \Barryvdh\DomPDF\PDF::setOptions($options);
+        }
+        
+        /**
+         * Output the PDF as a string.
+         *
+         * @return string The rendered PDF as string
+         * @static 
+         */ 
+        public static function output()
+        {
+            return \Barryvdh\DomPDF\PDF::output();
+        }
+        
+        /**
+         * Save the PDF to a file
+         *
+         * @param $filename
+         * @return static 
+         * @static 
+         */ 
+        public static function save($filename)
+        {
+            return \Barryvdh\DomPDF\PDF::save($filename);
+        }
+        
+        /**
+         * Make the PDF downloadable by the user
+         *
+         * @param string $filename
+         * @return \Illuminate\Http\Response 
+         * @static 
+         */ 
+        public static function download($filename = 'document.pdf')
+        {
+            return \Barryvdh\DomPDF\PDF::download($filename);
+        }
+        
+        /**
+         * Return a response with the PDF to show in the browser
+         *
+         * @param string $filename
+         * @return \Illuminate\Http\Response 
+         * @static 
+         */ 
+        public static function stream($filename = 'document.pdf')
+        {
+            return \Barryvdh\DomPDF\PDF::stream($filename);
+        }
+         
+    }
+ 
+}
+
 namespace Spatie\Fractal { 
 
     class FractalFacade {
@@ -13056,6 +13199,140 @@ namespace Spatie\Fractal {
         {
             //Method inherited from \Spatie\Fractalistic\Fractal            
             return \App\Services\Fractal\CustomFractal::jsonSerialize();
+        }
+         
+    }
+ 
+}
+
+namespace Barryvdh\Snappy\Facades { 
+
+    class SnappyImage {
+        
+        /**
+         * Get the Snappy instance.
+         *
+         * @return \Knp\Snappy\Image 
+         * @static 
+         */ 
+        public static function snappy()
+        {
+            return \Barryvdh\Snappy\ImageWrapper::snappy();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function setOption($name, $value)
+        {
+            return \Barryvdh\Snappy\ImageWrapper::setOption($name, $value);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function setOptions($options)
+        {
+            return \Barryvdh\Snappy\ImageWrapper::setOptions($options);
+        }
+        
+        /**
+         * Load a HTML string
+         *
+         * @param string $string
+         * @return static 
+         * @static 
+         */ 
+        public static function loadHTML($string)
+        {
+            return \Barryvdh\Snappy\ImageWrapper::loadHTML($string);
+        }
+        
+        /**
+         * Load a HTML file
+         *
+         * @param string $file
+         * @return static 
+         * @static 
+         */ 
+        public static function loadFile($file)
+        {
+            return \Barryvdh\Snappy\ImageWrapper::loadFile($file);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function loadView($view, $data = array(), $mergeData = array())
+        {
+            return \Barryvdh\Snappy\ImageWrapper::loadView($view, $data, $mergeData);
+        }
+        
+        /**
+         * Output the PDF as a string.
+         *
+         * @return string The rendered PDF as string
+         * @throws \InvalidArgumentException
+         * @static 
+         */ 
+        public static function output()
+        {
+            return \Barryvdh\Snappy\ImageWrapper::output();
+        }
+        
+        /**
+         * Save the image to a file
+         *
+         * @param $filename
+         * @return static 
+         * @static 
+         */ 
+        public static function save($filename, $overwrite = false)
+        {
+            return \Barryvdh\Snappy\ImageWrapper::save($filename, $overwrite);
+        }
+        
+        /**
+         * Make the image downloadable by the user
+         *
+         * @param string $filename
+         * @return \Symfony\Component\HttpFoundation\Response 
+         * @static 
+         */ 
+        public static function download($filename = 'image.jpg')
+        {
+            return \Barryvdh\Snappy\ImageWrapper::download($filename);
+        }
+        
+        /**
+         * Return a response with the image to show in the browser
+         *
+         * @param string $filename
+         * @return \Illuminate\Http\Response 
+         * @static 
+         */ 
+        public static function inline($filename = 'image.jpg')
+        {
+            return \Barryvdh\Snappy\ImageWrapper::inline($filename);
+        }
+        
+        /**
+         * Return a response with the image to show in the browser
+         *
+         * @deprecated Use inline() instead
+         * @param string $filename
+         * @return \Symfony\Component\HttpFoundation\Response 
+         * @static 
+         */ 
+        public static function stream($filename = 'image.jpg')
+        {
+            return \Barryvdh\Snappy\ImageWrapper::stream($filename);
         }
          
     }
@@ -15192,7 +15469,11 @@ namespace  {
 
     class Debugbar extends \Barryvdh\Debugbar\Facade {}
 
+    class PDF extends \Barryvdh\DomPDF\Facade {}
+
     class Fractal extends \Spatie\Fractal\FractalFacade {}
+
+    class SnappyImage extends \Barryvdh\Snappy\Facades\SnappyImage {}
  
 }
 

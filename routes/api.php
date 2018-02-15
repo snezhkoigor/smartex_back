@@ -91,11 +91,21 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::get('/meta/users', 'User\UserController@getFormMeta');
 		Route::get('/users/{user_id}', 'User\UserController@getUserById');
 
+		// Payments
+		Route::get('/payments/pdf/transactions/{user_id}/{pdf?}', 'PaymentController@pdfTransactionsByUser');
+
 		//Exchanges
 		Route::get('/exchanges', 'ExchangeController@getExchanges');
 
 		//Widgets
 		Route::get('/widgets/clients/totalRegistrations', 'WidgetController@totalClientRegistrations');
 		Route::get('/widgets/clients/totalRegistrationsAndActivations/{period_type?}', 'WidgetController@totalClientRegistrationsAndActivations');
+		Route::get('/widgets/exchanges/totalFinishedExchanges', 'WidgetController@totalFinishedExchages');
+		Route::get('/widgets/exchanges/totalNewExchanges', 'WidgetController@totalNewExchages');
+		Route::get('/widgets/payments/totalFinishedInPayments', 'WidgetController@totalFinishedInPayments');
+		Route::get('/widgets/payments/currenciesInPaymentsByLastMonth', 'WidgetController@currenciesInPaymentsByLastMonth');
+		Route::get('/widgets/payments/currenciesOutPaymentsByLastMonth', 'WidgetController@currenciesOutPaymentsByLastMonth');
+		Route::get('/widgets/payment_systems/paymentSystemsPaymentsByLastMonth', 'WidgetController@paymentSystemsPaymentsByLastMonth');
+		Route::get('/widgets/exchanges/dynamicByLastMonth', 'WidgetController@getExchangesDynamicByLastMonth');
 	});
 });
