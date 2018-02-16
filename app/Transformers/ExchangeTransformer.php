@@ -43,6 +43,9 @@ class ExchangeTransformer extends TransformerAbstract
 			'out_payee' => $exchange->out_payee,
 			'out_date' => $exchange->out_date,
 		];
+		
+		$data['in_currency_amount'] = $data['in_prefix'] . $data['in_amount'];
+		$data['out_currency_amount'] = $data['out_prefix'] . $data['out_amount'];
 
 		return $data;
 	}
@@ -50,20 +53,30 @@ class ExchangeTransformer extends TransformerAbstract
 
 	/**
 	 * @param Exchange $exchange
-	 * @return \League\Fractal\Resource\Item
+	 * @return Item|null
 	 */
-	public function includeInPayment(Exchange $exchange): Item
+	public function includeInPayment(Exchange $exchange)
 	{
-		return $this->item($exchange->inPayment, new PaymentSystemTransformer(), 'inPayment');
+		if ($exchange->in_id_pay)
+		{
+			return $this->item($exchange->inPayment, new PaymentTransformer(), 'inPayment');
+		}
+
+		return null;
 	}
-
-
+	
+	
 	/**
 	 * @param Exchange $exchange
-	 * @return \League\Fractal\Resource\Item
+	 * @return Item|null
 	 */
-	public function includeOutPayment(Exchange $exchange): Item
+	public function includeOutPayment(Exchange $exchange)
 	{
-		return $this->item($exchange->outPayment, new PaymentSystemTransformer(), 'outPayment');
+		if ($exchange->out_id_pay)
+		{
+			return $this->item($exchange->outPayment, new PaymentTransformer(), 'outPayment');
+		}
+
+		return null;
 	}
 }

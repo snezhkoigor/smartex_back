@@ -48,11 +48,16 @@ class PaymentTransformer extends TransformerAbstract
 
 	/**
 	 * @param Payment $payment
-	 * @return \League\Fractal\Resource\Item
+	 * @return \League\Fractal\Resource\Item|null
 	 */
-	public function includeUser(Payment $payment): Item
+	public function includeUser(Payment $payment)
 	{
-		return $this->item($payment->user, new UserTransformer(), 'user');
+		if ($payment->id_user > 0 && !empty($payment->id_user))
+		{
+			return $this->item($payment->user, new UserTransformer(), 'user');
+		}
+
+		return null;
 	}
 	
 
@@ -62,6 +67,6 @@ class PaymentTransformer extends TransformerAbstract
 	 */
 	public function includePaymentSystem(Payment $payment): Item
 	{
-		return $this->item($payment->paymentSystem, new UserTransformer(), 'paymentSystem');
+		return $this->item($payment->paymentSystem, new PaymentSystemTransformer(), 'paymentSystem');
 	}
 }

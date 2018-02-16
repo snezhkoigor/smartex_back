@@ -12,12 +12,6 @@
 <body>
 	<div class="container">
 		<br/>
-		@if ($data['pdf'] === null)
-			<a href="{{ url('/api/payments/pdf/transactions/' . $data['user_id'], ['download'=>'pdf']) }}">Download PDF</a>
-			<br/>
-			<br/>
-		@endif
-
 		<table border="1" style="border-collapse: collapse; font-size: 12px">
 			<tr>
 				<th></th>

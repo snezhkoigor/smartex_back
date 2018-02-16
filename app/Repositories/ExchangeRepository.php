@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Exchange;
+use App\Models\PaymentSystem;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -125,6 +127,32 @@ class ExchangeRepository
 	}
 
 
+	public static function getAvailableUsers(): array
+	{
+		$result = [];
+		$users = User::query()
+			->select(['name', 'family', 'id'])
+			->groupBy(['id', 'name', 'family'])
+			->get();
+
+		if ($users)
+		{
+			foreach ($users as $user)
+			{
+				if (!empty($user['name']) || !empty($user['family']))
+				{
+					$result[] = [
+						'label' => $user['name'] . ' ' . $user['family'],
+						'value' => $user['id']
+					];
+				}
+			}
+		}
+		
+		return $result;
+	}
+
+
 	/**
 	 * @return array
 	 */
@@ -217,7 +245,52 @@ class ExchangeRepository
 	{
 		foreach ($filter_parameters as $name => $value)
 		{
-			$query->where($name, $value);
+			switch ($name)
+			{
+				case 'exchange_status':
+					if ($value === 'create')
+					{
+						$query->where(function(Builder $query) {
+							$query->where('in_id_pay', '=', 0)
+								->where('out_id_pay', '=', 0);
+						});
+					}
+					elseif ($value === 'start')
+					{
+						$query->where(function(Builder $query) {
+							$query->where('in_id_pay', '<>', 0)
+								->where('out_id_pay', '=', 0);
+						});
+					}
+					else
+					{
+						$query->where(function(Builder $query) {
+							$query->where('in_id_pay', '<>', 0)
+								->where('out_id_pay', '<>', 0);
+						});
+					}
+					break;
+
+				case 'out_currency':
+					$query->where('out_currency', (int)$value);
+					break;
+
+				case 'in_currency':
+					$query->where('in_currency', (int)$value);
+					break;
+
+				case 'id_user':
+					$query->where('id_user', (int)$value);
+					break;
+
+				case 'in_payment':
+					$query->where('in_payment', (int)$value);
+					break;
+					
+				case 'out_payment':
+					$query->where('out_payment', (int)$value);
+					break;
+			}
 		}
 
 		return $query;
@@ -233,7 +306,7 @@ class ExchangeRepository
 	{
 		if (!empty($search_string)) {
 			$query->where(function(Builder $query) use ($search_string) {
-				$query->where(DB::raw('LOWER(name)'), 'LIKE', '%' . mb_strtolower($search_string) . '%');
+				$query->where('id', '=', $search_string);
 			});
 		}
 
@@ -252,6 +325,18 @@ class ExchangeRepository
 		{
 			switch ($name)
 			{
+				case 'id':
+					$query->orderBy('id', $value);
+					break;
+				case 'in_id_pay':
+					$query->orderBy('in_id_pay', $value);
+					break;
+				case 'out_id_pay':
+					$query->orderBy('in_id_pay', $value);
+					break;
+				case 'out_date':
+					$query->orderBy('out_date', $value);
+					break;
 				default:
 					$query->orderBy('date', 'desc');
 					break;

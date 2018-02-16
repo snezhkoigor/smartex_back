@@ -31,7 +31,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 
 		throw new NotFoundHttpException('Image not found');
 	});
-
+	
 	Route::get('/logout', 'User\LoginController@logout');
 	Route::post('/login', 'User\LoginController@login');
 	Route::post('/user/password/reset', 'User\ResetPasswordController@resetPassword');
@@ -92,7 +92,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::get('/users/{user_id}', 'User\UserController@getUserById');
 
 		// Payments
-		Route::get('/payments/pdf/transactions/{user_id}/{pdf?}', 'PaymentController@pdfTransactionsByUser');
+		Route::get('/payments/pdf/transactions/{user_id}', 'PaymentController@pdfTransactionsByUser');
 
 		//Exchanges
 		Route::get('/exchanges', 'ExchangeController@getExchanges');

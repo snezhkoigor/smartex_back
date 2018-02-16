@@ -66,6 +66,12 @@ return [
 	        'root' => storage_path('avatars'),
 	        'url' => env('APP_URL') . '/files/avatars/'
         ],
+        
+        'pdf' => [
+	        'driver' => 'local',
+	        'root' => storage_path('pdf'),
+	        'url' => env('APP_URL') . '/pdf/'
+        ],
 
         'verifications' => [
 	        'driver' => 'local',
