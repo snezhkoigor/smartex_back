@@ -32,6 +32,7 @@ class ExchangeTransformer extends TransformerAbstract
 			'in_currency' => $exchange->in_currency,
 			'in_prefix' => CurrencyRepository::getAvailableCurrencies()[strtolower($exchange->in_currency)]['prefix'],
 			'in_amount' => (float)$exchange->in_amount,
+			'in_payment' => $exchange->in_payment,
 			'in_fee' => (float)$exchange->in_fee,
 			'in_payee' => $exchange->in_payee,
 			'comment' => $exchange->comment,
@@ -42,8 +43,9 @@ class ExchangeTransformer extends TransformerAbstract
 			'out_fee' => (float)$exchange->out_fee,
 			'out_payee' => $exchange->out_payee,
 			'out_date' => $exchange->out_date,
+			'out_payment' => $exchange->out_payment,
 		];
-		
+
 		$data['in_currency_amount'] = $data['in_prefix'] . $data['in_amount'];
 		$data['out_currency_amount'] = $data['out_prefix'] . $data['out_amount'];
 
