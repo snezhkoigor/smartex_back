@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\Exchange;
+use App\Models\Payment;
 use App\Repositories\CurrencyRepository;
 use League\Fractal\TransformerAbstract;
 use League\Fractal\Resource\Item;
@@ -59,7 +60,7 @@ class ExchangeTransformer extends TransformerAbstract
 	 */
 	public function includeInPayment(Exchange $exchange)
 	{
-		if ($exchange->in_id_pay)
+		if ($exchange->in_id_pay && Payment::query()->where('id', $exchange->in_id_pay)->first())
 		{
 			return $this->item($exchange->inPayment, new PaymentTransformer(), 'inPayment');
 		}
@@ -74,7 +75,7 @@ class ExchangeTransformer extends TransformerAbstract
 	 */
 	public function includeOutPayment(Exchange $exchange)
 	{
-		if ($exchange->out_id_pay)
+		if ($exchange->out_id_pay && Payment::query()->where('id', $exchange->out_id_pay)->first())
 		{
 			return $this->item($exchange->outPayment, new PaymentTransformer(), 'outPayment');
 		}

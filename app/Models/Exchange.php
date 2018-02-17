@@ -39,6 +39,8 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  */
 class Exchange extends Model
 {
+	public $timestamps = false;
+
 	/**
 	 * The attributes that are mass assignable.
 	 *

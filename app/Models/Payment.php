@@ -37,6 +37,8 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  */
 class Payment extends Model
 {
+	public $timestamps = false;
+
 	/**
 	 * The attributes that are mass assignable.
 	 *
@@ -69,16 +71,16 @@ class Payment extends Model
 		'date',
 		'date_confirm'
 	];
-	
-	
+
+
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */
 	public function user(): HasOne
 	{
-		return $this->hasOne(User::class, 'id', 'in_user');
+		return $this->hasOne(User::class, 'id', 'id_user');
 	}
-	
+
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasOne

@@ -68,9 +68,9 @@ class Wallet extends Model
 	 * @var array
 	 */
 	protected $encrypts = [
-		'user',
-		'secret',
-		'password',
+//		'user',
+//		'secret',
+//		'password',
 	];
 
 	protected $hidden = [

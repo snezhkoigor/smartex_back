@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\Payment;
+use App\Models\User;
 use App\Repositories\CurrencyRepository;
 use App\Services\Advcash\validateAccount;
 use League\Fractal\TransformerAbstract;
@@ -52,7 +53,7 @@ class PaymentTransformer extends TransformerAbstract
 	 */
 	public function includeUser(Payment $payment)
 	{
-		if ($payment->id_user > 0 && !empty($payment->id_user))
+		if ($payment->id_user > 0 && !empty($payment->id_user) && User::query()->where('id', $payment->id_user)->first())
 		{
 			return $this->item($payment->user, new UserTransformer(), 'user');
 		}

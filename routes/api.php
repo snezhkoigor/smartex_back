@@ -93,6 +93,8 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 
 		// Payments
 		Route::get('/payments/pdf/transactions/{user_id}', 'PaymentController@pdfTransactionsByUser');
+		Route::get('/payments/{payment_id}', 'PaymentController@getPaymentById');
+		Route::put('/payments/{payment_id}/confirm', 'PaymentController@confirm');
 
 		//Exchanges
 		Route::get('/exchanges', 'ExchangeController@getExchanges');
