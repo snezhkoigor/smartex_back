@@ -75,13 +75,13 @@ class LoginService
 	public function proxy($grantType, array $data = []): array
 	{
 		$data = array_merge($data, [
-			'client_id' => env('PASSWORD_CLIENT_ID'),
-			'client_secret' => env('PASSWORD_CLIENT_SECRET'),
+			'client_id' => 2,
+			'client_secret' => 'P3KMcqTzNNpPSF7iD07c4tdTV68MGKRtJvlo3GIN',
 			'grant_type' => $grantType
 		]);
 
 		$response = $this->apiConsumer->post('/oauth/token', $data);
-
+var_dump($response->isSuccessful());die;
 		if (!$response->isSuccessful()) {
 			throw new InvalidCredentialsException('other');
 		}
