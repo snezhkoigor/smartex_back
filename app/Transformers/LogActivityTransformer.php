@@ -28,8 +28,8 @@ class LogActivityTransformer extends TransformerAbstract
 			'causer_id' => (int)$activity->causer_id,
 			'causer_type' => $activity->causer_type,
 			'properties' => $activity->properties,
-			'created_at' => $activity->created_at,
-			'updated_at' => $activity->updated_at,
+			'created_at' => $activity->created_at->toDateTimeString(),,
+			'updated_at' => $activity->updated_at->toDateTimeString(),,
 		];
 
 		return $data;
