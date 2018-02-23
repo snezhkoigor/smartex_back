@@ -42,6 +42,11 @@ class LogActivityTransformer extends TransformerAbstract
 	 */
 	public function includeUser(LogActivity $activity): Item
 	{
-		return $this->item($activity->user, new UserTransformer(), 'user');
+		if ($activity->user)
+		{
+			return $this->item($activity->user, new UserTransformer(), 'user');
+		}
+
+		return null;
 	}
 }
