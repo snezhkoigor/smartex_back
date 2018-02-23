@@ -141,6 +141,9 @@ class PaymentController extends Controller
         ]);
 
         $pdf = PDF::loadView('pdf.transactions');
+        
+        var_dump($pdf);die;
+        
         $file_name = $user_id . '_' . $user->name . '_' . $user->family . '_transactions_' . date('Y-m-d H:i:s') . '_' . md5(date('Y-m-d H:i:s')) . '.pdf';
         Storage::disk('pdf')->put($file_name, $pdf->stream());
 
