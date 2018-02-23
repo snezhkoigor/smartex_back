@@ -38,9 +38,9 @@ class LogActivityTransformer extends TransformerAbstract
 
 	/**
 	 * @param LogActivity $activity
-	 * @return \League\Fractal\Resource\Item
+	 * @return \League\Fractal\Resource\Item|null
 	 */
-	public function includeUser(LogActivity $activity): Item
+	public function includeUser(LogActivity $activity)
 	{
 		if ($activity->user)
 		{
