@@ -140,11 +140,11 @@ class PaymentController extends Controller
 // 	        'user' => $user
 //         ]);
 
-        $pdf = PDF::loadView('pdf.transactions', [
+        $pdf = PDF::loadView('pdf.transactions', [ 'data' => [
         	'payments' => $payments,
 	        'user_id' => $user_id,
 	        'user' => $user
-        ]);
+        ]]);
 	    
 //     	return $pdf->stream();
         
