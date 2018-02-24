@@ -134,15 +134,19 @@ class PaymentController extends Controller
 	        ->orderBy('date')
 	        ->get();
 
-        view()->share('data', [
+//         view()->share('data', [
+//         	'payments' => $payments,
+// 	        'user_id' => $user_id,
+// 	        'user' => $user
+//         ]);
+
+        $pdf = PDF::loadView('pdf.transactions', [
         	'payments' => $payments,
 	        'user_id' => $user_id,
 	        'user' => $user
         ]);
-
-        $pdf = PDF::loadView('pdf.transactions');
-        
-        var_dump($pdf->stream());die;
+	    
+//     	return $pdf->stream();
         
         $file_name = $user_id . '_' . $user->name . '_' . $user->family . '_transactions_' . date('Y-m-d H:i:s') . '_' . md5(date('Y-m-d H:i:s')) . '.pdf';
         Storage::disk('pdf')->put($file_name, $pdf->stream());
