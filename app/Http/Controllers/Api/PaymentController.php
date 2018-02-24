@@ -107,6 +107,7 @@ class PaymentController extends Controller
 
 
 	/**
+	 * wkhtmltopdf need
 	 * @param $user_id
 	 * @return BinaryFileResponse
 	 * @throws \Exception
@@ -148,9 +149,9 @@ class PaymentController extends Controller
 	    
     	return $pdf->stream();
         
-        $file_name = $user_id . '_' . $user->name . '_' . $user->family . '_transactions_' . date('Y-m-d H:i:s') . '_' . md5(date('Y-m-d H:i:s')) . '.pdf';
-        Storage::disk('pdf')->put($file_name, $pdf->stream());
+//         $file_name = $user_id . '_' . $user->name . '_' . $user->family . '_transactions_' . date('Y-m-d H:i:s') . '_' . md5(date('Y-m-d H:i:s')) . '.pdf';
+//         Storage::disk('pdf')->put($file_name, $pdf->stream());
 
-        return response()->download(storage_path('pdf') . '/' . $file_name);
+//         return response()->download(storage_path('pdf') . '/' . $file_name);
     }
 }
