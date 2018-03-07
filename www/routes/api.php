@@ -35,6 +35,8 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 	Route::get('/logout', 'User\LoginController@logout');
 	Route::post('/login', 'User\LoginController@login');
 	Route::post('/user/password/reset', 'User\ResetPasswordController@resetPassword');
+	Route::post('/user/registration', 'User\RegistrationController@registration');
+	Route::get('/user/activation/{hash}', 'User\ActivationController@activation');
 
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.','])->group(function() {
 		//Meta
