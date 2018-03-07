@@ -1,0 +1,25 @@
+nginx:
+    build: ./nginx/
+    ports:
+        - 8082:80
+    links:
+        - php
+    volumes_from:
+        - php
+    environment:
+        - VIRTUAL_HOST=api.smartex,www.api.smartex
+    restart: always
+
+php:
+    build: ./php/
+    expose:
+        - 9000
+    volumes:
+        - ./www:/var/www/html
+    links:
+      - redis
+    restart: always
+
+redis:
+    image: redis:4.0.8-alpine
+    restart: always
