@@ -1,4 +1,4 @@
-@extends('emails.layouts.html.index')
+@extends('emails.layouts.plain.index')
 
 @section('content')
 Dear client{{$user->name ? ', ' . $user->name : ''}}!
