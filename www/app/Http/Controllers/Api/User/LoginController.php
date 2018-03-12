@@ -41,6 +41,8 @@ class LoginController extends Controller
 	 */
 	public function login(Request $request): JsonResponse
 	{
+		$this->validate($request, $this->rules(), $this->messages());
+
 		try
 		{
 			$email = $request->get('email');

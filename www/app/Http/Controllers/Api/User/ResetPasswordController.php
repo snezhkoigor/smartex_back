@@ -21,14 +21,14 @@ class ResetPasswordController extends Controller
 		$this->reset_password_service = $reset_password_service;
 	}
 
-	public function rules()
+	public function rules(): array
 	{
 		return [
 			'email' => 'required|email|exists:users,email'
 		];
 	}
 
-	public function messages()
+	public function messages(): array
 	{
 		return [
 			'email.required' => 'Enter email',

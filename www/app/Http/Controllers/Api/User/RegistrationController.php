@@ -54,6 +54,9 @@ class RegistrationController extends Controller
 			if ($request->get('name')) {
 				$user->name = $request->get('name');
 			}
+			if ($request->get('refer')) {
+				$user->refer = $request->get('refer');
+			}
 			$user->save();
 
 			if ($user) {
