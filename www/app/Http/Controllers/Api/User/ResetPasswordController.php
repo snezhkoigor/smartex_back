@@ -60,6 +60,6 @@ class ResetPasswordController extends Controller
 			throw new SystemErrorException('Reset password reset failed', $e);
 		}
 
-		return response()->json(null, Response::HTTP_NO_CONTENT);
+		return response()->json(null, Response::HTTP_OK);
 	}
 }

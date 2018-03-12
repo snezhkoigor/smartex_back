@@ -36,6 +36,6 @@ class ActivationController extends Controller
 			throw new SystemErrorException('Activation user failed', $e);
 		}
 
-		return response()->json(null, Response::HTTP_NO_CONTENT);
+		return response()->json(null, Response::HTTP_OK);
 	}
 }

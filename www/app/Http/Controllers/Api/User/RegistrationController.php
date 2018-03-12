@@ -66,6 +66,6 @@ class RegistrationController extends Controller
 			throw new SystemErrorException('Registration user failed', $e);
 		}
 
-		return response()->json(null, Response::HTTP_NO_CONTENT);
+		return response()->json(null, Response::HTTP_OK);
 	}
 }
