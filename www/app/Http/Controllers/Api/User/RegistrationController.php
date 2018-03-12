@@ -34,6 +34,13 @@ class RegistrationController extends Controller
 		];
 	}
 
+	
+	public function checkEmailUnique(Request $request): JsonResponse
+	{
+		$this->validate($request, [ 'email' => 'required|unique:users,email' ], [ 'email.unique' => 'This email somebody use already', 'email.required' => 'Enter email' ]);
+
+		return response()->json(null, Response::HTTP_OK);
+	}
 
 	/**
 	 * @param Request $request
