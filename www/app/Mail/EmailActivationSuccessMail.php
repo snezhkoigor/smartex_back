@@ -35,7 +35,7 @@ class EmailActivationSuccessMail extends Mailable
 	        ->with([
 	            'user' => $this->user,
             ])
-	        ->subject('Reset password on ' . config('app.name') . '.')
+	        ->subject('Activation on ' . config('app.name') . '.')
 	        ->text('emails.user.activation.plain');
     }
 }
