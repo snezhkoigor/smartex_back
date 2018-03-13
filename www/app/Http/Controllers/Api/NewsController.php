@@ -51,6 +51,8 @@ class NewsController extends Controller
 
 	    $relations = $this->getRelationsFromIncludes($request);
 
+	    $filters['language'] = empty($filters['language']) ? 'en' : $filters['language'];
+
 	    $news = NewsRepository::getNews($filters, $sorts, $relations, ['*'], $search_string, $limit, $offset);
 
 	    $meta = [
