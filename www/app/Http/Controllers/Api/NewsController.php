@@ -64,6 +64,24 @@ class NewsController extends Controller
 		    ->respond();
     }
 	
+	
+	/**
+	 * @param $news_id
+	 * @return JsonResponse
+	 *
+	 * @throws \Exception
+	 */
+    public function show($news_id): JsonResponse
+    {
+	    $news = News::query()->find($news_id);
+		if ($news === null) {
+			throw new NotFoundHttpException('News not found');
+		}
+
+		return fractal($news, new NewsTransformer())
+			->respond();
+    }
+
     public function getNews(Request $request)
     {
 	    $filters = $this->getFilters($request);
