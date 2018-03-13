@@ -81,9 +81,12 @@ class NewsRepository
 		{
 			switch ($name)
 			{
-				default:
-//					$query->where('model_type', $value);
+				case 'language':
+					$query->where('lang', $value);
 					break;
+//				default:
+//					$query->where('model_type', $value);
+//					break;
 			}
 		}
 	}

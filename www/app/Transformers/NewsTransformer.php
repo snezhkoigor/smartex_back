@@ -26,6 +26,7 @@ class NewsTransformer extends TransformerAbstract
 			'text' => $news->text,
 			'date' => $news->date,
 			'meta_description' => $news->meta_description,
+			'lang' => $news->lang,
 			'meta_key' => $news->meta_key,
 			'active' => (bool)$news->active,
 			'created_at' => $news->created_at,

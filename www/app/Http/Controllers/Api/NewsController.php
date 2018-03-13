@@ -23,7 +23,7 @@ class NewsController extends Controller
 		$this->news_service = $news_service;
 	}
 
-	public function rules()
+	public function rules(): array
 	{
 		return [
 			'title' => 'required',
@@ -31,7 +31,7 @@ class NewsController extends Controller
 		];
 	}
 
-	public function messages()
+	public function messages(): array
 	{
 		return [
 			'title.required' => 'Enter news title',
@@ -55,6 +55,7 @@ class NewsController extends Controller
 
 	    $meta = [
 		    'count' => NewsRepository::getNewsCount($filters, $search_string),
+		    'languages' => News::$languages
 	    ];
 
 	    return fractal($news, new NewsTransformer())
@@ -63,6 +64,16 @@ class NewsController extends Controller
 		    ->addMeta($meta)
 		    ->respond();
     }
+
+
+    public function getFormMeta()
+	{
+		return fractal(null, new NewsTransformer())
+			->addMeta([
+				'languages' => News::$languages
+			])
+			->respond();
+	}
 
 
 	/**

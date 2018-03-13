@@ -16,6 +16,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property string $meta_key
  * @property string $meta_description
  * @property string $password
+ * @property string $lang
  * @property boolean $active
  * @property string $created_at
  * @property string $updated_at
@@ -29,6 +30,11 @@ class News extends Model
 {
 	use LogsActivity;
 
+	public static $languages = [
+		'ru' => 'Русский',
+		'en' => 'English'
+	];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -38,7 +44,8 @@ class News extends Model
         'title',
         'meta_key',
         'meta_description',
-        'date'
+        'date',
+        'lang'
     ];
 
 	protected $table = 'news';
@@ -63,17 +70,18 @@ class News extends Model
 		'meta_description',
 		'date',
 		'active',
-		'text'
+		'text',
+		'lang'
 	];
 
 	protected static $logOnlyDirty = true;
 
-	public function getDescriptionForEvent($eventName)
+	public function getDescriptionForEvent($eventName): string
 	{
 		return 'This news "' . $this->title . '" has been ' . $eventName;
 	}
 
-	public function getLogNameToUse($eventName = '')
+	public function getLogNameToUse($eventName = ''): string
 	{
 		return $eventName;
 	}
