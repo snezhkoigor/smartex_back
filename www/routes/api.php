@@ -43,6 +43,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		//Meta
 		Route::get('/meta/wallets', 'WalletController@getFormMeta');
 		Route::get('/meta/commissions', 'CommissionController@getFormMeta');
+		Route::get('/meta/news', 'NewsController@getFormMeta');
 
 		//News
 		Route::get('/news', 'NewsController@getNews');

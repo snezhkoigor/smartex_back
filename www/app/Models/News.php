@@ -31,8 +31,14 @@ class News extends Model
 	use LogsActivity;
 
 	public static $languages = [
-		'ru' => 'Русский',
-		'en' => 'English'
+		'ru' => [
+			'label' => 'Русский',
+			'value' => 'ru'
+		],
+		'en' => [
+			'label' => 'English',
+			'value' => 'en'
+		]
 	];
 
     /**

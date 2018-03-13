@@ -55,7 +55,7 @@ class NewsController extends Controller
 
 	    $meta = [
 		    'count' => NewsRepository::getNewsCount($filters, $search_string),
-		    'languages' => News::$languages
+		    'languages' => array_values(News::$languages)
 	    ];
 
 	    return fractal($news, new NewsTransformer())
@@ -70,7 +70,7 @@ class NewsController extends Controller
 	{
 		return fractal(null, new NewsTransformer())
 			->addMeta([
-				'languages' => News::$languages
+				'languages' => array_values(News::$languages)
 			])
 			->respond();
 	}
@@ -90,6 +90,9 @@ class NewsController extends Controller
 		}
 
 		return fractal($news, new NewsTransformer())
+			->addMeta([
+				'languages' => array_values(News::$languages)
+			])
 			->respond();
 	}
 
