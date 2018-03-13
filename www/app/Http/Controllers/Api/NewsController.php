@@ -39,6 +39,31 @@ class NewsController extends Controller
 		];
 	}
 
+	public function view(Request $request)
+    {
+	    $filters = $this->getFilters($request);
+	    $sorts = $this->getSortParameters($request);
+	    $search_string = $this->getSearchString($request);
+	    $fieldsets = $this->getFieldsets($request);
+	    $includes = $this->getIncludes($request);
+	    $limit = $this->getPaginationLimit($request);
+	    $offset = $this->getPaginationOffset($request);
+
+	    $relations = $this->getRelationsFromIncludes($request);
+
+	    $news = NewsRepository::getNews($filters, $sorts, $relations, ['*'], $search_string, $limit, $offset);
+
+	    $meta = [
+		    'count' => NewsRepository::getNewsCount($filters, $search_string)
+	    ];
+
+	    return fractal($news, new NewsTransformer())
+		    ->parseIncludes($includes)
+		    ->parseFieldsets($fieldsets)
+		    ->addMeta($meta)
+		    ->respond();
+    }
+	
     public function getNews(Request $request)
     {
 	    $filters = $this->getFilters($request);

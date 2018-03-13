@@ -38,6 +38,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 	Route::post('/user/registration', 'User\RegistrationController@registration');
 	Route::get('/user/activation/{hash}', 'User\ActivationController@activation');
 	Route::post('/user/password/reset', 'User\ResetPasswordController@resetPassword');
+	Route::get('/news/view', 'NewsController@view');
 
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.','])->group(function() {
 		//Meta
