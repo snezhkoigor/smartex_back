@@ -76,7 +76,7 @@ class LoginService
 	{
 		$data = array_merge($data, [
 			'client_id' => 2,
-			'client_secret' => 'P3KMcqTzNNpPSF7iD07c4tdTV68MGKRtJvlo3GIN',
+			'client_secret' => config('app.password_secret'),
 			'grant_type' => $grantType
 		]);
 

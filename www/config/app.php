@@ -2,6 +2,9 @@
 
 return [
 
+	'personal_secret' => env('PERSONAL_CLIENT_SECRET', 'production'),
+	'password_secret' => env('PASSWORD_CLIENT_SECRET', 'production'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
