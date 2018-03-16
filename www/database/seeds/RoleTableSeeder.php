@@ -26,6 +26,11 @@ class RoleTableSeeder extends Seeder
 		    $role->name = Role::ROLE_OPERATOR;
 		    $role->display_name = 'Operator';
 		    $role->save();
+		    
+		    $role = new Role();
+		    $role->name = Role::ROLE_USER;
+		    $role->display_name = 'User from website';
+		    $role->save();
 
 	    Model::reguard();
     }

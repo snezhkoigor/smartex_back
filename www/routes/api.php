@@ -85,7 +85,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::get('/logs/{log_id}', 'LogActivityController@getLogActivityById');
 	});
 
-	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.'|'.Role::ROLE_OPERATOR.','])->group(function() {
+	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.'|'.Role::ROLE_OPERATOR.'|'.Role::ROLE_USER.','])->group(function() {
 		//User
 		Route::get('/me', 'User\ProfileController@profile');
 		Route::put('/me', 'User\ProfileController@updateProfile');

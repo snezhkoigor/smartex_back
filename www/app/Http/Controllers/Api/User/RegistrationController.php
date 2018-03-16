@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Exceptions\SystemErrorException;
 use App\Mail\RegistrationSuccessMail;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -65,6 +66,8 @@ class RegistrationController extends Controller
 				$user->refer = $request->get('refer');
 			}
 			$user->save();
+
+			$user->roles()->attach(Role::query()->where('name', Role::ROLE_USER)->pluck('id'));
 
 			if ($user) {
 				Mail::to($user->email)->send(new RegistrationSuccessMail($user, $request->get('password')));
