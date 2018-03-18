@@ -37,6 +37,7 @@ class CreateUsersTable extends Migration
 	        $table->string('avatar', 255)->nullable();
 	        $table->string('comment', 255)->nullable();
 	        $table->dateTime('updated_at')->nullable();
+	        $table->dateTime('date')->nullable();
         });
     }
 
