@@ -76,7 +76,7 @@ class ExchangeRepository
 		return [
 			'all' => $allCount ? $allCount['count'] : 0,
 			'finished' => $finishedCount ? $finishedCount['count'] : 0,
-			'conversion' => $allCount ? round($finishedCount['count'] * 100 / $allCount['count'], 0) : 0
+			'conversion' => $allCount['count'] ? round($finishedCount['count'] * 100 / $allCount['count'], 0) : 0
 		];
 	}
 
@@ -99,7 +99,7 @@ class ExchangeRepository
 		return [
 			'all' => $allCount ? $allCount['count'] : 0,
 			'finished' => $finishedCount ? $finishedCount['count'] : 0,
-			'conversion' => $allCount ? round($finishedCount['count'] * 100 / $allCount['count'], 0) : 0
+			'conversion' => $allCount['count'] ? round($finishedCount['count'] * 100 / $allCount['count'], 0) : 0
 		];
 	}
 
@@ -122,7 +122,7 @@ class ExchangeRepository
 		return [
 			'all' => $allCount ? $allCount['count'] : 0,
 			'finished' => $finishedCount ? $finishedCount['count'] : 0,
-			'conversion' => $allCount ? round($finishedCount['count'] * 100 / $allCount['count'], 0) : 0
+			'conversion' => $allCount['count'] ? round($finishedCount['count'] * 100 / $allCount['count'], 0) : 0
 		];
 	}
 
