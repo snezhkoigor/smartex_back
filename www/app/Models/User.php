@@ -31,6 +31,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property string $online
  * @property string $role
  * @property string $comment
+ * @property string $address
  * @property integer $discount
  * @property double $total_exchange
  * @property string $document_number
@@ -75,7 +76,8 @@ class User extends Authenticatable
 	    'document_number',
 	    'verification_image',
 	    'verification_ok',
-	    'comment'
+	    'comment',
+	    'address'
     ];
 
 	protected $guarded = [
@@ -123,6 +125,7 @@ class User extends Authenticatable
 		'verification_ok',
 		'activation',
 		'avatar',
+		'address'
 	];
 
 	protected static $logOnlyDirty = true;

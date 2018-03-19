@@ -36,6 +36,7 @@ class CreateUsersTable extends Migration
 	        $table->boolean('verification_ok')->default(false);
 	        $table->string('avatar', 255)->nullable();
 	        $table->string('comment', 255)->nullable();
+	        $table->text('address')->nullable();
 	        $table->dateTime('updated_at')->nullable();
 	        $table->dateTime('date')->nullable();
         });
