@@ -100,7 +100,7 @@ class ProfileController extends Controller
 			if ($request->get('new_password')) {
 				$user->password = $request->get('new_password') ? Hash::make($request->get('new_password')) : $user->password;
 			}
-			$user->avatar = $this->user_service->getProcessedUserAvatar($user, $request->get('logo_64_base'));
+			$user->verification_image = $this->user_service->getProcessedUserDocument($user, $request->get('verification_image_64_base'));
 
 			$user->save();
 		} catch (\Exception $e) {

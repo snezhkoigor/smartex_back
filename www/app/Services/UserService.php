@@ -43,4 +43,25 @@ class UserService
 
 		return null;
 	}
+
+
+	/**
+	 * @param User $user
+	 * @param $base64_string
+	 * @return string|null
+	 * @throws \Exception
+	 */
+	public function getProcessedUserDocument(User $user, $base64_string)
+	{
+		if (!empty($base64_string)) {
+			return $this->file_helper->uploadFileFromStringInBase64($base64_string, 'verifications');
+		}
+
+		if ($user->verification_image)
+		{
+			$this->file_helper->removeFileFromDisk('verifications', $user->verification_image);
+		}
+
+		return null;
+	}
 }
