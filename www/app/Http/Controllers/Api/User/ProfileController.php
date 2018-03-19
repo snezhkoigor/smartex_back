@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Exceptions\SystemErrorException;
+use App\Models\Payment;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use App\Services\UserService;
+use App\Transformers\PaymentTransformer;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -116,5 +119,41 @@ class ProfileController extends Controller
 		return fractal($user, new UserTransformer())
 			->parseIncludes('roles')
 			->respond();
+	}
+	
+	
+	/**
+	 * @return JsonResponse
+	 * @throws \Exception
+	 */
+	public function referrers(): JsonResponse
+	{
+		$user = \Auth::user();
+		if ($user === null) {
+			throw new NotFoundHttpException('User not found');
+		}
+
+		$filters = $this->getFilters($request);
+	    $sorts = $this->getSortParameters($request);
+	    $search_string = $this->getSearchString($request);
+	    $fieldsets = $this->getFieldsets($request);
+	    $includes = $this->getIncludes($request);
+	    $limit = $this->getPaginationLimit($request);
+	    $offset = $this->getPaginationOffset($request);
+
+	    $relations = $this->getRelationsFromIncludes($request);
+
+	    $filters['referer'] = $user->id;
+	    $users = UserRepository::getUsers($filters, $sorts, $relations, ['*'], $search_string, $limit, $offset);
+
+	    $meta = [
+		    'count' => UserRepository::getUsersCount($filters, $search_string),
+	    ];
+
+	    return fractal($users, new UserTransformer())
+		    ->parseIncludes($includes)
+		    ->parseFieldsets($fieldsets)
+		    ->addMeta($meta)
+		    ->respond();
 	}
 }

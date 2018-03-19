@@ -7,10 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Exchange;
 use App\Models\Payment;
 use App\Models\User;
+use App\Repositories\PaymentRepository;
 use App\Transformers\PaymentTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
 use PDF;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -24,6 +24,41 @@ use Illuminate\Http\JsonResponse;
  */
 class PaymentController extends Controller
 {
+	/**
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	public function userPayments()
+	{
+		$user = \Auth::user();
+		if ($user === null) {
+			throw new NotFoundHttpException('User not found');
+		}
+
+		$filters = $this->getFilters($request);
+	    $sorts = $this->getSortParameters($request);
+	    $search_string = $this->getSearchString($request);
+	    $fieldsets = $this->getFieldsets($request);
+	    $limit = $this->getPaginationLimit($request);
+	    $offset = $this->getPaginationOffset($request);
+
+	    $relations = $this->getRelationsFromIncludes($request);
+
+	    $filters['id_user'] = $user->id;
+	    $users = PaymentRepository::getPayments($filters, $sorts, $relations, ['*'], $search_string, $limit, $offset);
+
+	    $meta = [
+		    'count' => PaymentRepository::getPaymentsCount($filters, $search_string),
+	    ];
+
+	    return fractal($users, new PaymentTransformer())
+		    ->parseIncludes(['paymentSystem'])
+		    ->parseFieldsets($fieldsets)
+		    ->addMeta($meta)
+		    ->respond();
+	}
+
+
 	/**
 	 * @param $payment_id
 	 * @return JsonResponse
@@ -112,7 +147,7 @@ class PaymentController extends Controller
 	 * @return BinaryFileResponse
 	 * @throws \Exception
 	 */
-    public function pdfTransactionsByUser($user_id)
+    public function pdfTransactionsByUser($user_id): BinaryFileResponse
     {
     	$jwt = \Auth::user();
 		if ($jwt === null) {
