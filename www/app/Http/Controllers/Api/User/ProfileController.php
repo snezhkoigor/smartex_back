@@ -95,6 +95,8 @@ class ProfileController extends Controller
 		$this->validate($request, $this->rules($request, $user), $this->messages());
 
 		try {
+			$oldUser = clone $user;
+
 			$user->fill($request->all());
 
 			if ($request->get('new_password')) {
@@ -102,6 +104,10 @@ class ProfileController extends Controller
 			}
 			$user->verification_image = $this->user_service->getProcessedUserDocument($user, $request->get('verification_image_64_base'));
 
+			if ($oldUser->verification_image !== $user->verification_image) {
+				$user->document_number = (int)$user->document_number + 1;
+			}
+			
 			$user->save();
 		} catch (\Exception $e) {
 			throw new SystemErrorException('Update user profile failed', $e);
