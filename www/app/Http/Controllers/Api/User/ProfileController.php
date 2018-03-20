@@ -123,6 +123,70 @@ class ProfileController extends Controller
 	
 	
 	/**
+	 * @param Request $request
+	 * @return JsonResponse
+	 * @throws \Exception
+	 */
+	public function uploadIdCard(Request $request): JsonResponse
+	{
+		$user = \Auth::user();
+		if ($user === null) {
+			throw new NotFoundHttpException('User not found');
+		}
+
+		if ($request->get('verification_image_64_base'))
+		{
+			try {
+				$oldUser = clone $user;
+	
+				$user->verification_image = $this->user_service->getProcessedUserDocument($user, $request->get('verification_image_64_base'));
+	
+				if ($oldUser->verification_image !== $user->verification_image) {
+					$user->document_number = (int)$user->document_number + 1;
+				}
+	
+				$user->save();
+			} catch (\Exception $e) {
+				throw new SystemErrorException('Update user id card failed', $e);
+			}
+		}
+
+		return fractal($user, new UserTransformer())
+			->parseIncludes('roles')
+			->respond();
+	}
+
+
+	/**
+	 * @param Request $request
+	 * @return JsonResponse
+	 * @throws \Exception
+	 */
+	public function uploadKyc(Request $request): JsonResponse
+	{
+		$user = \Auth::user();
+		if ($user === null) {
+			throw new NotFoundHttpException('User not found');
+		}
+
+		if ($request->get('verification_kyc_64_base'))
+		{
+			try {
+				$user->verification_kyc = $this->user_service->getProcessedUserDocument($user, $request->get('verification_kyc_64_base'));
+	
+				$user->save();
+			} catch (\Exception $e) {
+				throw new SystemErrorException('Update user KYC failed', $e);
+			}
+		}
+
+		return fractal($user, new UserTransformer())
+			->parseIncludes('roles')
+			->respond();
+	}
+
+
+	/**
 	 * @return JsonResponse
 	 * @throws \Exception
 	 */

@@ -178,6 +178,10 @@ class UserController extends Controller
 		    {
 		    	$user->verification_ok = $request->get('verification_ok');
 		    }
+		    if ($request->get('verification_kyc_ok'))
+		    {
+		    	$user->verification_kyc_ok = $request->get('verification_kyc_ok');
+		    }
 
 		    $user->save();
 

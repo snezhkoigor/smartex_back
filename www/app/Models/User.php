@@ -37,6 +37,8 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property string $document_number
  * @property string $verification_image
  * @property boolean $verification_ok
+ * @property string $verification_kyc
+ * @property boolean $verification_kyc_ok
  *
  * @method static User|QueryBuilder|EloquentBuilder query()
  *
@@ -77,7 +79,9 @@ class User extends Authenticatable
 	    'verification_image',
 	    'verification_ok',
 	    'comment',
-	    'address'
+	    'address',
+	    'verification_kyc',
+	    'verification_kyc_ok'
     ];
 
 	protected $guarded = [
@@ -125,7 +129,9 @@ class User extends Authenticatable
 		'verification_ok',
 		'activation',
 		'avatar',
-		'address'
+		'address',
+		'verification_kyc',
+	    'verification_kyc_ok'
 	];
 
 	protected static $logOnlyDirty = true;

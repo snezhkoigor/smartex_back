@@ -34,6 +34,8 @@ class CreateUsersTable extends Migration
 	        $table->string('document_number', 50)->nullable();
 	        $table->string('verification_image', 255)->nullable();
 	        $table->boolean('verification_ok')->default(false);
+	        $table->string('verification_kyc', 255)->nullable();
+	        $table->boolean('verification_kyc_ok')->default(false);
 	        $table->string('avatar', 255)->nullable();
 	        $table->string('comment', 255)->nullable();
 	        $table->text('address')->nullable();
