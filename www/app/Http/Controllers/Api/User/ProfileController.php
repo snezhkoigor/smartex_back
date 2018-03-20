@@ -24,10 +24,17 @@ class ProfileController extends Controller
 		$this->user_service = $user_service;
 	}
 
-	public function rules(Request $request, $user)
+	public function rules(Request $request, $user): array
 	{
 		return [
 			'email' => 'required|email|' . $this->emailRulesByChanging($request, $user),
+			'current_password' => 'required_with:new_password|' . $this->checkCurrentPassword($request, $user)
+		];
+	}
+
+	public function passwordRules(Request $request, $user): array
+	{
+		return [
 			'current_password' => 'required_with:new_password|' . $this->checkCurrentPassword($request, $user)
 		];
 	}
@@ -105,10 +112,47 @@ class ProfileController extends Controller
 			if ($request->get('new_password')) {
 				$user->password = $request->get('new_password') ? Hash::make($request->get('new_password')) : $user->password;
 			}
-			$user->verification_image = $this->user_service->getProcessedUserDocument($user, $request->get('verification_image_64_base'));
+			if ($request->get('logo_64_base'))
+			{
+				$user->avatar = $this->user_service->getProcessedUserAvatar($user, $request->get('logo_64_base'));
+			}
+			if ($request->get('verification_image_64_base'))
+			{
+				$user->verification_image = $this->user_service->getProcessedUserDocument($user, $request->get('verification_image_64_base'));
 
-			if ($oldUser->verification_image !== $user->verification_image) {
-				$user->document_number = (int)$user->document_number + 1;
+				if ($oldUser->verification_image !== $user->verification_image) {
+					$user->document_number = (int)$user->document_number + 1;
+				}
+			}
+
+			$user->save();
+		} catch (\Exception $e) {
+			throw new SystemErrorException('Update user profile failed', $e);
+		}
+
+		return fractal($user, new UserTransformer())
+			->parseIncludes('roles')
+			->respond();
+	}
+
+
+	/**
+	 * @param Request $request
+	 * @return JsonResponse
+	 * @throws \Exception
+	 */
+	public function updatePassword(Request $request): JsonResponse
+	{
+		$user = \Auth::user();
+		if ($user === null) {
+			throw new NotFoundHttpException('User not found');
+		}
+
+		$this->validate($request, $this->rules($request, $user), $this->messages());
+
+		try {
+			if ($request->get('new_password')) {
+				$user->password = $request->get('new_password') ? Hash::make($request->get('new_password')) : $user->password;
 			}
 			
 			$user->save();
@@ -120,8 +164,6 @@ class ProfileController extends Controller
 			->parseIncludes('roles')
 			->respond();
 	}
-	
-	
 	/**
 	 * @param Request $request
 	 * @return JsonResponse

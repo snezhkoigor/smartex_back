@@ -44,9 +44,10 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.'|'.Role::ROLE_USER.','])->group(function() {
 		Route::get('/user/referrers', 'User\ProfileController@referrers');
 		Route::get('/user/payments', 'PaymentController@userPayments');
-		
+
 		Route::put('/user/documents/card', 'User\ProfileController@uploadIdCard');
 		Route::put('/user/documents/kyc', 'User\ProfileController@uploadKyc');
+		Route::put('/user/password', 'User\ProfileController@updatePassword');
 	});
 
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.','])->group(function() {
