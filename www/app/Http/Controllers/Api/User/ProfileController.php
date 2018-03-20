@@ -148,13 +148,13 @@ class ProfileController extends Controller
 			throw new NotFoundHttpException('User not found');
 		}
 
-		$this->validate($request, $this->rules($request, $user), $this->messages());
+		$this->validate($request, $this->passwordRules($request, $user), $this->messages());
 
 		try {
 			if ($request->get('new_password')) {
 				$user->password = $request->get('new_password') ? Hash::make($request->get('new_password')) : $user->password;
 			}
-			
+
 			$user->save();
 		} catch (\Exception $e) {
 			throw new SystemErrorException('Update user profile failed', $e);
