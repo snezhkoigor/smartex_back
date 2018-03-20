@@ -30,14 +30,14 @@ class ProfileController extends Controller
 	{
 		return [
 			'email' => 'required|email|' . $this->emailRulesByChanging($request, $user),
-			'current_password' => 'required_with:new_password|' . $this->checkCurrentPassword($request, $user)
+			'current_password' => 'min:6|required_with:new_password|' . $this->checkCurrentPassword($request, $user)
 		];
 	}
 
 	public function passwordRules(Request $request, $user): array
 	{
 		return [
-			'current_password' => 'required_with:new_password|' . $this->checkCurrentPassword($request, $user)
+			'current_password' => 'min:6|required_with:new_password|' . $this->checkCurrentPassword($request, $user)
 		];
 	}
 
@@ -63,7 +63,8 @@ class ProfileController extends Controller
 			'email.exists' => 'This email use someone else',
 			'email.email' => 'Bad email format',
 			'current_password.required_with' => 'Enter your current password for changing in new',
-			'current_password.same' => 'Wrong password value'
+			'current_password.same' => 'Wrong password value',
+			'current_password.min' => 'Password must contain more than 6 symbols'
 		];
 	}
 

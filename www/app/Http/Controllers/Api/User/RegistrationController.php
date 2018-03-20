@@ -20,7 +20,7 @@ class RegistrationController extends Controller
 		return [
 			'email' => 'required|email|unique:users,email',
 			'name' => 'max:100',
-			'password' => 'required'
+			'password' => 'required|min:6'
 		];
 	}
 
@@ -31,6 +31,7 @@ class RegistrationController extends Controller
 			'email.unique' => 'This email somebody use already',
 			'email.email' => 'Bad email format',
 			'password.required' => 'Enter password',
+			'password.min' => 'Password must contain more than 6 symbols',
 			'name.max' => 'Your name is too long'
 		];
 	}

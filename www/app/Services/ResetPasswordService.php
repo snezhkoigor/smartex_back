@@ -18,7 +18,7 @@ class ResetPasswordService
 	 */
 	public function getProcessedResetPassword($user): string
 	{
-		$password = User::generatePassword(5);
+		$password = User::generatePassword(6);
 
 		Mail::to($user->email)->send(new ResetPasswordMail($password));
 
