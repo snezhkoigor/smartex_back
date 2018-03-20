@@ -34,7 +34,7 @@ class ResetPasswordMail extends Mailable
 	        ->with([
 	            'password' => $this->password,
             ])
-	        ->subject('Reset password on ' . config('app.name') . '.')
+	        ->subject('Password has been changed on ' . config('app.name') . '.')
 	        ->text('emails.user.password.plain.reset');
     }
 }

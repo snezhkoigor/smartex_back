@@ -38,7 +38,7 @@ class RegistrationSuccessMail extends Mailable
 	            'password' => $this->password,
 	            'user' => $this->user
             ])
-	        ->subject('Registration on ' . config('app.name') . '.')
+	        ->subject('Confirmation of registration on ' . config('app.name') . '.')
 	        ->text('emails.user.registration.plain');
     }
 }

@@ -38,7 +38,7 @@ class UserVerificationDocumentMail extends Mailable
 	        ->with([
 	            'user' => $this->user,
             ])
-	        ->subject('Documents verification on ' . config('app.name') . '.')
+	        ->subject(($this->type === 'start' ? 'Documents successfully uploaded' : 'Your verification is completed') . ' on ' . config('app.name') . '.')
 	        ->text('emails.user.documents.verification.'.$this->type.'.plain');
     }
 }
