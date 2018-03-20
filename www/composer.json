@@ -26,7 +26,8 @@
         "optimus/api-consumer": "0.2.*",
         "spatie/laravel-activitylog": "2.3.*",
         "spatie/laravel-fractal": "5.3.*",
-        "zizaco/entrust": "1.9.*"
+        "zizaco/entrust": "1.9.*",
+        "adiesel82/geoservice-laravel": "0.0.5"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.4",
@@ -68,11 +69,15 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
         ],
+        "post-install-cmd": [
+            "ADiesel82\\GeoService\\ComposerScripts::postInstall"
+        ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan ide-helper:generate",
             "php artisan ide-helper:meta",
-            "php artisan optimize"
+            "php artisan optimize",
+            "ADiesel82\\GeoService\\ComposerScripts::postUpdate"
         ],
         "test" : [
             "vendor/bin/phpunit"

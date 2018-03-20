@@ -189,6 +189,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Lanin\Laravel\ApiDebugger\ServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        ADiesel82\GeoService\GeoServiceProvider::class,
 
     ],
 
@@ -244,6 +245,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Geo' => ADiesel82\GeoService\GeoServiceFacade::class,
 
     ],
 

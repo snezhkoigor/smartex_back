@@ -4,9 +4,45 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4e7b0e028423d1fc05dcea9e6554e4b4",
-    "content-hash": "64f20d6f39cf8f6311d5772e5500f3b7",
+    "hash": "f5f91a21d40542bd224bf234e8bc76d7",
+    "content-hash": "ddfcf411f6742ff5b6dde485be98cc2d",
     "packages": [
+        {
+            "name": "adiesel82/geoservice-laravel",
+            "version": "0.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ADiesel82/geoservice-laravel.git",
+                "reference": "be9cac46a567092a2d44ff1ff843e5fe37d33190"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ADiesel82/geoservice-laravel/zipball/be9cac46a567092a2d44ff1ff843e5fe37d33190",
+                "reference": "be9cac46a567092a2d44ff1ff843e5fe37d33190",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ADiesel82\\GeoService\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexey",
+                    "email": "starostenko@gmail.com"
+                }
+            ],
+            "description": "SypexGeo Laravel 5.5 service",
+            "time": "2017-09-06 20:00:04"
+        },
         {
             "name": "aleksandrzhiliaev/omnipay-advcash",
             "version": "1.0.0.0",
@@ -212,16 +248,16 @@
         },
         {
             "name": "barryvdh/laravel-debugbar",
-            "version": "v3.1.3",
+            "version": "v3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-debugbar.git",
-                "reference": "664fa434e26febf04d60df0368303cf0fe14f63a"
+                "reference": "7a91480cc6e597caed5117a3c5d685f06d35c5a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/664fa434e26febf04d60df0368303cf0fe14f63a",
-                "reference": "664fa434e26febf04d60df0368303cf0fe14f63a",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/7a91480cc6e597caed5117a3c5d685f06d35c5a1",
+                "reference": "7a91480cc6e597caed5117a3c5d685f06d35c5a1",
                 "shasum": ""
             },
             "require": {
@@ -276,7 +312,7 @@
                 "profiler",
                 "webprofiler"
             ],
-            "time": "2018-02-25 13:31:58"
+            "time": "2018-03-06 08:35:31"
         },
         {
             "name": "barryvdh/laravel-dompdf",
@@ -6929,16 +6965,16 @@
         },
         {
             "name": "symfony/thanks",
-            "version": "v1.0.6",
+            "version": "v1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/thanks.git",
-                "reference": "9474ce305253c2f0bc20322ff8e9973cf25c9a94"
+                "reference": "bade4992c46ed722162694b4af8d72f84402819a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/thanks/zipball/9474ce305253c2f0bc20322ff8e9973cf25c9a94",
-                "reference": "9474ce305253c2f0bc20322ff8e9973cf25c9a94",
+                "url": "https://api.github.com/repos/symfony/thanks/zipball/bade4992c46ed722162694b4af8d72f84402819a",
+                "reference": "bade4992c46ed722162694b4af8d72f84402819a",
                 "shasum": ""
             },
             "require": {
@@ -6968,7 +7004,7 @@
                 }
             ],
             "description": "Give thanks (in the form of a GitHub ⭐) to your fellow PHP package maintainers (not limited to Symfony components)!",
-            "time": "2018-02-02 13:47:40"
+            "time": "2018-03-14 21:51:39"
         },
         {
             "name": "theseer/tokenizer",

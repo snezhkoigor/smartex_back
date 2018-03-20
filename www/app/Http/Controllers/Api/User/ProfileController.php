@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Exceptions\SystemErrorException;
 use App\Mail\UserVerificationDocumentMail;
+use App\Models\LoginLog;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\UserService;
+use App\Transformers\LoginLogTransformer;
 use Illuminate\Support\Facades\Mail;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
@@ -85,6 +87,23 @@ class ProfileController extends Controller
 		return fractal($user, new UserTransformer())
 			->parseIncludes($includes)
 			->parseFieldsets($fieldsets)
+			->respond();
+	}
+	
+	
+	/**
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	public function loginLogs()
+	{
+		$user = \Auth::user();
+
+		if ($user === null) {
+			throw new NotFoundHttpException('User not found');
+		}
+
+		return fractal(LoginLog::query()->where('user_id', $user->id)->get(), new LoginLogTransformer())
 			->respond();
 	}
 

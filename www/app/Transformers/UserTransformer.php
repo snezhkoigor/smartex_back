@@ -11,7 +11,8 @@ class UserTransformer extends TransformerAbstract
 {
 	protected $availableIncludes = [
 		'roles',
-		'activities'
+		'activities',
+		'loginLogs'
 	];
 
 
@@ -70,5 +71,15 @@ class UserTransformer extends TransformerAbstract
 	public function includeActivities(User $user): Collection
 	{
 		return $this->collection($user->activities, new LogActivityTransformer(), 'activities');
+	}
+
+
+	/**
+	 * @param User $user
+	 * @return \League\Fractal\Resource\Collection
+	 */
+	public function includeLoginLogs(User $user): Collection
+	{
+		return $this->collection($user->loginLogs, new LogActivityTransformer(), 'loginLogs');
 	}
 }

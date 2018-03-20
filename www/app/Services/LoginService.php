@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Exceptions\InvalidCredentialsException;
+use App\Models\LoginLog;
 use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
+use Geo;
 
 class LoginService
 {
@@ -38,10 +40,24 @@ class LoginService
 		$user = User::query()->where('email', $email)->first();
 
 		if ($user) {
-			return $this->proxy('password', [
+			$answer = $this->proxy('password', [
 				'username' => $email,
 				'password' => $password
 			]);
+			$loginLog = new LoginLog();
+			$loginLog->user_id = $user->id;
+			$loginLog->browser = $_SERVER['HTTP_USER_AGENT'];
+			$loginLog->ip = $_SERVER['REMOTE_ADDR'];
+
+			$geoObj = Geo::get($loginLog->ip);
+			if ($geoObj)
+			{
+				$loginLog->geo = $geoObj->city->name_en;
+			}
+			
+			$loginLog->save();
+
+			return $answer;
 		}
 
 		throw new InvalidCredentialsException('email');

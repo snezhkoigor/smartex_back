@@ -44,6 +44,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  *
  * @property Role[] $roles
  * @property Activity[] $activities
+ * @property LoginLog[] $loginLogs
  *
  * Class User
  * @package App\Models
@@ -154,6 +155,11 @@ class User extends Authenticatable
 	public function activities()
 	{
 		return $this->hasMany(Activity::class, 'causer_id', 'id');
+	}
+
+	public function loginLogs()
+	{
+		return $this->hasMany(LoginLog::class, 'user_id', 'id');
 	}
 
 	public static function generatePassword($number)
