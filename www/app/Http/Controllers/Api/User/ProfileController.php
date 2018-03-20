@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Exceptions\SystemErrorException;
-use App\Models\Payment;
+use App\Mail\UserVerificationDocumentMail;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\UserService;
-use App\Transformers\PaymentTransformer;
+use Illuminate\Support\Facades\Mail;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -123,6 +123,13 @@ class ProfileController extends Controller
 				if ($oldUser->verification_image !== $user->verification_image) {
 					$user->document_number = (int)$user->document_number + 1;
 				}
+
+				$user->verification_ok = false;
+			}
+			if ($request->get('verification_kyc_64_base'))
+			{
+				$user->verification_kyc = $this->user_service->getProcessedUserDocument($user, $request->get('verification_kyc_64_base'));
+				$user->verification_kyc_ok = false;
 			}
 
 			$user->save();
@@ -182,12 +189,15 @@ class ProfileController extends Controller
 				$oldUser = clone $user;
 	
 				$user->verification_image = $this->user_service->getProcessedUserDocument($user, $request->get('verification_image_64_base'));
+				$user->verification_ok = false;
 	
 				if ($oldUser->verification_image !== $user->verification_image) {
 					$user->document_number = (int)$user->document_number + 1;
 				}
 	
 				$user->save();
+				
+				Mail::to($user->email)->send(new UserVerificationDocumentMail($user));
 			} catch (\Exception $e) {
 				throw new SystemErrorException('Update user id card failed', $e);
 			}
@@ -215,8 +225,10 @@ class ProfileController extends Controller
 		{
 			try {
 				$user->verification_kyc = $this->user_service->getProcessedUserDocument($user, $request->get('verification_kyc_64_base'));
-	
+				$user->verification_kyc_ok = false;
 				$user->save();
+
+				Mail::to($user->email)->send(new UserVerificationDocumentMail($user));
 			} catch (\Exception $e) {
 				throw new SystemErrorException('Update user KYC failed', $e);
 			}

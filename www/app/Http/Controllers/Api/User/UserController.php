@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Exceptions\SystemErrorException;
+use App\Mail\UserVerificationDocumentMail;
 use App\Models\Role;
 use App\Models\User;
 use App\Repositories\RoleRepository;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -197,6 +199,10 @@ class UserController extends Controller
 			    {
 			        $user->roles()->attach($request->get('role_id'));
 			    }
+		    }
+
+		    if ($request->get('verification_ok') || $request->get('verification_kyc_ok')) {
+		    	Mail::to($user->email)->send(new UserVerificationDocumentMail($user, 'finish'));
 		    }
 	    }
 	    catch (\Exception $e)
