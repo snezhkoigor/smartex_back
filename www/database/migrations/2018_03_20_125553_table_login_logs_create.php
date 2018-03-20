@@ -17,6 +17,7 @@ class TableLoginLogsCreate extends Migration
             $table->increments('id');
             $table->integer('user_id');
             $table->string('browser', 255)->nullable();
+            $table->string('tech_browser_info', 255)->nullable();
             $table->ipAddress('ip')->nullable();
             $table->text('geo')->nullable();
             $table->timestamps();

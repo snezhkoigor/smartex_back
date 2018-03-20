@@ -12,6 +12,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property integer $id
  * @property integer $user_id
  * @property string $browser
+ * @property string $tech_browser_info
  * @property string $ip
  * @property string $geo
  * @property string $created_at

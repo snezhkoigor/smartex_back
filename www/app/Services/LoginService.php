@@ -44,9 +44,14 @@ class LoginService
 				'username' => $email,
 				'password' => $password
 			]);
+
 			$loginLog = new LoginLog();
 			$loginLog->user_id = $user->id;
-			$loginLog->browser = $_SERVER['HTTP_USER_AGENT'];
+			$loginLog->tech_browser_info = $_SERVER['HTTP_USER_AGENT'];
+			
+			preg_match('/(MSIE|Opera|Firefox|Chrome|Version)(?:\/| )([0-9.]+)/', $loginLog->tech_browser_info, $bInfo);
+			$loginLog->browser = ($bInfo[1] === 'Version') ? 'Safari' : $bInfo[1];
+
 			$loginLog->ip = $_SERVER['REMOTE_ADDR'];
 
 			$geoObj = Geo::get($loginLog->ip);

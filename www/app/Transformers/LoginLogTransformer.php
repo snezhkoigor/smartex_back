@@ -26,6 +26,7 @@ class LoginLogTransformer extends TransformerAbstract
 			'id' => (int)$login_log->id,
 			'user_id' => $login_log->user_id,
 			'browser' => $login_log->browser,
+			'tech_browser_info' => $login_log->tech_browser_info,
 			'ip' => $login_log->ip,
 			'geo' => $login_log->geo,
 			'created_at' => $login_log->created_at->toDateTimeString(),
