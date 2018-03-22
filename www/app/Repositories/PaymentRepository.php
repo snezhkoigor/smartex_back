@@ -85,6 +85,9 @@ class PaymentRepository
 				case 'type':
 					$query->where('type', (int)$value);
 					break;
+				case 'id_user':
+					$query->where('id_user', (int)$value);
+					break;
 			}
 		}
 	}

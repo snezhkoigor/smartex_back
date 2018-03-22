@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Repositories\PaymentRepository;
 use App\Transformers\PaymentTransformer;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use PDF;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -25,10 +26,11 @@ use Illuminate\Http\JsonResponse;
 class PaymentController extends Controller
 {
 	/**
+	 * @param Request $request
 	 * @return mixed
 	 * @throws \Exception
 	 */
-	public function userPayments()
+	public function userPayments(Request $request)
 	{
 		$user = \Auth::user();
 		if ($user === null) {
