@@ -325,7 +325,7 @@ class ProfileController extends Controller
 
 	    $relations = $this->getRelationsFromIncludes($request);
 
-	    $filters['referer'] = $user->id;
+	    $filters['refer'] = $user->id;
 	    $users = UserRepository::getUsers($filters, $sorts, $relations, ['*'], $search_string, $limit, $offset);
 
 	    $meta = [

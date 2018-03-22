@@ -188,6 +188,9 @@ class UserRepository
 				case 'verification_ok':
 					$query->where('verification_ok', (int)$value);
 					break;
+				case 'refer':
+					$query->where('refer', (int)$value);
+					break;
 			}
 		}
 	}
