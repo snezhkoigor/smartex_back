@@ -15,6 +15,8 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property string $tech_browser_info
  * @property string $ip
  * @property string $geo
+ * @property string $token_id
+ * @property string $token
  * @property string $created_at
  * @property string $updated_at
  *

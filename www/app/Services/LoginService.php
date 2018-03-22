@@ -6,8 +6,10 @@ use App\Exceptions\InvalidCredentialsException;
 use App\Models\LoginLog;
 use App\Models\User;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Geo;
+use Illuminate\Support\Facades\DB;
 
 class LoginService
 {
@@ -48,18 +50,22 @@ class LoginService
 			$loginLog = new LoginLog();
 			$loginLog->user_id = $user->id;
 			$loginLog->tech_browser_info = $_SERVER['HTTP_USER_AGENT'];
-			
+
 			preg_match('/(MSIE|Opera|Firefox|Chrome|Version)(?:\/| )([0-9.]+)/', $loginLog->tech_browser_info, $bInfo);
 			$loginLog->browser = ($bInfo[1] === 'Version') ? 'Safari' : $bInfo[1];
 
 			$loginLog->ip = $_SERVER['REMOTE_ADDR'];
+			
+			$token = DB::table('oauth_access_tokens')->where('user_id', $user->id)->orderBy('created_at', 'DESC')->first();
+			$loginLog->token_id = $token ? $token->id : null;
+			$loginLog->token = $answer['access_token'];
 
 			$geoObj = Geo::get($loginLog->ip);
 			if ($geoObj)
 			{
 				$loginLog->geo = $geoObj->city->name_en;
 			}
-			
+	
 			$loginLog->save();
 
 			return $answer;
@@ -110,15 +116,15 @@ class LoginService
 		$data = json_decode($response->getContent());
 
 		// Create a refresh token cookie
-		$this->cookie->queue(
-			self::REFRESH_TOKEN,
-			$data->refresh_token,
-			864000, // 10 days
-			null,
-			null,
-			false,
-			true // HttpOnly
-		);
+//		$this->cookie->queue(
+//			self::REFRESH_TOKEN,
+//			$data->refresh_token,
+//			864000, // 10 days
+//			null,
+//			null,
+//			false,
+//			true // HttpOnly
+//		);
 
 		return [
 			'access_token' => $data->access_token,
@@ -132,7 +138,7 @@ class LoginService
 	 */
 	public function logout()
 	{
-		$user = Auth::guard()->user();
+		$user = \Auth::user();
 
 		if ($user)
 		{
@@ -149,7 +155,7 @@ class LoginService
 
 				$accessToken->revoke();
 
-				$this->cookie->queue($this->cookie->forget(self::REFRESH_TOKEN));
+//				$this->cookie->queue($this->cookie->forget(self::REFRESH_TOKEN));
 			}
 		}
 	}

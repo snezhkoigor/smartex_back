@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\LoginLog;
+use Illuminate\Support\Facades\DB;
 use League\Fractal\TransformerAbstract;
 
 /**
@@ -29,6 +30,7 @@ class LoginLogTransformer extends TransformerAbstract
 			'tech_browser_info' => $login_log->tech_browser_info,
 			'ip' => $login_log->ip,
 			'geo' => $login_log->geo,
+			'active' => $login_log->token_id !== null,
 			'created_at' => $login_log->created_at->toDateTimeString(),
 			'updated_at' => $login_log->updated_at->toDateTimeString()
 		];

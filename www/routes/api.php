@@ -49,6 +49,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::put('/user/documents/kyc', 'User\ProfileController@uploadKyc');
 		Route::put('/user/password', 'User\ProfileController@updatePassword');
 		Route::get('/user/login-logs', 'User\ProfileController@loginLogs');
+		Route::put('/user/login-logs/{id}/token-revoke', 'User\ProfileController@tokenRevoke');
 	});
 
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.','])->group(function() {

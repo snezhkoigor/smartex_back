@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\UserService;
 use App\Transformers\LoginLogTransformer;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class ProfileController extends Controller
 {
@@ -190,6 +192,48 @@ class ProfileController extends Controller
 			->parseIncludes('roles')
 			->respond();
 	}
+	
+	
+	/**
+	 * @param $id
+	 * @return JsonResponse
+	 * @throws \Exception
+	 */
+	public function tokenRevoke($id): JsonResponse
+	{var_dump('1');die;
+		$user = \Auth::user();
+		if ($user === null) {
+			throw new NotFoundHttpException('User not found');
+		}
+
+		$loginLog = LoginLog::query()->where('id', $id)->first();
+		if ($loginLog === null) {
+			throw new NotFoundHttpException('Login Log item not found');
+		}
+
+		try {
+			DB::table('oauth_access_tokens')
+				->where('id', $loginLog->token_id)
+				->update([
+					'revoked' => true
+				]);
+			DB::table('oauth_refresh_tokens')
+				->where('access_token_id', $loginLog->token_id)
+				->update([
+					'revoked' => true
+				]);
+			
+			$loginLog->token = null;
+			$loginLog->token_id = null;
+			$loginLog->save();
+		} catch (\Exception $e) {
+			throw new SystemErrorException('Revoke user token failed', $e);
+		}
+		
+		return response()->json(null, Response::HTTP_NO_CONTENT);
+	}
+
+
 	/**
 	 * @param Request $request
 	 * @return JsonResponse
@@ -260,10 +304,11 @@ class ProfileController extends Controller
 
 
 	/**
+	 * @param Request $request
 	 * @return JsonResponse
 	 * @throws \Exception
 	 */
-	public function referrers(): JsonResponse
+	public function referrers(Request $request): JsonResponse
 	{
 		$user = \Auth::user();
 		if ($user === null) {

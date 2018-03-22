@@ -20,9 +20,12 @@ class TableLoginLogsCreate extends Migration
             $table->string('tech_browser_info', 255)->nullable();
             $table->ipAddress('ip')->nullable();
             $table->text('geo')->nullable();
+            $table->text('token_id')->nullable();
+            $table->text('token')->nullable();
             $table->timestamps();
 
             $table->index('user_id');
+            $table->index('token');
         });
     }
 

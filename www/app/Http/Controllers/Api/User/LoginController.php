@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Models\LoginLog;
 use App\Services\LoginService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -75,8 +76,16 @@ class LoginController extends Controller
 		return response()->json($this->loginService->attemptRefresh());
 	}
 
-	public function logout()
+	public function logout(Request $request)
 	{
+		$loginLog = LoginLog::query()->where('token', $request->bearerToken())->first();
+		if ($loginLog)
+		{
+			$loginLog->token_id = null;
+			$loginLog->token = null;
+			$loginLog->save();
+		}
+		
 		$this->loginService->logout();
 
 		return response()->json(null, Response::HTTP_NO_CONTENT);
