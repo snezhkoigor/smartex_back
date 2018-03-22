@@ -200,7 +200,7 @@ class ProfileController extends Controller
 	 * @throws \Exception
 	 */
 	public function tokenRevoke($id): JsonResponse
-	{var_dump('1');die;
+	{
 		$user = \Auth::user();
 		if ($user === null) {
 			throw new NotFoundHttpException('User not found');
