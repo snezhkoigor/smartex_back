@@ -39,7 +39,10 @@ class LoginService
 	 */
 	public function attemptLogin($email, $password)
 	{
-		$user = User::query()->where('email', $email)->first();
+		$user = User::query()->where([
+			['email', $email],
+			['activation', 1]
+		])->first();
 
 		if ($user) {
 			$answer = $this->proxy('password', [
