@@ -68,6 +68,11 @@ class PaymentTransformer extends TransformerAbstract
 	 */
 	public function includePaymentSystem(Payment $payment): Item
 	{
-		return $this->item($payment->paymentSystem, new PaymentSystemTransformer(), 'paymentSystem');
+		if ($payment->paymentSystem)
+		{
+			return $this->item($payment->paymentSystem, new PaymentSystemTransformer(), 'paymentSystem');
+		}
+		
+		return null;
 	}
 }
