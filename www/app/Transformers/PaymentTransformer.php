@@ -51,7 +51,7 @@ class PaymentTransformer extends TransformerAbstract
 	 * @param Payment $payment
 	 * @return \League\Fractal\Resource\Item|null
 	 */
-	public function includeUser(Payment $payment)
+	public function includeUser(Payment $payment): ?Item
 	{
 		if ($payment->id_user > 0 && !empty($payment->id_user) && User::query()->where('id', $payment->id_user)->first())
 		{
@@ -64,9 +64,9 @@ class PaymentTransformer extends TransformerAbstract
 
 	/**
 	 * @param Payment $payment
-	 * @return \League\Fractal\Resource\Item
+	 * @return \League\Fractal\Resource\Item|null
 	 */
-	public function includePaymentSystem(Payment $payment): Item
+	public function includePaymentSystem(Payment $payment): ?Item
 	{
 		if ($payment->paymentSystem)
 		{
