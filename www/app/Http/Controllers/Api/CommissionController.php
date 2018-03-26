@@ -83,7 +83,7 @@ class CommissionController extends Controller
 	    $commissions = CommissionRepository::getCommissions($filters, $relations, ['*'], $search_string, $limit, $offset);
 
 	    return fractal($commissions, new CommissionTransformer())
-		    ->parseIncludes(['paymentSystem', 'wallet'])
+		    ->parseIncludes(['paymentSystem', 'wallet.paymentSystem'])
 		    ->respond();
 	}
 
