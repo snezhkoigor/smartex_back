@@ -87,9 +87,7 @@ class CommissionController extends Controller
 		    ->parseFieldsets([
 		    	'' => ['currency', 'prefix', 'paymentSystem', 'wallet.paymentSystem'],
 			    'paymentSystem' => ['name'],
-			    'wallet' => [
-			    	'paymentSystem' => ['name']
-			    ]
+			    'wallet.paymentSystem' => ['name']
 		    ])
 		    ->respond();
 	}
