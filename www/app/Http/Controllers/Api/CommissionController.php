@@ -71,6 +71,23 @@ class CommissionController extends Controller
 		];
 	}
 
+
+	public function view(Request $request)
+	{
+		$filters = $this->getFilters($request);
+	    $search_string = $this->getSearchString($request);
+	    $relations = $this->getRelationsFromIncludes($request);
+	    $limit = $this->getPaginationLimit($request);
+	    $offset = $this->getPaginationOffset($request);
+
+	    $commissions = CommissionRepository::getCommissions($filters, $relations, ['*'], $search_string, $limit, $offset);
+
+	    return fractal($commissions, new CommissionTransformer())
+		    ->parseIncludes(['paymentSystem'])
+		    ->respond();
+	}
+
+
     public function getCommissions(Request $request)
     {
 	    $filters = $this->getFilters($request);
