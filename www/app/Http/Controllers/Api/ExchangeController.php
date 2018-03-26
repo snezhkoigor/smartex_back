@@ -42,7 +42,7 @@ class ExchangeController extends Controller
 	    ];
 
 	    return fractal($users, new ExchangeTransformer())
-		    ->parseIncludes(['inPayment', 'outPayment'])
+		    ->parseIncludes(['inPayment', 'outPayment', 'inPayment.paymentSystem', 'outPayment.paymentSystem'])
 		    ->parseFieldsets($fieldsets)
 		    ->addMeta($meta)
 		    ->respond();
