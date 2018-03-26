@@ -85,8 +85,9 @@ class CommissionController extends Controller
 	    return fractal($commissions, new CommissionTransformer())
 		    ->parseIncludes(['paymentSystem', 'wallet.paymentSystem'])
 		    ->parseFieldsets([
-		    	'' => ['currency', 'prefix', 'paymentSystem', 'wallet', 'wallet.paymentSystem'],
+		    	'' => ['currency', 'prefix', 'commission', 'paymentSystem', 'wallet', 'wallet.paymentSystem'],
 			    'paymentSystem' => ['name'],
+			    'wallet' => ['currency', 'prefix'],
 			    'wallet.paymentSystem' => ['name']
 		    ])
 		    ->respond();
