@@ -44,6 +44,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.'|'.Role::ROLE_USER.','])->group(function() {
 		Route::get('/user/referrers', 'User\ProfileController@referrers');
 		Route::get('/user/payments', 'PaymentController@userPayments');
+		Route::get('/user/exchanges', 'ExchangeController@userExchanges');
 
 		Route::put('/user/documents/card', 'User\ProfileController@uploadIdCard');
 		Route::put('/user/documents/kyc', 'User\ProfileController@uploadKyc');
