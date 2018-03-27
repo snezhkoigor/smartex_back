@@ -91,7 +91,7 @@ class CommissionRepository
 			}
 		}
 
-		return $result;
+		return array_values($result);
 	}
 	
 	
