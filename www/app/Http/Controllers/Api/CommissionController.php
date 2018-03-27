@@ -55,7 +55,7 @@ class CommissionController extends Controller
 		return '';
 	}
 
-	public function messages()
+	public function messages(): array
 	{
 		return [
 			'wallet_id.required' => 'Enter wallet',
@@ -70,27 +70,14 @@ class CommissionController extends Controller
 			'active.boolean' => 'Wrong format'
 		];
 	}
-
-
-	public function view(Request $request)
+	
+	
+	/**
+	 * @return JsonResponse
+	 */
+	public function view(): JsonResponse
 	{
-		$filters = $this->getFilters($request);
-	    $search_string = $this->getSearchString($request);
-	    $relations = $this->getRelationsFromIncludes($request);
-	    $limit = $this->getPaginationLimit($request);
-	    $offset = $this->getPaginationOffset($request);
-
-	    $commissions = CommissionRepository::getCommissions($filters, $relations, ['*'], $search_string, $limit, $offset);
-
-	    return fractal($commissions, new CommissionTransformer())
-		    ->parseIncludes(['paymentSystem', 'wallet.paymentSystem'])
-		    ->parseFieldsets([
-		    	'' => ['currency', 'prefix', 'commission', 'paymentSystem', 'wallet', 'wallet.paymentSystem'],
-			    'paymentSystem' => ['name'],
-			    'wallet' => ['currency', 'prefix', 'paymentSystem'],
-			    'wallet.paymentSystem' => ['name']
-		    ])
-		    ->respond();
+		return response()->json(['data' => CommissionRepository::getCommissionView()], Response::HTTP_OK);
 	}
 
 
