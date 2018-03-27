@@ -47,15 +47,16 @@ class CommissionRepository
 		$result = [];
 
 		$payment_systems_available = Commission::query()
+			->select(['payment_systems.name', 'ps_commission.currency'])
 			->join('payment_systems', 'payment_systems.id', '=', 'ps_commission.payment_system_id')
 			->where('ps_commission.active', 1)
-			->get(['payment_systems.name'])
-			->pluck('name');
+			->get()
+			->toArray();
 
 		if ($payment_systems_available)
 		{
 			$data = Commission::query()
-				->select(['ps_commission.currency', 'ps_commission.commission', 'from.name as payment_system_from', 'to.name as payment_system_to'])
+				->select(['ps_commission.currency', 'ps_commission.commission', 'payment_account.currency as wallet_currency', 'from.name as payment_system_from', 'to.name as payment_system_to'])
 				->join('payment_account', 'payment_account.id', '=', 'ps_commission.wallet_id')
 				->join('payment_systems as from', 'from.id', '=', 'payment_account.payment_system_id')
 				->join('payment_systems as to', 'to.id', '=', 'ps_commission.payment_system_id')
@@ -65,29 +66,34 @@ class CommissionRepository
 
 			if ($data)
 			{
-				foreach ($payment_systems_available as $payment_system_to)
+				foreach ($data as $item)
 				{
-					foreach ($data as $payment_system_from)
+					$items = [];
+					$from = $item['payment_system_from'] . ' (' . mb_strtolower($item['wallet_currency']) . ')';
+					$to = $item['payment_system_to'] . ' (' . mb_strtolower($item['currency']) . ')';
+					foreach ($payment_systems_available as $payment_system_to)
 					{
-						$result[$payment_system_from['payment_system_from']]['name'] = $payment_system_from['payment_system_from'];
-						
-						if (\in_array($payment_system_to, $payment_system_from))
+						if (($payment_system_to['name'] . ' (' . mb_strtolower($payment_system_to['currency'] . ')')) === $to)
 						{
-							$result[$payment_system_from['payment_system_from']]['items'][] = [
-								'name' => $payment_system_to,
-								'value' => $payment_system_from['commission'],
-								'currency' => $payment_system_from['currency']
+							$items[] = [
+								'name'     => $payment_system_to['name'],
+								'value'    => $item['commission'],
+								'currency' => $item['currency']
 							];
 						}
 						else
 						{
-							$result[$payment_system_from['payment_system_from']]['items'][] = [
-								'name' => $payment_system_to,
-								'value' => null,
+							$items[] = [
+								'name'     => $payment_system_to['name'],
+								'value'    => null,
 								'currency' => null
 							];
 						}
 					}
+					$result[] = [
+						'name' => $from,
+						'items' => $items
+					];
 				}
 			}
 		}
