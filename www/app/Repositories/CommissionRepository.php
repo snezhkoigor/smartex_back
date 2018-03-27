@@ -44,6 +44,7 @@ class CommissionRepository
 	 */
 	public static function getCommissionView(): array
 	{
+		$columns = [];
 		$result = [];
 
 		$payment_systems_available = Commission::query()
@@ -68,37 +69,49 @@ class CommissionRepository
 			{
 				foreach ($data as $item)
 				{
-					$items = [];
 					$from = $item['payment_system_from'] . ' (' . mb_strtolower($item['wallet_currency']) . ')';
 					$to = $item['payment_system_to'] . ' (' . mb_strtolower($item['currency']) . ')';
+					$result[$from]['name'] = $from;
+
 					foreach ($payment_systems_available as $payment_system_to)
 					{
 						if (($payment_system_to['name'] . ' (' . mb_strtolower($payment_system_to['currency'] . ')')) === $to)
 						{
-							$items[] = [
+							$result[$from]['items'][$payment_system_to['name']] = [
 								'name'     => $payment_system_to['name'],
 								'value'    => $item['commission'],
 								'currency' => $item['currency']
 							];
 						}
-						else
+					}
+				}
+				
+				foreach ($result as $id => $row)
+				{
+					foreach ($payment_systems_available as $ps)
+					{
+						if (!array_key_exists($ps['name'], $row['items']))
 						{
-							$items[] = [
-								'name'     => $payment_system_to['name'],
+							$result[$id]['items'][$ps['name']] = [
+								'name'     => $ps['name'],
 								'value'    => null,
 								'currency' => null
 							];
 						}
 					}
-					$result[] = [
-						'name' => $from,
-						'items' => $items
-					];
+					
+					ksort($result[$id]['items']);
+					$columns = array_keys($result[$id]['items']);
+					$result[$id]['items'] = array_values($result[$id]['items']);
+					
 				}
 			}
 		}
 
-		return array_values($result);
+		return [
+			'columns' => $columns,
+			'data' => array_values($result)
+		];
 	}
 	
 	
