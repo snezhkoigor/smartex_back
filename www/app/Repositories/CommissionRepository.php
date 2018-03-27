@@ -48,8 +48,8 @@ class CommissionRepository
 
 		$payment_systems_available = Commission::query()
 			->join('payment_systems', 'payment_systems.id', '=', 'ps_commission.payment_system_id')
-			->get(['payment_systems.name'])
 			->where('ps_commission.active', 1)
+			->get(['payment_systems.name'])
 			->pluck('name');
 
 		if ($payment_systems_available)
