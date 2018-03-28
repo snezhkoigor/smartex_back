@@ -66,7 +66,13 @@ return [
 	        'root' => storage_path('avatars'),
 	        'url' => env('APP_URL') . '/files/avatars/'
         ],
-        
+
+        'logo' => [
+	        'driver' => 'local',
+	        'root' => storage_path('logo'),
+	        'url' => env('APP_URL') . '/files/logo/'
+        ],
+
         'pdf' => [
 	        'driver' => 'local',
 	        'root' => storage_path('pdf'),

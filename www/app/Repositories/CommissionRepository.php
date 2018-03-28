@@ -6,6 +6,7 @@ use App\Models\Commission;
 use App\Models\Wallet;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CommissionRepository
 {
@@ -48,7 +49,7 @@ class CommissionRepository
 		$result = [];
 
 		$payment_systems_available = Commission::query()
-			->select(['payment_systems.name', 'ps_commission.currency'])
+			->select(['payment_systems.name', 'ps_commission.currency', 'payment_systems.logo'])
 			->join('payment_systems', 'payment_systems.id', '=', 'ps_commission.payment_system_id')
 			->where('ps_commission.active', 1)
 			->get()
@@ -57,7 +58,7 @@ class CommissionRepository
 		if ($payment_systems_available)
 		{
 			$data = Commission::query()
-				->select(['ps_commission.currency', 'ps_commission.commission', 'payment_account.currency as wallet_currency', 'from.name as payment_system_from', 'to.name as payment_system_to'])
+				->select(['ps_commission.currency', 'from.logo as from_ps_logo', 'to.logo', 'ps_commission.commission', 'payment_account.currency as wallet_currency', 'from.name as payment_system_from', 'to.name as payment_system_to'])
 				->join('payment_account', 'payment_account.id', '=', 'ps_commission.wallet_id')
 				->join('payment_systems as from', 'from.id', '=', 'payment_account.payment_system_id')
 				->join('payment_systems as to', 'to.id', '=', 'ps_commission.payment_system_id')
@@ -72,6 +73,7 @@ class CommissionRepository
 					$from = $item['payment_system_from'] . ' (' . mb_strtolower($item['wallet_currency']) . ')';
 					$to = $item['payment_system_to'] . ' (' . mb_strtolower($item['currency']) . ')';
 					$result[$from]['name'] = $from;
+					$result[$from]['logo'] = $item['from_ps_logo'] ? Storage::disk('logo')->url($item['from_ps_logo']) : '';
 
 					foreach ($payment_systems_available as $payment_system_to)
 					{
@@ -79,6 +81,7 @@ class CommissionRepository
 						{
 							$result[$from]['items'][$payment_system_to['name']] = [
 								'name'     => $payment_system_to['name'],
+								'logo'     => $payment_system_to['logo'] ? Storage::disk('logo')->url($payment_system_to['logo']) : '',
 								'value'    => $item['commission'],
 								'currency' => $item['currency']
 							];
@@ -94,6 +97,7 @@ class CommissionRepository
 						{
 							$result[$id]['items'][$ps['name']] = [
 								'name'     => $ps['name'],
+								'logo'     => $ps['logo'] ? Storage::disk('logo')->url($ps['logo']) : '',
 								'value'    => null,
 								'currency' => null
 							];
