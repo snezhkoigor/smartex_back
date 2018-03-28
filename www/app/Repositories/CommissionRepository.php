@@ -70,17 +70,17 @@ class CommissionRepository
 			{
 				foreach ($data as $item)
 				{
-					$from = $item['payment_system_from'] . ' (' . mb_strtolower($item['wallet_currency']) . ')';
-					$to = $item['payment_system_to'] . ' (' . mb_strtolower($item['currency']) . ')';
+					$from = $item['payment_system_from'] . ' ' . mb_strtoupper($item['wallet_currency']);
+					$to = $item['payment_system_to'] . ' ' . mb_strtoupper($item['currency']);
 					$result[$from]['name'] = $from;
 					$result[$from]['logo'] = $item['from_ps_logo'] ? Storage::disk('logo')->url($item['from_ps_logo']) : '';
 
 					foreach ($payment_systems_available as $payment_system_to)
 					{
-						if (($payment_system_to['name'] . ' (' . mb_strtolower($payment_system_to['currency'] . ')')) === $to)
+						if (($payment_system_to['name'] . ' ' . mb_strtoupper($payment_system_to['currency'])) === $to)
 						{
-							$result[$from]['items'][$payment_system_to['name']] = [
-								'name'     => $payment_system_to['name'],
+							$result[$from]['items'][$payment_system_to['name'] . ' ' . mb_strtoupper($payment_system_to['currency'])] = [
+								'name'     => $payment_system_to['name'] . ' ' . mb_strtoupper($payment_system_to['currency']),
 								'logo'     => $payment_system_to['logo'] ? Storage::disk('logo')->url($payment_system_to['logo']) : '',
 								'value'    => $item['commission'],
 								'currency' => $item['currency']
@@ -93,17 +93,17 @@ class CommissionRepository
 				{
 					foreach ($payment_systems_available as $ps)
 					{
-						if (!array_key_exists($ps['name'], $row['items']))
+						if (!array_key_exists($ps['name'] . ' ' . mb_strtoupper($ps['currency']), $row['items']))
 						{
-							$result[$id]['items'][$ps['name']] = [
-								'name'     => $ps['name'],
+							$result[$id]['items'][$ps['name'] . ' ' . mb_strtoupper($ps['currency'])] = [
+								'name'     => $ps['name'] . ' ' . mb_strtoupper($ps['currency']),
 								'logo'     => $ps['logo'] ? Storage::disk('logo')->url($ps['logo']) : '',
 								'value'    => null,
 								'currency' => null
 							];
 						}
-						$columns[$ps['name']] = [
-							'name' => $ps['name'],
+						$columns[$ps['name'] . ' ' . mb_strtoupper($ps['currency'])] = [
+							'name' => $ps['name'] . ' ' . mb_strtoupper($ps['currency']),
 							'logo' => $ps['logo'] ? Storage::disk('logo')->url($ps['logo']) : ''
 						];
 					}
@@ -117,6 +117,8 @@ class CommissionRepository
 			}
 		}
 
+		ksort($result);
+		
 		return [
 			'columns' => $columns,
 			'data' => array_values($result)
