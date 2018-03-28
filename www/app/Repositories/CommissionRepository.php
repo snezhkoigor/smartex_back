@@ -102,14 +102,18 @@ class CommissionRepository
 								'currency' => null
 							];
 						}
-						$columns[$ps['name']] = $ps['logo'] ? Storage::disk('logo')->url($ps['logo']) : '';
+						$columns[$ps['name']] = [
+							'name' => $ps['name'],
+							'logo' => $ps['logo'] ? Storage::disk('logo')->url($ps['logo']) : ''
+						];
 					}
 
-					ksort($columns);
 					ksort($result[$id]['items']);
 					$result[$id]['items'] = array_values($result[$id]['items']);
 					
 				}
+				ksort($columns);
+				$columns = array_values($columns);
 			}
 		}
 
