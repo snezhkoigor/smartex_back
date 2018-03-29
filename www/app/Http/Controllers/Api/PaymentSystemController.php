@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\SystemErrorException;
 use App\Models\PaymentSystem;
+use App\Repositories\CommissionRepository;
 use App\Repositories\CurrencyRepository;
 use App\Repositories\PaymentSystemRepository;
 use App\Transformers\PaymentSystemTransformer;
@@ -27,6 +28,16 @@ class PaymentSystemController extends Controller
 		return [
 			'name.required' => 'Enter payment system name',
 		];
+	}
+
+	public function getPaymentSystemsFrom(Request $request)
+	{
+		return response()->json(CommissionRepository::getPaymentSystemsFrom($this->getFilters($request)), Response::HTTP_OK);
+	}
+
+	public function getPaymentSystemsTo(Request $request)
+	{
+		return response()->json(CommissionRepository::getPaymentSystemsTo($this->getFilters($request)), Response::HTTP_OK);
 	}
 
     public function getPaymentSystems(Request $request)

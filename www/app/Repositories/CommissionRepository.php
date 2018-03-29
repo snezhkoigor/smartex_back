@@ -38,8 +38,104 @@ class CommissionRepository
 
 		return $query->get($fields);
 	}
-	
-	
+
+
+	/**
+	 * @param array $filters
+	 * @return array
+	 */
+	public static function getPaymentSystemsFrom(array $filters = []): array
+	{
+		$result = [];
+
+		$query = Commission::query();
+		$query->select(['payment_systems.name', 'payment_systems.id', 'payment_systems.logo', 'payment_account.currency', 'ps_commission.commission'])
+			->join('payment_account', 'payment_account.id', '=', 'ps_commission.wallet_id')
+			->join('payment_systems', 'payment_systems.id', '=', 'payment_account.payment_system_id');
+
+		if ($filters)
+		{
+			foreach ($filters as $name => $value)
+			{
+				switch ($name)
+				{
+					case 'payment_system_to':
+						$query->where('ps_commission.payment_system_id', $value);
+						break;
+				}
+			}
+		}
+
+		$data = $query
+			->get()
+			->toArray();
+
+		if ($data)
+		{
+			foreach ($data as $item)
+			{
+				$result[$item['name']]['id'] = $item['id'];
+				$result[$item['name']]['name'] = $item['name'];
+				$result[$item['name']]['logo'] = $item['logo'] ? Storage::disk('logo')->url($item['logo']) : '';
+				$result[$item['name']]['currencies'][$item['currency']] = [
+					'name' => $item['currency'],
+					'commission' => $item['commission'],
+				];
+			}
+		}
+
+		return $result;
+	}
+
+
+	/**
+	 * @param array $filters
+	 * @return array
+	 */
+	public static function getPaymentSystemsTo(array $filters = []): array
+	{
+		$result = [];
+
+		$query = Commission::query();
+		$query->select(['payment_systems.name', 'payment_systems.id', 'payment_systems.logo', 'payment_account.currency', 'ps_commission.commission' ])
+			->join('payment_account', 'payment_account.id', '=', 'ps_commission.wallet_id')
+			->join('payment_systems', 'payment_systems.id', '=', 'ps_commission.payment_system_id');
+
+		if ($filters)
+		{
+			foreach ($filters as $name => $value)
+			{
+				switch ($name)
+				{
+					case 'payment_system_from':
+						$query->where('payment_account.payment_system_id', $value);
+						break;
+				}
+			}
+		}
+
+		$data = $query
+			->get()
+			->toArray();
+
+		if ($data)
+		{
+			foreach ($data as $item)
+			{
+				$result[$item['name']]['id'] = $item['id'];
+				$result[$item['name']]['name'] = $item['name'];
+				$result[$item['name']]['logo'] = $item['logo'] ? Storage::disk('logo')->url($item['logo']) : '';
+				$result[$item['name']]['currencies'][$item['currency']] = [
+					'name' => $item['currency'],
+					'commission' => $item['commission'],
+				];
+			}
+		}
+
+		return $result;
+	}
+
+
 	/**
 	 * @return array
 	 */

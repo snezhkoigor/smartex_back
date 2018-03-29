@@ -41,6 +41,8 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 	Route::get('/news/view', 'NewsController@view');
 	Route::get('/news/show/{news_id}', 'NewsController@show');
 	Route::get('/commissions/view', 'CommissionController@view');
+	Route::get('/payment-systems/to', 'PaymentSystemController@getPaymentSystemsTo');
+	Route::get('/payment-systems/from', 'PaymentSystemController@getPaymentSystemsFrom');
 
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.'|'.Role::ROLE_USER.','])->group(function() {
 		Route::get('/user/referrers', 'User\ProfileController@referrers');
