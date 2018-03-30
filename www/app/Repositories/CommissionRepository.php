@@ -59,8 +59,11 @@ class CommissionRepository
 			{
 				switch ($name)
 				{
-					case 'payment_system_to':
+					case 'payment_system':
 						$query->where('ps_commission.payment_system_id', $value);
+						break;
+					case 'currency':
+						$query->where('ps_commission.currency', $value);
 						break;
 				}
 			}
@@ -124,8 +127,11 @@ class CommissionRepository
 			{
 				switch ($name)
 				{
-					case 'payment_system_from':
+					case 'payment_system':
 						$query->where('payment_account.payment_system_id', $value);
+						break;
+					case 'currency':
+						$query->where('payment_account.currency', $value);
 						break;
 				}
 			}
