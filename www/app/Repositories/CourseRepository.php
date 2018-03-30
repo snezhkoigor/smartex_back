@@ -49,9 +49,9 @@ class CourseRepository
 	 * @param null $search_string
 	 * @return int
 	 */
-	public static function getNewsCount(array $filters = [], $search_string = null): int
+	public static function getCoursesCount(array $filters = [], $search_string = null): int
 	{
-		return self::getNewsQuery($filters, $search_string)->count();
+		return self::getCoursesQuery($filters, $search_string)->count();
 	}
 
 
@@ -67,12 +67,33 @@ class CourseRepository
 	}
 
 
+	public static function getCourse($from, $to)
+	{
+		$last_date = self::getLastDateFromCourses();
+
+		if ($last_date)
+		{
+			return Course::query()
+				->select('course')
+				->where([
+					[ 'date', $last_date->date ],
+					[ 'in_currency', mb_strtoupper($from) ],
+					[ 'out_currency', mb_strtoupper($to) ]
+				])
+				->pluck('course')
+				->first();
+		}
+
+		return 0;
+	}
+
+
 	/**
 	 * @param array $filters
 	 * @param null $search_string
 	 * @return Builder
 	 */
-	private static function getNewsQuery(array $filters = [], $search_string = null): Builder
+	private static function getCoursesQuery(array $filters = [], $search_string = null): Builder
 	{
 		$query = Course::query();
 

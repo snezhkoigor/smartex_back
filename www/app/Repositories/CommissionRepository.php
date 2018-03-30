@@ -117,7 +117,7 @@ class CommissionRepository
 		$result = [];
 
 		$query = Commission::query();
-		$query->select(['payment_systems.name', 'payment_systems.id as payment_system_id', 'payment_systems.logo', 'payment_account.currency', 'ps_commission.commission', 'ps_commission.wallet_id', 'ps_commission.id' ])
+		$query->select(['payment_systems.name', 'payment_systems.id as payment_system_id', 'payment_systems.logo', 'payment_account.currency as from_currency', 'ps_commission.commission', 'ps_commission.wallet_id', 'ps_commission.id', 'ps_commission.currency as to_currency' ])
 			->join('payment_account', 'payment_account.id', '=', 'ps_commission.wallet_id')
 			->join('payment_systems', 'payment_systems.id', '=', 'ps_commission.payment_system_id');
 
@@ -149,11 +149,12 @@ class CommissionRepository
 				$items[$item['name']]['id'] = $item['payment_system_id'];
 				$items[$item['name']]['name'] = $item['name'];
 				$items[$item['name']]['logo'] = $item['logo'] ? Storage::disk('logo')->url($item['logo']) : '';
-				$items[$item['name']]['currencies'][$item['currency']] = [
-					'name' => $item['currency'],
+				$items[$item['name']]['currencies'][$item['to_currency']] = [
+					'name' => $item['to_currency'],
 					'id' => $item['id'],
 					'commission' => $item['commission'],
-					'wallet_id' => $item['wallet_id']
+					'wallet_id' => $item['wallet_id'],
+					'from_currency' => $item['from_currency'],
 				];
 			}
 
@@ -164,11 +165,13 @@ class CommissionRepository
 					$result[] = [
 						'id' => $item['id'],
 						'wallet_id' => $currency['wallet_id'],
+						'from_currency' => $currency['from_currency'],
 						'name' => $item['name'],
 						'currency' => $currency['name'],
 						'logo' => $item['logo'],
 						'commission' => $currency['commission'],
 						'commission_id' => $currency['id'],
+						'course' => CourseRepository::getCourse($currency['from_currency'], $currency['name'])
 					];
 				}
 			}

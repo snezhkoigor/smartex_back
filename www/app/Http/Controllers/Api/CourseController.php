@@ -55,7 +55,7 @@ class CourseController extends Controller
 	    $courses = CourseRepository::getCourses($filters, $sorts, $relations, ['*'], $search_string, $limit, $offset);
 
 	    $meta = [
-		    'count' => CourseRepository::getNewsCount($filters, $search_string),
+		    'count' => CourseRepository::getCoursesCount($filters, $search_string),
 	    ];
 
 	    return fractal($courses, new CourseTransformer())
