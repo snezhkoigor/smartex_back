@@ -32,12 +32,12 @@ class PaymentSystemController extends Controller
 
 	public function getPaymentSystemsFrom(Request $request)
 	{
-		return response()->json(CommissionRepository::getPaymentSystemsFrom($this->getFilters($request)), Response::HTTP_OK);
+		return response()->json([ 'data' => CommissionRepository::getPaymentSystemsFrom($this->getFilters($request)) ], Response::HTTP_OK);
 	}
 
 	public function getPaymentSystemsTo(Request $request)
 	{
-		return response()->json(CommissionRepository::getPaymentSystemsTo($this->getFilters($request)), Response::HTTP_OK);
+		return response()->json([ 'data' => CommissionRepository::getPaymentSystemsTo($this->getFilters($request)) ], Response::HTTP_OK);
 	}
 
     public function getPaymentSystems(Request $request)
