@@ -39,7 +39,7 @@ class UserTransformer extends TransformerAbstract
 			'auth_err_ip' => $user->auth_err_ip,
 			'ip' => $user->ip,
 			'online' => $user->online,
-			'discount' => $user->discount,
+			'discount' => $user->discount ? (int)$user->discount : 0,
 			'total_exchange' => $user->total_exchange,
 			'document_number' => $user->document_number,
 			'comment' => $user->comment,
