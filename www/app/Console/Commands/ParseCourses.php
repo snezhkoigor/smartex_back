@@ -130,9 +130,9 @@ class ParseCourses extends Command
 
 		foreach ($courses as $key => $value) {
 			$item = Course::query()->where([
-				['in_currency' => $value['in']],
-				['out_currency' => $value['out']],
-				['date' => Carbon::today()->format('Y-m-d H:00:00')]
+				['in_currency', $value['in']],
+				['out_currency', $value['out']],
+				['date', Carbon::today()->format('Y-m-d H:00:00')]
 			])->first();
 
 			if ($item === null) {
