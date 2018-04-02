@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 	    $schedule->command('activitylog:clean')->daily();
-	    $schedule->command('courses:parse')->everyFiveMinutes();
+	    $schedule->command('courses:parse')->hourly();
     }
 
     /**
