@@ -129,11 +129,22 @@ class ParseCourses extends Command
 		$courses = array_values($courses);
 
 		foreach ($courses as $key => $value) {
-			$course = new Course();
-			$course->date = Carbon::today()->format('Y-m-d H:00:00');
-			$course->in_currency = $value['in'];
-			$course->out_currency = $value['out'];
-			$course->course = $value['course'];
+			$item = Course::query()->where([
+				['in_currency' => $value['in']],
+				['out_currency' => $value['out']],
+				['date' => Carbon::today()->format('Y-m-d H:00:00')]
+			])->first();
+
+			if ($item === null) {
+				$course = new Course();
+				$course->date = Carbon::today()->format('Y-m-d H:00:00');
+				$course->in_currency = $value['in'];
+				$course->out_currency = $value['out'];
+				$course->course = $value['course'];
+			} else {
+				$course = $item;
+				$course->course = $value['course'];
+			}
 
 			$course->save();
 		}
