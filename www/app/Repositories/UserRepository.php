@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Helpers\CurrencyHelper;
+use App\Models\Currency;
 use App\Models\LogActivity;
 use App\Models\User;
 use Carbon\Carbon;
@@ -54,6 +56,37 @@ class UserRepository
 	public static function getUsersCount(array $filters = [], $search_string = null): int
 	{
 		return self::getUsersQuery($filters, $search_string)->count();
+	}
+
+
+	/**
+	 * @param $amount
+	 * @param $in
+	 * @return bool
+	 */
+	public static function canDoExchange($amount, $in): bool
+	{
+		$result = false;
+		$amount_in_eur = CurrencyHelper::convert($in, Currency::CURRENCY_EUR, $amount);
+		$user = \Auth::user();
+
+		if ($user !== null)
+		{
+			if ($amount_in_eur < 25000)
+			{
+				$result = true;
+			}
+			elseif ($amount_in_eur >= 25000 && $user->verification_ok)
+			{
+				$result = true;
+			}
+		}
+		elseif ($amount_in_eur < 10000 && $user === null)
+		{
+			$result = true;
+		}
+
+		return $result;
 	}
 
 

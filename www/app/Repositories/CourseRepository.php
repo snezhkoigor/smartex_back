@@ -58,7 +58,7 @@ class CourseRepository
 	/**
 	 * @return \Illuminate\Database\Eloquent\Model|null|static
 	 */
-	public static function getLastDateFromCourses()
+	public static function getLastDateFromCourses(): ?Course
 	{
 		return Course::query()
 			->select('date')

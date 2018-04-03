@@ -2,17 +2,46 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\SystemErrorException;
+use App\Helpers\CurrencyHelper;
+use App\Models\Commission;
+use App\Models\Exchange;
+use App\Models\PaymentSystem;
+use App\Models\User;
+use App\Models\Wallet;
 use App\Repositories\CurrencyRepository;
 use App\Repositories\ExchangeRepository;
 use App\Repositories\PaymentSystemRepository;
+use App\Repositories\UserRepository;
 use App\Transformers\ExchangeTransformer;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Support\Facades\Hash;
 
 class ExchangeController extends Controller
 {
+	public function rules(): array
+	{
+		return [
+			'in_amount' => 'required',
+			'out_payee' => 'required'
+		];
+	}
+
+
+	public function messages(): array
+	{
+		return [
+			'in_amount.required' => 'Enter IN amount',
+			'out_payee.required' => 'Enter OUT wallet'
+		];
+	}
+
+
 	/**
 	 * @param Request $request
 	 * @return mixed
@@ -46,6 +75,91 @@ class ExchangeController extends Controller
 		    ->parseFieldsets($fieldsets)
 		    ->addMeta($meta)
 		    ->respond();
+	}
+
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 *
+	 * @throws \Exception
+	 */
+	public function add(Request $request): JsonResponse
+	{
+		$ps_commission = Commission::find($request->get('commission_id'));
+		if ($ps_commission === null) {
+			throw new NotFoundHttpException('Commission not found');
+		}
+		$wallet = Wallet::find($ps_commission->wallet_id);
+		if ($wallet === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
+		$payment_system = PaymentSystem::find($ps_commission->payment_system_id);
+		if ($payment_system === null) {
+			throw new NotFoundHttpException('Out payment system not found');
+		}
+
+		$this->validate($request, $this->rules(), $this->messages());
+
+		if (UserRepository::canDoExchange($request->get('in_amount'), $wallet->currency) === false)
+		{
+			return response()->json(['errors' => ['in_amount' => 'You can not do exchanges in website']], Response::HTTP_UNPROCESSABLE_ENTITY);
+		}
+
+		$user = \Auth::user();
+		if ($user === null && !$request->get('email'))
+		{
+			return response()->json(['errors' => ['email' => 'Enter your email']], Response::HTTP_UNPROCESSABLE_ENTITY);
+		}
+		if ($request->get('email') && User::query()->where('email', $request->get('email'))->first())
+		{
+			return response()->json(['errors' => ['email' => 'This email used another user']], Response::HTTP_UNPROCESSABLE_ENTITY);
+		}
+
+		try {
+			// псевдорегистрация
+			if ($user === null)
+			{
+				$user = new User();
+				$user->email = $request->get('email');
+				$user->password = Hash::make($request->get('email'));
+
+				$user->save();
+			}
+
+			$discount = round($ps_commission->commission * (int)$user->discount/100, 4);
+			$fee = round($request->get('in_amount') * ($ps_commission->commission/100 - $discount), 4);
+			$amount = (float)$request->get('in_amount') - $fee;
+
+			$exchange = new Exchange();
+			$exchange->date = Carbon::today()->format('Y-m-d H:i:s');
+			$exchange->id_user = $user->id;
+			$exchange->in_payment = $wallet->ps_type;
+			$exchange->in_id_pay = 0;
+			$exchange->in_currency = $wallet->currency;
+			$exchange->in_amount = $amount;
+			$exchange->in_fee = $fee;
+			$exchange->out_payment = $payment_system->code;
+			$exchange->out_id_pay = 0;
+			$exchange->out_currency = $ps_commission->currency;
+			$exchange->out_amount = CurrencyHelper::convert($wallet->currency, $ps_commission->currency, $amount);
+			$exchange->out_payee = $request->get('out_payee');
+			$exchange->out_fee = 0;
+			$exchange->in_discount = (int)$user->discount;
+
+			$exchange->save();
+		}
+		catch (\Exception $e)
+	    {
+		    throw new SystemErrorException('Adding exchange by user failed', $e);
+	    }
+		
+		return response()->json(['data' => [
+			'id' => $exchange->id,
+			'amount' => $exchange->in_amount,
+			'currency' => $exchange->in_currency,
+			'payment_system' => $wallet->ps_type
+		]], Response::HTTP_OK);
 	}
 
 

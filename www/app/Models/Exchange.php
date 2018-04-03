@@ -14,6 +14,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property integer $id_user
  * @property string $in_payment
  * @property integer $in_id_pay
+ * @property integer $in_discount
  * @property string $in_currency
  * @property double $in_amount
  * @property double $in_fee
@@ -65,6 +66,7 @@ class Exchange extends Model
 		'out_fee',
 		'out_batch',
 		'out_date',
+		'in_discount'
 	];
 
 	protected $guarded = [];

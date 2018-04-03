@@ -24,6 +24,7 @@ class CreateExchangesTable extends Migration
 			    $table->double('in_amount', 15, 8);
 			    $table->double('in_fee', 15, 8)->nullable();
 			    $table->string('in_payee', 61)->nullable();
+			    $table->integer('in_discount')->nullable();
 			    $table->text('comment')->nullable();
 			    $table->string('out_payment', 16);
 			    $table->integer('out_id_pay')->nullable();
