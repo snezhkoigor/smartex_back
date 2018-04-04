@@ -171,7 +171,8 @@ class CommissionRepository
 						'logo' => $item['logo'],
 						'commission' => $currency['commission'],
 						'commission_id' => $currency['id'],
-						'course' => CourseRepository::getCourse($currency['from_currency'], $currency['name'])
+						'course' => CourseRepository::getCourse($currency['from_currency'], $currency['name']),
+						'balance' => (float)Wallet::query()->where([ ['payment_system_id', $item['id']], ['currency', $currency['name']] ])->pluck('balance')->first()
 					];
 				}
 			}
