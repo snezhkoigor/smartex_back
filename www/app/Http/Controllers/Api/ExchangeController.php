@@ -91,7 +91,7 @@ class ExchangeController extends Controller
 						)
 					]
 				],
-				Response::HTTP_UNPROCESSABLE_ENTITY
+				Response::HTTP_OK
 			);
 		}
 

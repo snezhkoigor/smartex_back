@@ -39,6 +39,8 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property boolean $verification_ok
  * @property string $verification_kyc
  * @property boolean $verification_kyc_ok
+ * @property string $phone
+ * @property boolean $verification_phone_ok
  *
  * @method static User|QueryBuilder|EloquentBuilder query()
  *
@@ -82,7 +84,9 @@ class User extends Authenticatable
 	    'comment',
 	    'address',
 	    'verification_kyc',
-	    'verification_kyc_ok'
+	    'verification_kyc_ok',
+	    'phone',
+	    'verification_phone_ok'
     ];
 
 	protected $guarded = [

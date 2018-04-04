@@ -190,6 +190,7 @@ return [
         Lanin\Laravel\ApiDebugger\ServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         ADiesel82\GeoService\GeoServiceProvider::class,
+        Aloha\Twilio\Support\Laravel\ServiceProvider::class
 
     ],
 
@@ -246,6 +247,7 @@ return [
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Geo' => ADiesel82\GeoService\GeoServiceFacade::class,
+        'Twilio' => Aloha\Twilio\Support\Laravel\Facade::class
 
     ],
 

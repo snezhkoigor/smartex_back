@@ -48,6 +48,8 @@ class UserTransformer extends TransformerAbstract
 			'verification_ok' => (bool)$user->verification_ok,
 			'verification_kyc' => $user->verification_kyc ? Storage::disk('verifications')->url($user->verification_kyc) : '',
 			'verification_kyc_ok' => (bool)$user->verification_kyc_ok,
+			'phone' => $user->phone,
+			'verification_phone_ok' => (bool)$user->verification_phone_ok
 		];
 
 		return $data;

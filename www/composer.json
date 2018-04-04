@@ -6,6 +6,8 @@
     "type": "project",
     "require": {
         "php": ">=7.1.3",
+        "adiesel82/geoservice-laravel": "0.0.5",
+        "aloha/twilio": "^3.0",
         "barryvdh/laravel-debugbar": "^3.1",
         "barryvdh/laravel-dompdf": "^0.8.2",
         "barryvdh/laravel-snappy": "^0.4.1",
@@ -23,8 +25,7 @@
         "optimus/api-consumer": "0.2.*",
         "spatie/laravel-activitylog": "2.4.*",
         "spatie/laravel-fractal": "5.3.*",
-        "zizaco/entrust": "1.9.*",
-        "adiesel82/geoservice-laravel": "0.0.5"
+        "zizaco/entrust": "1.9.*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "2.4.*",

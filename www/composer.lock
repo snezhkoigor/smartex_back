@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "37c3a862603b073d5e1149726cdafebb",
-    "content-hash": "d9d7873578f361a7754293a5adc5ba4d",
+    "hash": "5a194f2567dd2dbc3a2f75cb96c533fa",
+    "content-hash": "a74187219cbcf49e4678d4bf2e2cdd44",
     "packages": [
         {
             "name": "adiesel82/geoservice-laravel",
@@ -42,6 +42,70 @@
             ],
             "description": "SypexGeo Laravel 5.5 service",
             "time": "2017-09-06 20:00:04"
+        },
+        {
+            "name": "aloha/twilio",
+            "version": "3.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aloha/laravel-twilio.git",
+                "reference": "783a74f4a342ab3a32a2794c71319d048ce27202"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aloha/laravel-twilio/zipball/783a74f4a342ab3a32a2794c71319d048ce27202",
+                "reference": "783a74f4a342ab3a32a2794c71319d048ce27202",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0",
+                "twilio/sdk": ">=3.12.0,<5.0.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^1.9",
+                "illuminate/console": "~4||~5",
+                "illuminate/support": "~4||~5",
+                "phpunit/phpunit": "~4.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Aloha\\Twilio\\Support\\Laravel\\ServiceProvider"
+                    ],
+                    "aliases": {
+                        "Twilio": "Aloha\\Twilio\\Support\\Laravel\\Facade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Aloha\\Twilio\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Hannes Van De Vreken",
+                    "email": "vandevreken.hannes@gmail.com"
+                },
+                {
+                    "name": "Travis J Ryan",
+                    "email": "travisjryan@gmail.com"
+                }
+            ],
+            "description": "Twilio API for Laravel",
+            "homepage": "https://github.com/aloha/laravel-twilio",
+            "keywords": [
+                "ivr",
+                "laravel",
+                "sms",
+                "twilio"
+            ],
+            "time": "2017-10-05 06:31:47"
         },
         {
             "name": "anahkiasen/underscore-php",
@@ -4653,6 +4717,56 @@
             "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
             "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
             "time": "2017-11-27 11:13:29"
+        },
+        {
+            "name": "twilio/sdk",
+            "version": "4.12.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twilio/twilio-php.git",
+                "reference": "0a88c48262fbee1c3841f721f46439d3de450b95"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/0a88c48262fbee1c3841f721f46439d3de450b95",
+                "reference": "0a88c48262fbee1c3841f721f46439d3de450b95",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.1"
+            },
+            "require-dev": {
+                "mockery/mockery": ">=0.7.2",
+                "phpunit/phpunit": "4.5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "Services/Twilio.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Burke",
+                    "email": "kevin@twilio.com"
+                },
+                {
+                    "name": "Kyle Conroy",
+                    "email": "kyle+pear@twilio.com"
+                }
+            ],
+            "description": "A PHP wrapper for Twilio's API",
+            "homepage": "http://github.com/twilio/twilio-php",
+            "keywords": [
+                "api",
+                "sms",
+                "twilio"
+            ],
+            "time": "2017-11-17 22:59:03"
         },
         {
             "name": "vlucas/phpdotenv",
