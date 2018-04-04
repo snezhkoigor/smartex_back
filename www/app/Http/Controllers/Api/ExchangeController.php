@@ -78,6 +78,27 @@ class ExchangeController extends Controller
 	}
 
 
+	public function canExecuteCurrentUser(Request $request): JsonResponse
+	{
+		if (UserRepository::canDoExchange($request->get('amount'), $request->get('currency')) === false)
+		{
+			return response()->json(
+				[
+					'data' => [
+						'code' => UserRepository::getErrorCodeByCreatingExchange(
+							$request->get('amount'),
+							$request->get('currency')
+						)
+					]
+				],
+				Response::HTTP_UNPROCESSABLE_ENTITY
+			);
+		}
+
+		return response()->json(null, Response::HTTP_OK);
+	}
+
+
 	/**
 	 * @param Request $request
 	 * @return \Illuminate\Http\JsonResponse
@@ -103,7 +124,7 @@ class ExchangeController extends Controller
 
 		if (UserRepository::canDoExchange($request->get('in_amount'), $wallet->currency) === false)
 		{
-			return response()->json(['errors' => ['in_amount' => 'You can not do exchanges in website']], Response::HTTP_UNPROCESSABLE_ENTITY);
+			return response()->json(['data' => ['code' => UserRepository::getErrorCodeByCreatingExchange($request->get('in_amount'), $wallet->currency)]], Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
 
 		$user = \Auth::user();

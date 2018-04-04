@@ -54,7 +54,7 @@ class User extends Authenticatable
 	use HasApiTokens, CanResetPassword, EntrustUserTrait, LogsActivity;
 
 	const CREATED_AT = 'date';
-
+	
     /**
      * The attributes that are mass assignable.
      *

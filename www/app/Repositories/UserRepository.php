@@ -59,6 +59,24 @@ class UserRepository
 	}
 
 
+	public static function getErrorCodeByCreatingExchange($amount, $in): int
+	{
+		$amount_in_eur = CurrencyHelper::convert($in, Currency::CURRENCY_EUR, $amount);
+		$user = \Auth::user();
+
+		if ($user !== null && $amount_in_eur >= 25000 && !$user->verification_ok)
+		{
+			return 1;
+		}
+		if ($user === null && $amount_in_eur >= 10000)
+		{
+			return 2;
+		}
+
+		return 0;
+	}
+
+
 	/**
 	 * @param $amount
 	 * @param $in
@@ -66,7 +84,6 @@ class UserRepository
 	 */
 	public static function canDoExchange($amount, $in): bool
 	{
-		$result = false;
 		$amount_in_eur = CurrencyHelper::convert($in, Currency::CURRENCY_EUR, $amount);
 		$user = \Auth::user();
 
@@ -74,19 +91,15 @@ class UserRepository
 		{
 			if ($amount_in_eur < 25000)
 			{
-				$result = true;
+				return true;
 			}
-			elseif ($amount_in_eur >= 25000 && $user->verification_ok)
+			if ($amount_in_eur >= 25000 && $user->verification_ok)
 			{
-				$result = true;
+				return true;
 			}
-		}
-		elseif ($amount_in_eur < 10000 && $user === null)
-		{
-			$result = true;
 		}
 
-		return $result;
+		return $amount_in_eur < 10000 && $user === null;
 	}
 
 
