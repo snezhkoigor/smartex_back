@@ -19,13 +19,24 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install zip \
     && docker-php-ext-install -j$(nproc) iconv mcrypt \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install mysqli pdo pdo_mysql
+    && docker-php-ext-install -j$(nproc) gd
+
+# Install Postgre PDO
+RUN apt-get install -y libpq-dev \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo pdo_pgsql pgsql
 
 # - PECL extensions
 RUN pecl install redis-3.1.6 \
     && pecl install xdebug-2.6.0 \
     && docker-php-ext-enable redis xdebug
+
+RUN echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo xdebug.remote_port=9000 >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo xdebug.remote_autostart=1 >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo xdebug.remote_connect_back=0 >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo xdebug.idekey=PHPSTORM >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo xdebug.remote_host=docker.for.mac.localhost >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 #git
 RUN apt-get update && apt-get install -y git

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Support\Facades\Redis;
 use Spatie\Activitylog\Models\Activity;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -160,13 +161,34 @@ class User extends Authenticatable
 	{
 		return $this->hasMany(Activity::class, 'causer_id', 'id');
 	}
+	
+	public function saveSmsCode($code, $phone = null)
+	{
+		return Redis::set($this->smsCodeKey($phone), $code, 'EX', 3600);
+	}
+
+	public function checkSmsCode($code): bool
+	{
+		$data = Redis::get($this->smsCodeKey());
+		if ($data)
+		{
+		    return $data === $code;
+		}
+
+		return false;
+	}
+	
+	private function smsCodeKey($phone = null): string
+	{
+		return 'user:'.$this->id.':sms:phone:'.($phone ?: $this->phone).':verification';
+	}
 
 	public function loginLogs()
 	{
 		return $this->hasMany(LoginLog::class, 'user_id', 'id');
 	}
 
-	public static function generatePassword($number)
+	public static function generatePassword($number): string
 	{
 		$result = '';
 		$arr = [
