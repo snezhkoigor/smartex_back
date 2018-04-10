@@ -113,6 +113,47 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 		Route::delete('/users/{user_id}', 'User\UserController@deleteById');
 		Route::get('/meta/users', 'User\UserController@getFormMeta');
 		Route::get('/users/{user_id}', 'User\UserController@getUserById');
+		Route::post('/user/phone/verification/{country_code}/{phone}', function ($country_code, $phone) {
+			if ($country_code && $phone) {
+				$post = [
+				    'via' => 'sms',
+				    'phone_number' => $phone,
+				    'country_code' => $country_code,
+				    'code_length' => '4',
+				    'locale' => 'en'
+				];
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, 'https://api.authy.com/protected/json/phones/verification/start');
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch,CURLOPT_POST, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+				curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-Authy-API-Key: CySpG3L9TtpqlpTMfeIcomABoXbuCX88']);
+				$response = curl_exec($ch);
+				$response = json_decode($response, true);
+	
+				return response()->json([
+					'data' => $response
+				], 200);
+			}
+
+			throw new NotFoundHttpException('Not found credits from request');
+		});
+		Route::get('/user/phone/verification/{country_code}/{phone}/{code}', function ($country_code, $phone, $code) {
+			if ($country_code && $phone && $code) {
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, 'https://api.authy.com/protected/json/phones/verification/check?phone_number='.$phone.'&country_code='.$country_code.'&verification_code='.$code);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-Authy-API-Key: CySpG3L9TtpqlpTMfeIcomABoXbuCX88']);
+				$response = curl_exec($ch);
+				$response = json_decode($response, true);
+	
+				return response()->json([
+					'data' => $response
+				], 200);
+			}
+
+			throw new NotFoundHttpException('Not found credits from request');
+		});
 
 		// Payments
 		Route::get('/payments/pdf/transactions/{user_id}', 'PaymentController@pdfTransactionsByUser');

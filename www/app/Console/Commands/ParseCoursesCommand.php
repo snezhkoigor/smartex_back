@@ -6,7 +6,7 @@ use App\Models\Course;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class ParseCourses extends Command
+class ParseCoursesCommand extends Command
 {
     /**
      * The name and signature of the console command.
