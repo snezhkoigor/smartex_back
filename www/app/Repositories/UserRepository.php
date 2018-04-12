@@ -64,11 +64,11 @@ class UserRepository
 		$amount_in_eur = CurrencyHelper::convert($in, Currency::CURRENCY_EUR, $amount);
 		$user = \Auth::user();
 
-		if ($user !== null && $amount_in_eur >= 25000 && !$user->verification_ok)
+		if ($user !== null && $amount_in_eur >= 1000 && !$user->verification_ok && !$user->verification_kyc_ok && !$user->verification_phone_ok)
 		{
 			return 1;
 		}
-		if ($user === null && $amount_in_eur >= 10000)
+		if ($user === null && $amount_in_eur >= 1000)
 		{
 			return 2;
 		}
@@ -89,17 +89,17 @@ class UserRepository
 
 		if ($user !== null)
 		{
-			if ($amount_in_eur < 25000)
-			{
-				return true;
-			}
-			if ($amount_in_eur >= 25000 && $user->verification_ok)
+//			if ($amount_in_eur < 25000)
+//			{
+//				return true;
+//			}
+			if ($amount_in_eur >= 1000 && $user->verification_ok && $user->verification_kyc_ok && $user->verification_phone_ok)
 			{
 				return true;
 			}
 		}
 
-		return $amount_in_eur < 10000 && $user === null;
+		return $amount_in_eur < 1000 && $user === null;
 	}
 
 
