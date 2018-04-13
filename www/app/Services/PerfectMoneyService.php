@@ -89,10 +89,10 @@ class PerfectMoneyService
 				'PAYEE_ACCOUNT' => $wallet->account,
 				'PAYMENT_AMOUNT' => $amount,
 				'PAYMENT_UNITS' => $currency,
-				'STATUS_URL' => config('app.website_url') . '/api/sci/payments/' . $wallet->ps_type,
-				'PAYMENT_URL' => config('app.website_url') . '/payments/' . $wallet->ps_type . '/success',
+				'STATUS_URL' => config('app.website_url') . '/api/sci/payment/' . $wallet->ps_type,
+				'PAYMENT_URL' => config('app.website_url') . '/payment/' . $wallet->ps_type . '/success',
 				'PAYMENT_URL_METHOD' => 'POST',
-				'NOPAYMENT_URL' => config('app.website_url') . '/payments/' . $wallet->ps_type . '/fail',
+				'NOPAYMENT_URL' => config('app.website_url') . '/payment/' . $wallet->ps_type . '/fail',
 				'NOPAYMENT_URL_METHOD' => 'POST',
 				'SUGGESTED_MEMO' => '',
 			]
