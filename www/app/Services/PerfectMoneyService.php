@@ -81,6 +81,7 @@ class PerfectMoneyService
 		}
 
 		return [
+			'auto' => true,
 			'url' => 'https://perfectmoney.is/api/step1.asp',
 			'method' => 'POST',
 			'params' => [
