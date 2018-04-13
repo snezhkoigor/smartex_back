@@ -140,6 +140,7 @@ class ExchangeController extends Controller
 
 		try {
 			// псевдорегистрация
+			$user = User::query()->where('email', $request->get('email'))->first();
 			if ($user === null)
 			{
 				$user = new User();

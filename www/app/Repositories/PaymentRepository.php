@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Payment;
+use App\Services\Advcash\AdvcashService;
 use App\Services\PerfectMoneyService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -72,8 +73,10 @@ class PaymentRepository
 		{
 			case 'pm':
 				return PerfectMoneyService::getForm($wallet_id, $amount, $currency, $exchange_id);
+			case 'adv':
+				return AdvcashService::getForm($wallet_id, $amount, $currency, $exchange_id);
 		}
-		
+
 		return [];
 	}
 
