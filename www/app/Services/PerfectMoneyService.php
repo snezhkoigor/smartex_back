@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Exchange;
+use App\Models\Wallet;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
@@ -54,5 +57,45 @@ class PerfectMoneyService
 		}
 
 		return $balance;
+	}
+
+
+	/**
+	 * @param $wallet_id
+	 * @param $amount
+	 * @param $currency
+	 * @param $exchange_id
+	 * @return array
+	 *
+	 * @throws \Exception
+	 */
+	public static function getForm($wallet_id, $amount, $currency, $exchange_id): array
+	{
+		$wallet = Wallet::find($wallet_id);
+		if ($wallet === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
+		$exchange = Exchange::find($exchange_id);
+		if ($exchange === null) {
+			throw new NotFoundHttpException('Exchange transaction not found');
+		}
+
+		return [
+			'url' => 'https://perfectmoney.is/api/step1.asp',
+			'method' => 'POST',
+			'params' => [
+				'PAYEE_NAME' => 'Payment ' . $exchange_id,
+				'PAYMENT_ID' => $exchange_id,
+				'PAYEE_ACCOUNT' => $wallet->account,
+				'PAYMENT_AMOUNT' => $amount,
+				'PAYMENT_UNITS' => $currency,
+				'STATUS_URL' => config('app.website_url') . '/api/sci/payments/' . $wallet->ps_type,
+				'PAYMENT_URL' => config('app.website_url') . '/payments/' . $wallet->ps_type . '/success',
+				'PAYMENT_URL_METHOD' => 'POST',
+				'NOPAYMENT_URL' => config('app.website_url') . '/payments/' . $wallet->ps_type . '/fail',
+				'NOPAYMENT_URL_METHOD' => 'POST',
+				'SUGGESTED_MEMO' => '',
+			]
+		];
 	}
 }

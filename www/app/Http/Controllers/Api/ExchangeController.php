@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Wallet;
 use App\Repositories\CurrencyRepository;
 use App\Repositories\ExchangeRepository;
+use App\Repositories\PaymentRepository;
 use App\Repositories\PaymentSystemRepository;
 use App\Repositories\UserRepository;
 use App\Transformers\ExchangeTransformer;
@@ -174,13 +175,9 @@ class ExchangeController extends Controller
 	    {
 		    throw new SystemErrorException('Adding exchange by user failed', $e);
 	    }
-		
-		return response()->json(['data' => [
-			'id' => $exchange->id,
-			'amount' => $exchange->in_amount,
-			'currency' => $exchange->in_currency,
-			'payment_system' => $wallet->ps_type
-		]], Response::HTTP_OK);
+
+	    $form = PaymentRepository::getFormRedirect($wallet->ps_type, $ps_commission->wallet_id, $exchange->in_amount, $exchange->in_currency, $exchange->id);
+		return response()->json([ 'data' => $form ],Response::HTTP_OK);
 	}
 
 

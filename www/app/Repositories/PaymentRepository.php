@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Payment;
+use App\Services\PerfectMoneyService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -54,7 +55,27 @@ class PaymentRepository
 	{
 		return self::getPaymentsQuery($filters, $search_string)->count();
 	}
-
+	
+	
+	/**
+	 * @param $ps_code
+	 * @param $wallet_id
+	 * @param $amount
+	 * @param $currency
+	 * @param $exchange_id
+	 * @return array
+	 * @throws \Exception
+	 */
+	public static function getFormRedirect($ps_code, $wallet_id, $amount, $currency, $exchange_id): array
+	{
+		switch ($ps_code)
+		{
+			case 'pm':
+				return PerfectMoneyService::getForm($wallet_id, $amount, $currency, $exchange_id);
+		}
+		
+		return [];
+	}
 
 	/**
 	 * @param array $filters
