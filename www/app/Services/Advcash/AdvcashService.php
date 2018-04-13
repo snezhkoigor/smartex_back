@@ -78,15 +78,42 @@ class AdvcashService
 			'url' => 'https://wallet.advcash.com/sci/',
 			'method' => 'POST',
 			'params' => [
-				'ac_account_email' => $wallet->account,
-				'ac_sci_name' => $wallet->adv_sci,
-				'ac_amount' => $amount,
-				'ac_currency' => $currency,
-				'ac_comments' => 'Payment ' . $exchange_id,
-				'operation_id' => $exchange_id,
-				'ac_order_id' => $exchange_id,
-				'ac_fail_url' => config('app.website_url') . '/payment/' . $wallet->ps_type . '/fail',
-				'ac_fail_url_method' => 'POST',
+				[
+					'name' => 'ac_account_email',
+					'value' => $wallet->account
+				],
+				[
+					'name' => 'ac_sci_name',
+					'value' => $wallet->adv_sci
+				],
+				[
+					'name' => 'ac_amount',
+					'value' => $amount
+				],
+				[
+					'name' => 'ac_currency',
+					'value' => $currency
+				],
+				[
+					'name' => 'ac_comments',
+					'value' => 'Payment ' . $exchange_id
+				],
+				[
+					'name' => 'operation_id',
+					'value' => $exchange_id
+				],
+				[
+					'name' => 'ac_order_id',
+					'value' => $exchange_id
+				],
+				[
+					'name' => 'ac_fail_url',
+					'value' => config('app.website_url') . '/payment/' . $wallet->ps_type . '/fail'
+				],
+				[
+					'name' => 'ac_fail_url_method',
+					'value' => 'POST'
+				]
 			]
 		];
 	}

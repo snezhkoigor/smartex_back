@@ -85,17 +85,50 @@ class PerfectMoneyService
 			'url' => 'https://perfectmoney.is/api/step1.asp',
 			'method' => 'POST',
 			'params' => [
-				'PAYEE_NAME' => 'Payment ' . $exchange_id,
-				'PAYMENT_ID' => $exchange_id,
-				'PAYEE_ACCOUNT' => $wallet->account,
-				'PAYMENT_AMOUNT' => $amount,
-				'PAYMENT_UNITS' => $currency,
-				'STATUS_URL' => config('app.website_url') . '/api/sci/payment/' . $wallet->ps_type,
-				'PAYMENT_URL' => config('app.website_url') . '/payment/' . $wallet->ps_type . '/success',
-				'PAYMENT_URL_METHOD' => 'POST',
-				'NOPAYMENT_URL' => config('app.website_url') . '/payment/' . $wallet->ps_type . '/fail',
-				'NOPAYMENT_URL_METHOD' => 'POST',
-				'SUGGESTED_MEMO' => '',
+				[
+					'name' => 'PAYEE_NAME',
+					'value' => 'Payment ' . $exchange_id,
+				],
+				[
+					'name' => 'PAYMENT_ID',
+					'value' => $exchange_id,
+				],
+				[
+					'name' => 'PAYEE_ACCOUNT',
+					'value' => $wallet->account,
+				],
+				[
+					'name' => 'PAYMENT_AMOUNT',
+					'value' => $amount,
+				],
+				[
+					'name' => 'PAYMENT_UNITS',
+					'value' => $currency,
+				],
+				[
+					'name' => 'STATUS_URL',
+					'value' => config('app.website_url') . '/api/sci/payment/' . $wallet->ps_type,
+				],
+				[
+					'name' => 'PAYMENT_URL',
+					'value' => config('app.website_url') . '/payment/' . $wallet->ps_type . '/success',
+				],
+				[
+					'name' => 'PAYMENT_URL_METHOD',
+					'value' => 'POST',
+				],
+				[
+					'name' => 'NOPAYMENT_URL',
+					'value' => config('app.website_url') . '/payment/' . $wallet->ps_type . '/fail',
+				],
+				[
+					'name' => 'NOPAYMENT_URL_METHOD',
+					'value' => 'POST',
+				],
+				[
+					'name' => 'SUGGESTED_MEMO',
+					'value' => '',
+				],
 			]
 		];
 	}
