@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Exchange;
 use App\Models\Wallet;
+use Illuminate\Support\Facades\Redis;
 use Intervention\Image\Exception\NotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -106,12 +107,16 @@ class PayeerService
 			throw new NotFoundHttpException('Exchange transaction not found');
 		}
 
+		$hash = md5(time());
+		Redis::set($hash, $exchange_id, 'EX', Exchange::$redis_hash_expiration);
+
         $amount = number_format($amount, 2, '.', '');
         $currency = strtoupper($currency);
         $description = base64_encode('Payment ' . $exchange_id);
 		return [
 			'auto' => true,
 			'id' => $exchange_id,
+			'hash' => $hash,
 			'url' => '//payeer.com/api/merchant/m.php',
 			'method' => 'GET',
 			'params' => [

@@ -4,6 +4,7 @@ namespace App\Services\Advcash;
 
 use App\Models\Exchange;
 use App\Models\Wallet;
+use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -73,9 +74,13 @@ class AdvcashService
 			throw new NotFoundHttpException('Exchange transaction not found');
 		}
 
+		$hash = md5(time());
+		Redis::set($hash, $exchange_id, 'EX', Exchange::$redis_hash_expiration);
+
 		return [
 			'auto' => true,
 			'id' => $exchange_id,
+			'hash' => $hash,
 			'url' => 'https://wallet.advcash.com/sci/',
 			'method' => 'POST',
 			'params' => [
