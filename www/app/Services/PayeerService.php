@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Exchange;
+use App\Models\Wallet;
+use Intervention\Image\Exception\NotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
@@ -79,5 +83,80 @@ class PayeerService
 		}
 
 		return $content;
+	}
+
+
+	/**
+	 * @param $wallet_id
+	 * @param $amount
+	 * @param $currency
+	 * @param $exchange_id
+	 * @return array
+	 *
+	 * @throws \Exception
+	 */
+	public static function getForm($wallet_id, $amount, $currency, $exchange_id): array
+	{
+		$wallet = Wallet::query()->where('id', $wallet_id)->first();
+		if ($wallet === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
+		$exchange = Exchange::query()->where('id', $exchange_id)->first();
+		if ($exchange === null) {
+			throw new NotFoundHttpException('Exchange transaction not found');
+		}
+
+        $amount = number_format($amount, 2, '.', '');
+        $currency = strtoupper($currency);
+        $description = base64_encode('Payment ' . $exchange_id);
+		return [
+			'auto' => true,
+			'url' => 'https://perfectmoney.is/api/step1.asp',
+			'method' => 'POST',
+			'params' => [
+				[
+					'type' => 'hidden',
+					'name' => 'm_shop',
+					'value' => $wallet->account,
+				],
+				[
+					'type' => 'hidden',
+					'name' => 'm_orderid',
+					'value' => $exchange_id,
+				],
+				[
+					'type' => 'hidden',
+					'name' => 'm_amount',
+					'value' => $amount,
+				],
+				[
+					'type' => 'hidden',
+					'name' => 'm_curr',
+					'value' => $currency,
+				],
+				[
+					'type' => 'hidden',
+					'name' => 'm_desc',
+					'value' => $description,
+				],
+				[
+					'type' => 'hidden',
+					'name' => 'm_sign',
+					'value' => strtoupper(hash('sha256', implode(':', [
+						$wallet->account,
+					    $exchange_id,
+					    $amount,
+					    $currency,
+					    $description,
+					    $wallet->secret
+					]))),
+				],
+				[
+					'type' => 'hidden',
+					'name' => 'lang',
+					'value' => 'en',
+				]
+			]
+		];
 	}
 }

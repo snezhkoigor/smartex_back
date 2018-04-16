@@ -71,11 +71,11 @@ class PerfectMoneyService
 	 */
 	public static function getForm($wallet_id, $amount, $currency, $exchange_id): array
 	{
-		$wallet = Wallet::find($wallet_id);
+		$wallet = Wallet::query()->where('id', $wallet_id)->first();
 		if ($wallet === null) {
 			throw new NotFoundHttpException('Wallet not found');
 		}
-		$exchange = Exchange::find($exchange_id);
+		$exchange = Exchange::query()->where('id', $exchange_id)->first();
 		if ($exchange === null) {
 			throw new NotFoundHttpException('Exchange transaction not found');
 		}
@@ -86,46 +86,57 @@ class PerfectMoneyService
 			'method' => 'POST',
 			'params' => [
 				[
+					'type' => 'hidden',
 					'name' => 'PAYEE_NAME',
 					'value' => 'Payment ' . $exchange_id,
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'PAYMENT_ID',
 					'value' => $exchange_id,
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'PAYEE_ACCOUNT',
 					'value' => $wallet->account,
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'PAYMENT_AMOUNT',
 					'value' => $amount,
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'PAYMENT_UNITS',
 					'value' => strtoupper($currency),
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'STATUS_URL',
 					'value' => config('app.website_url') . '/api/sci/payment/' . $wallet->ps_type,
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'PAYMENT_URL',
 					'value' => config('app.website_url') . '/payment/' . $wallet->ps_type . '/success',
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'PAYMENT_URL_METHOD',
 					'value' => 'POST',
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'NOPAYMENT_URL',
 					'value' => config('app.website_url') . '/payment/' . $wallet->ps_type . '/fail',
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'NOPAYMENT_URL_METHOD',
 					'value' => 'POST',
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'SUGGESTED_MEMO',
 					'value' => '',
 				],

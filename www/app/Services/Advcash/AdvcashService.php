@@ -64,11 +64,11 @@ class AdvcashService
 	 */
 	public static function getForm($wallet_id, $amount, $currency, $exchange_id): array
 	{
-		$wallet = Wallet::find($wallet_id);
+		$wallet = Wallet::query()->where('id', $wallet_id)->first();
 		if ($wallet === null) {
 			throw new NotFoundHttpException('Wallet not found');
 		}
-		$exchange = Exchange::find($exchange_id);
+		$exchange = Exchange::query()->where('id', $exchange_id)->first();
 		if ($exchange === null) {
 			throw new NotFoundHttpException('Exchange transaction not found');
 		}
@@ -79,38 +79,47 @@ class AdvcashService
 			'method' => 'POST',
 			'params' => [
 				[
+					'type' => 'hidden',
 					'name' => 'ac_account_email',
 					'value' => $wallet->account
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'ac_sci_name',
 					'value' => $wallet->adv_sci
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'ac_amount',
 					'value' => $amount
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'ac_currency',
 					'value' => strtoupper($currency)
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'ac_comments',
 					'value' => 'Payment ' . $exchange_id
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'operation_id',
 					'value' => $exchange_id
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'ac_order_id',
 					'value' => $exchange_id
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'ac_fail_url',
 					'value' => config('app.website_url') . '/payment/' . $wallet->ps_type . '/fail'
 				],
 				[
+					'type' => 'hidden',
 					'name' => 'ac_fail_url_method',
 					'value' => 'POST'
 				]
