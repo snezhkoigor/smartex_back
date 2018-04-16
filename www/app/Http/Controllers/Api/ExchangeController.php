@@ -133,10 +133,10 @@ class ExchangeController extends Controller
 		{
 			return response()->json(['errors' => ['email' => 'Enter your email']], Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
-		if ($request->get('email') && User::query()->where('email', $request->get('email'))->first())
-		{
-			return response()->json(['errors' => ['email' => 'This email used another user']], Response::HTTP_UNPROCESSABLE_ENTITY);
-		}
+//		if ($request->get('email') && User::query()->where('email', $request->get('email'))->first())
+//		{
+//			return response()->json(['errors' => ['email' => 'This email used another user']], Response::HTTP_UNPROCESSABLE_ENTITY);
+//		}
 
 		try {
 			// псевдорегистрация
