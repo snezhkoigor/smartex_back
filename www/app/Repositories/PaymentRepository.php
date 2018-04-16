@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\SystemErrorException;
+use App\Models\Exchange;
 use App\Models\Payment;
 use App\Services\Advcash\AdvcashService;
 use App\Services\PayeerService;
@@ -81,6 +83,46 @@ class PaymentRepository
 		}
 
 		return [];
+	}
+	
+	
+	/**
+	 * @param Exchange $exchange
+	 * @param $type
+	 * @param $confirmed
+	 * @return Payment
+	 * @throws \Exception
+	 */
+	public static function createPayment(Exchange $exchange, $type = 1, $confirmed = false): Payment
+	{
+		try
+	    {
+	        $payment = new Payment();
+	        $payment->id_user = $exchange->id_user;
+	        $payment->id_account = 0;
+	        $payment->date = Carbon::now()
+		        ->format('Y-m-d H:i:s');
+	        $payment->type = $type;
+	        $payment->payment_system = $type === 2 ? $exchange->out_payment : $exchange->in_payment;
+	        $payment->payer = $type === 2 ? $exchange->out_payer : null;
+	        $payment->payee = $type === 2 ? $exchange->out_payee : $exchange->in_payee;
+	        $payment->amount = $type === 2 ? $exchange->out_amount : $exchange->in_amount;
+	        $payment->currency = $type === 2 ? $exchange->out_currency : $exchange->in_currency;
+	        $payment->fee = $type === 2 ? $exchange->out_fee : $exchange->in_fee;
+	        $payment->batch = $type === 2 ? $exchange->out_batch : null;
+	        $payment->confirm = $confirmed;
+	        $payment->date_confirm = $confirmed ? Carbon::today()->format('Y-m-d H:i:s') : null;
+			$payment->comment = null;
+			$payment->btc_check = null;
+
+	        $payment->save();
+	    }
+	    catch (\Exception $e)
+	    {
+		    throw new SystemErrorException('Creating out payment by confirm in payment failed', $e);
+	    }
+
+	    return $payment;
 	}
 
 	/**

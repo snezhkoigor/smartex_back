@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\SystemErrorException;
 use App\Helpers\CurrencyHelper;
+use App\Mail\ExchangeCreatedMail;
 use App\Models\Commission;
 use App\Models\Exchange;
 use App\Models\PaymentSystem;
@@ -20,6 +21,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Facades\Hash;
@@ -42,7 +44,7 @@ class ExchangeController extends Controller
 			'out_payee.required' => 'Enter OUT wallet'
 		];
 	}
-	
+
 
 	/**
 	 * @param $hash
@@ -192,6 +194,8 @@ class ExchangeController extends Controller
 			$exchange->in_discount = (int)$user->discount;
 
 			$exchange->save();
+
+			Mail::to($user->email)->send(new ExchangeCreatedMail($user, $exchange));
 		}
 		catch (\Exception $e)
 	    {

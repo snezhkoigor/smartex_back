@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\SystemErrorException;
 use App\Http\Controllers\Controller;
+use App\Mail\ExchangeCompletedMail;
 use App\Models\Exchange;
 use App\Models\Payment;
 use App\Models\PaymentSystem;
@@ -13,6 +14,7 @@ use App\Transformers\PaymentTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 use PDF;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -99,25 +101,13 @@ class PaymentController extends Controller
 		    throw new NotFoundHttpException('Exchange not found');
 	    }
 
+	    // если подтверждаем вручную приходящий платеж
+	    // то надо создать исходящий
 	    if ($payment->type === 1 && $exchange->out_id_pay === 0)
 	    {
 	    	try
 		    {
-		    	$out_payment = new Payment();
-		        $out_payment->id_user = $exchange->id_user;
-		        $out_payment->id_account = 0;
-		        $out_payment->date = Carbon::now()
-			        ->format('Y-m-d H:i:s');
-		        $out_payment->type = 2;
-		        $out_payment->payment_system = $exchange->out_payment;
-		        $out_payment->payer = $exchange->out_payer;
-		        $out_payment->payee = $exchange->out_payee;
-		        $out_payment->amount = $exchange->out_amount;
-		        $out_payment->currency = $exchange->out_currency;
-		        $out_payment->fee = $exchange->out_fee;
-		        $out_payment->batch = $exchange->out_batch;
-		        $out_payment->confirm = false;
-		        $out_payment->save();
+		    	$out_payment = PaymentRepository::createPayment($exchange, 2, false);
 
 		        $exchange->out_id_pay = $out_payment->id;
 		        $exchange->save();
@@ -134,6 +124,17 @@ class PaymentController extends Controller
 		    $payment->date_confirm = Carbon::now()
 			    ->format('Y-m-d H:i:s');
 		    $payment->save();
+
+		    // завершили перевод
+		    if ($payment->type === 2)
+		    {
+		    	// :TODO: отправить деньги в зависимости от out_payment
+		        $user = User::query()->where('id', $exchange->id_user)->first();
+			    if ($user === null) {
+				    throw new NotFoundHttpException('Exchange user not found');
+			    }
+			    Mail::to($user->email)->send(new ExchangeCompletedMail($exchange));
+		    }
 	    }
 	    catch (\Exception $e)
 	    {

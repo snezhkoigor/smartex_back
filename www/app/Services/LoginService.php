@@ -50,26 +50,26 @@ class LoginService
 				'password' => $password
 			]);
 
-			$loginLog = new LoginLog();
-			$loginLog->user_id = $user->id;
-			$loginLog->tech_browser_info = $_SERVER['HTTP_USER_AGENT'];
-
-			preg_match('/(MSIE|Opera|Firefox|Chrome|Version)(?:\/| )([0-9.]+)/', $loginLog->tech_browser_info, $bInfo);
-			$loginLog->browser = ($bInfo[1] === 'Version') ? 'Safari' : $bInfo[1];
-
-			$loginLog->ip = $_SERVER['REMOTE_ADDR'];
-			
-			$token = DB::table('oauth_access_tokens')->where('user_id', $user->id)->orderBy('created_at', 'DESC')->first();
-			$loginLog->token_id = $token ? $token->id : null;
-			$loginLog->token = $answer['access_token'];
-
-			$geoObj = Geo::get($loginLog->ip);
-			if ($geoObj)
-			{
-				$loginLog->geo = $geoObj->city->name_en;
-			}
-	
-			$loginLog->save();
+//			$loginLog = new LoginLog();
+//			$loginLog->user_id = $user->id;
+//			$loginLog->tech_browser_info = $_SERVER['HTTP_USER_AGENT'];
+//
+//			preg_match('/(MSIE|Opera|Firefox|Chrome|Version)(?:\/| )([0-9.]+)/', $loginLog->tech_browser_info, $bInfo);
+//			$loginLog->browser = ($bInfo[1] === 'Version') ? 'Safari' : $bInfo[1];
+//
+//			$loginLog->ip = $_SERVER['REMOTE_ADDR'];
+//
+//			$token = DB::table('oauth_access_tokens')->where('user_id', $user->id)->orderBy('created_at', 'DESC')->first();
+//			$loginLog->token_id = $token ? $token->id : null;
+//			$loginLog->token = $answer['access_token'];
+//
+//			$geoObj = Geo::get($loginLog->ip);
+//			if ($geoObj)
+//			{
+//				$loginLog->geo = $geoObj->city->name_en;
+//			}
+//
+//			$loginLog->save();
 
 			return $answer;
 		}

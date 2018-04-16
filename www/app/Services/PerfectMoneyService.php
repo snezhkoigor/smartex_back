@@ -3,11 +3,15 @@
 namespace App\Services;
 
 use App\Exceptions\SystemErrorException;
+use App\Mail\IncomePaymentSucceedMail;
 use App\Models\Exchange;
 use App\Models\Payment;
+use App\Models\User;
 use App\Models\Wallet;
+use App\Repositories\PaymentRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -157,24 +161,31 @@ class PerfectMoneyService
 	
 	/**
 	 * @param $data
-	 * @param $type
 	 * @return Payment
 	 * @throws \Exception
 	 *
 	 * 1 - ввод
 	 * 2 - вывод
 	 */
-	public static function processTransaction($data, $type = 1): Payment
+	public static function processIncomeTransaction($data): Payment
 	{
 		if (!isset($data['PAYMENT_ID']))
 		{
 			throw new SystemErrorException('Exchange transaction not set');
 		}
+
 		$exchange = Exchange::query()->where('id', $data['PAYMENT_ID'])->first();
 		if ($exchange === null)
 		{
 			throw new NotFoundHttpException('Exchange transaction not found');
 		}
+
+		$user = User::query()->where('id', $exchange->id_user)->first();
+		if ($user === null)
+		{
+			throw new NotFoundHttpException('Exchange user transaction not found');
+		}
+
 		$wallet = Wallet::query()->where('account', $data['PAYEE_ACCOUNT'])->first();
 		if ($wallet === null) {
 			throw new NotFoundHttpException('Wallet not found');
@@ -208,26 +219,14 @@ class PerfectMoneyService
 
 		try
 		{
-			$payment = new Payment();
-			$payment->id_user = $exchange->id_user;
-			$payment->id_account = $wallet->id;
-			$payment->date = Carbon::today()->format('Y-m-d H:i:s');
-			$payment->type = $type;
-			$payment->payee = $exchange->in_payee;
-			$payment->payer = $exchange->out_payer;
-			$payment->id_user_details = null;
-			$payment->amount = $exchange->in_amount;
-			$payment->currency = $exchange->in_currency;
-			$payment->fee = $exchange->in_fee;
-			$payment->batch = null;
-			$payment->date_confirm = Carbon::today()->format('Y-m-d H:i:s');
-			$payment->comment = null;
-			$payment->confirm = true;
-			$payment->btc_check = null;
-			$payment->save();
-			
+			$payment = PaymentRepository::createPayment($exchange, 1, true);
+			$out_payment = PaymentRepository::createPayment($exchange, 2, false);
+
 			$exchange->in_id_pay = $payment->id;
+			$exchange->out_id_pay = $out_payment->id;
 			$exchange->save();
+
+			Mail::to($user->email)->send(new IncomePaymentSucceedMail($payment, $exchange));
 		}
 		catch (\Exception $e)
 		{
