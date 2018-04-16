@@ -111,8 +111,8 @@ class PayeerService
         $description = base64_encode('Payment ' . $exchange_id);
 		return [
 			'auto' => true,
-			'url' => 'https://perfectmoney.is/api/step1.asp',
-			'method' => 'POST',
+			'url' => '//payeer.com/api/merchant/m.php',
+			'method' => 'GET',
 			'params' => [
 				[
 					'type' => 'hidden',
