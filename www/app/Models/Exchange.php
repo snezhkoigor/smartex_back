@@ -40,6 +40,9 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  */
 class Exchange extends Model
 {
+	public static $redis_hash_expiration = 2592000; // 30 дней
+
+
 	public $timestamps = false;
 
 	/**

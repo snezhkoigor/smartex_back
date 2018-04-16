@@ -7,6 +7,8 @@ use App\Models\Exchange;
 use App\Models\Payment;
 use App\Models\Wallet;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -83,9 +85,13 @@ class PerfectMoneyService
 			throw new NotFoundHttpException('Exchange transaction not found');
 		}
 
+		$hash = md5(time());
+		Redis::set($hash, $exchange_id, 'EX', Exchange::$redis_hash_expiration);
+
 		return [
 			'auto' => true,
 			'id' => $exchange_id,
+			'hash' => $hash,
 			'url' => 'https://perfectmoney.is/api/step1.asp',
 			'method' => 'POST',
 			'params' => [

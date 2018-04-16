@@ -46,6 +46,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 	Route::post('/exchanges/add', 'ExchangeController@add');
 	Route::post('/user/exchanges/can', 'ExchangeController@canExecuteCurrentUser');
 	Route::post('/sci/payment/{ps_code}', 'PaymentController@Sci');
+	Route::get('/user/not-auth/exchanges/{hash}', 'ExchangeController@notAuthUserExchange');
 
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.'|'.Role::ROLE_USER.','])->group(function() {
 		Route::get('/user/referrers', 'User\ProfileController@referrers');

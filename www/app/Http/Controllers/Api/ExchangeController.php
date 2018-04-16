@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Facades\Hash;
 
@@ -40,6 +41,30 @@ class ExchangeController extends Controller
 			'in_amount.required' => 'Enter IN amount',
 			'out_payee.required' => 'Enter OUT wallet'
 		];
+	}
+	
+
+	/**
+	 * @param $hash
+	 * @return JsonResponse
+	 * @throws \Exception
+	 */
+	public function notAuthUserExchange($hash): JsonResponse
+	{
+		$id = Redis::get($hash);
+		if (!$id)
+	    {
+	    	throw new NotFoundHttpException('Not found your exchange hash information');
+	    }
+	    $exchange = Exchange::query()->where('id', $id)->first();
+		if ($exchange === null)
+	    {
+	    	throw new NotFoundHttpException('Not found your exchange information');
+	    }
+
+	    return fractal($exchange, new ExchangeTransformer())
+		    ->parseIncludes(['inPayment', 'outPayment', 'inPayment.paymentSystem', 'outPayment.paymentSystem'])
+		    ->respond();
 	}
 
 
@@ -65,16 +90,12 @@ class ExchangeController extends Controller
 	    $relations = $this->getRelationsFromIncludes($request);
 
 	    $filters['id_user'] = $user->id;
-	    $users = ExchangeRepository::getExchanges($filters, $sorts, $relations, ['*'], $search_string, $limit, $offset);
+	    $exchanges = ExchangeRepository::getExchanges($filters, $sorts, $relations, ['*'], $search_string, $limit, $offset);
 
-	    $meta = [
-		    'count' => ExchangeRepository::getExchangesCount($filters, $search_string),
-	    ];
-
-	    return fractal($users, new ExchangeTransformer())
+	    return fractal($exchanges, new ExchangeTransformer())
 		    ->parseIncludes(['inPayment', 'outPayment', 'inPayment.paymentSystem', 'outPayment.paymentSystem'])
 		    ->parseFieldsets($fieldsets)
-		    ->addMeta($meta)
+		    ->addMeta([ 'count' => ExchangeRepository::getExchangesCount($filters, $search_string) ])
 		    ->respond();
 	}
 
