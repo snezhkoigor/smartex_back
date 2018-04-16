@@ -92,7 +92,7 @@ class AdvcashService
 				],
 				[
 					'name' => 'ac_currency',
-					'value' => $currency
+					'value' => strtoupper($currency)
 				],
 				[
 					'name' => 'ac_comments',

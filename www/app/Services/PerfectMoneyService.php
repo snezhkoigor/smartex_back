@@ -103,7 +103,7 @@ class PerfectMoneyService
 				],
 				[
 					'name' => 'PAYMENT_UNITS',
-					'value' => $currency,
+					'value' => strtoupper($currency),
 				],
 				[
 					'name' => 'STATUS_URL',
