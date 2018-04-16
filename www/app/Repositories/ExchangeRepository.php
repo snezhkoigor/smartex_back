@@ -247,6 +247,9 @@ class ExchangeRepository
 		{
 			switch ($name)
 			{
+				case 'id':
+					$query->where('id', (int)$value);
+					break;
 				case 'exchange_status':
 					if ($value === 'create')
 					{
@@ -272,11 +275,11 @@ class ExchangeRepository
 					break;
 
 				case 'out_currency':
-					$query->where('out_currency', (int)$value);
+					$query->where('out_currency', $value);
 					break;
 
 				case 'in_currency':
-					$query->where('in_currency', (int)$value);
+					$query->where('in_currency', $value);
 					break;
 
 				case 'id_user':
@@ -284,11 +287,11 @@ class ExchangeRepository
 					break;
 
 				case 'in_payment':
-					$query->where('in_payment', (int)$value);
+					$query->where('in_payment', $value);
 					break;
 					
 				case 'out_payment':
-					$query->where('out_payment', (int)$value);
+					$query->where('out_payment', $value);
 					break;
 			}
 		}

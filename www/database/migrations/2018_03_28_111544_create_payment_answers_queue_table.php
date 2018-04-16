@@ -17,6 +17,7 @@ class CreatePaymentAnswersQueueTable extends Migration
             $table->increments('id');
             $table->boolean('active')->default(true);
             $table->text('post');
+            $table->string('ps_code', 16);
             $table->timestamps();
         });
     }

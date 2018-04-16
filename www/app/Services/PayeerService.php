@@ -111,6 +111,7 @@ class PayeerService
         $description = base64_encode('Payment ' . $exchange_id);
 		return [
 			'auto' => true,
+			'id' => $exchange_id,
 			'url' => '//payeer.com/api/merchant/m.php',
 			'method' => 'GET',
 			'params' => [

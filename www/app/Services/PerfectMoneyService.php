@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Exceptions\SystemErrorException;
 use App\Models\Exchange;
+use App\Models\Payment;
 use App\Models\Wallet;
+use Carbon\Carbon;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -82,6 +85,7 @@ class PerfectMoneyService
 
 		return [
 			'auto' => true,
+			'id' => $exchange_id,
 			'url' => 'https://perfectmoney.is/api/step1.asp',
 			'method' => 'POST',
 			'params' => [
@@ -113,7 +117,7 @@ class PerfectMoneyService
 				[
 					'type' => 'hidden',
 					'name' => 'STATUS_URL',
-					'value' => config('app.website_url') . '/api/sci/payment/' . $wallet->ps_type,
+					'value' => config('app.url') . '/sci/payment/' . $wallet->ps_type,
 				],
 				[
 					'type' => 'hidden',
@@ -142,5 +146,88 @@ class PerfectMoneyService
 				],
 			]
 		];
+	}
+	
+	
+	/**
+	 * @param $data
+	 * @param $type
+	 * @return Payment
+	 * @throws \Exception
+	 *
+	 * 1 - ввод
+	 * 2 - вывод
+	 */
+	public static function processTransaction($data, $type = 1): Payment
+	{
+		if (!isset($data['PAYMENT_ID']))
+		{
+			throw new SystemErrorException('Exchange transaction not set');
+		}
+		$exchange = Exchange::query()->where('id', $data['PAYMENT_ID'])->first();
+		if ($exchange === null)
+		{
+			throw new NotFoundHttpException('Exchange transaction not found');
+		}
+		$wallet = Wallet::query()->where('account', $data['PAYEE_ACCOUNT'])->first();
+		if ($wallet === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
+
+		if ((int)$exchange->in_id_pay > 0)
+		{
+			throw new SystemErrorException('in_id_pay is already created');
+		}
+		if ($data['PAYEE_ACCOUNT'] !== $wallet->account)
+		{
+			throw new SystemErrorException('Wrong PAYEE_ACCOUNT');
+		}
+		if ($exchange->in_amount !== $data['PAYMENT_AMOUNT'] && $data['PAYMENT_UNITS'] !== strtoupper($exchange->in_currency))
+		{
+			throw new SystemErrorException('Wrong PAYMENT_AMOUNT and PAYMENT_UNITS');
+		}
+		
+		$string =
+		      $data['PAYMENT_ID'] . ':' . $data['PAYEE_ACCOUNT'] . ':' .
+		      $data['PAYMENT_AMOUNT'] . ':' . $data['PAYMENT_UNITS'] . ':' .
+		      $data['PAYMENT_BATCH_NUM'] . ':' .
+		      $data['PAYER_ACCOUNT'] . ':' . strtoupper(md5($wallet->secret)) . ':' .
+		      $data['TIMESTAMPGMT'];
+
+		$hash = strtoupper(md5($string));
+		if ($hash !== $data['V2_HASH'])
+		{
+			throw new SystemErrorException('Wrong V2_HASH');
+		}
+
+		try
+		{
+			$payment = new Payment();
+			$payment->id_user = $exchange->id_user;
+			$payment->id_account = $wallet->id;
+			$payment->date = Carbon::today()->format('Y-m-d H:i:s');
+			$payment->type = $type;
+			$payment->payee = $exchange->in_payee;
+			$payment->payer = $exchange->out_payer;
+			$payment->id_user_details = null;
+			$payment->amount = $exchange->in_amount;
+			$payment->currency = $exchange->in_currency;
+			$payment->fee = $exchange->in_fee;
+			$payment->batch = null;
+			$payment->date_confirm = Carbon::today()->format('Y-m-d H:i:s');
+			$payment->comment = null;
+			$payment->confirm = true;
+			$payment->btc_check = null;
+			$payment->save();
+			
+			$exchange->in_id_pay = $payment->id;
+			$exchange->save();
+		}
+		catch (\Exception $e)
+		{
+			throw new SystemErrorException('Adding income payment failed');
+		}
+
+		return $payment;
 	}
 }

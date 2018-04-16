@@ -6,6 +6,7 @@ use App\Exceptions\SystemErrorException;
 use App\Http\Controllers\Controller;
 use App\Models\Exchange;
 use App\Models\Payment;
+use App\Models\PaymentSystem;
 use App\Models\User;
 use App\Repositories\PaymentRepository;
 use App\Transformers\PaymentTransformer;
@@ -140,6 +141,37 @@ class PaymentController extends Controller
 	    }
 
 	    return response()->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+
+	/**
+	 * @param Request $request
+	 * @param $ps_code
+	 * @return JsonResponse
+	 * @throws \Exception
+	 */
+    public function sci(Request $request, $ps_code): JsonResponse
+    {
+    	$paymentSystem = PaymentSystem::query()->where('code', $ps_code)->first();
+    	if ($paymentSystem === null) {
+			throw new NotFoundHttpException('No payment system found');
+		}
+
+		try
+		{
+			\DB::table('payment_answers_queue')
+			->insert([
+				'active' => true,
+				'post' => json_encode($request->all()),
+				'ps_code' => $ps_code
+			]);
+		}
+		catch (\Exception $e)
+		{
+			throw new SystemErrorException('Payment adding process failed', $e);
+		}
+
+		return response()->json('OK', Response::HTTP_OK);
     }
 
 

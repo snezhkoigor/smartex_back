@@ -75,6 +75,7 @@ class AdvcashService
 
 		return [
 			'auto' => true,
+			'id' => $exchange_id,
 			'url' => 'https://wallet.advcash.com/sci/',
 			'method' => 'POST',
 			'params' => [
