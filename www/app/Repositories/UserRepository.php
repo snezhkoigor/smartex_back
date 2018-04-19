@@ -184,7 +184,7 @@ class UserRepository
 				break;
 			default:
 				$query->select(DB::raw('COUNT(id) as count, SUM(activation) as activations, DATE_FORMAT(date, \'%d.%m.%Y\') as date_'));
-				$query->groupBy(DB::raw('DATE_FORMAT(date, \'%d.%m.%Y\')'));
+				$query->groupBy('date_');
 				$query->whereBetween('date', [ Carbon::today()->subDays(7), Carbon::today() ]);
 				break;
 		}
