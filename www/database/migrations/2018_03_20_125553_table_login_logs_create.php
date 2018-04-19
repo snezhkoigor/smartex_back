@@ -25,7 +25,7 @@ class TableLoginLogsCreate extends Migration
             $table->timestamps();
 
             $table->index('user_id');
-            $table->index('token');
+//            $table->index('token');
         });
     }
 
