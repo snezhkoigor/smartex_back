@@ -190,7 +190,7 @@ class UserRepository
 		}
 
 		$data = $query
-			->orderBy('date')
+			->orderBy('date_')
 			->get();
 
 		if ($data) {
