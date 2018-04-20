@@ -48,7 +48,7 @@ class CommissionController extends Controller
 			}
 
 			if ($query->first()) {
-				return 'unique:commissions,wallet_id';
+				return 'unique:ps_commission,wallet_id';
 			}
 		}
 
