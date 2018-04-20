@@ -177,8 +177,8 @@ class ExchangeRepository
 			->where('in_id_pay', '<>', 0)
 			->where('out_id_pay', '<>', 0)
 			->whereBetween('date', [$date_from, $date_to])
-			->groupBy('date_')
-			->orderBy('date')
+			->groupBy(DB::raw('DATE_FORMAT(date, \'%d.%m.%Y\')'))
+			->orderBy('date_')
 			->get()
 			->toArray();
 
@@ -189,11 +189,11 @@ class ExchangeRepository
 					->orWhere('out_id_pay', 0);
 			})
 			->whereBetween('date', [$date_from, $date_to])
-			->groupBy('date_')
-			->orderBy('date')
+			->groupBy(DB::raw('DATE_FORMAT(date, \'%d.%m.%Y\')'))
+			->orderBy('date_')
 			->get()
 			->toArray();
-		
+
 		foreach ($finished as $item)
 		{
 			$result['categories'][$item['date_']] = $item['date_'];
