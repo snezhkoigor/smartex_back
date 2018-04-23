@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Exchange;
+use App\Models\Payment;
 use App\Models\PaymentSystem;
 use App\Models\User;
 use Carbon\Carbon;
@@ -78,6 +79,47 @@ class ExchangeRepository
 			'finished' => $finishedCount ? $finishedCount['count'] : 0,
 			'conversion' => $allCount['count'] ? round($finishedCount['count'] * 100 / $allCount['count'], 0) : 0
 		];
+	}
+
+
+	/**
+	 * 0 - нет приходящего платежа
+	 * 1 - есть приходящий, но он еще не подтвержден
+	 * 2 - есть приходящий, он подвержден, но нет исходящего
+	 * 3 - есть исходящий, но он еще не подтвержден
+	 * 4 - все готово
+	 *
+	 * @param Exchange $exchange
+	 * @return int
+	 */
+	public static function getStatus(Exchange $exchange)
+	{
+		if ($exchange->in_id_pay === 0 && $exchange->out_id_pay === 0)
+		{
+			return 0;
+		}
+		if ($exchange->in_id_pay !== 0 && $exchange->out_id_pay === 0)
+		{
+			$payment = Payment::query()->where('id', $exchange->in_id_pay)->first();
+			if ($payment === null || ($payment && $payment->confirm === 0))
+			{
+				return 1;
+			}
+
+			return 2;
+		}
+		if ($exchange->out_id_pay !== 0)
+		{
+			$payment = Payment::query()->where('id', $exchange->out_id_pay)->first();
+			if ($payment === null || ($payment && $payment->confirm === 0))
+			{
+				return 3;
+			}
+			
+			return 4;
+		}
+
+		return 0;
 	}
 
 

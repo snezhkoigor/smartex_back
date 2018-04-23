@@ -152,6 +152,17 @@ class User extends Authenticatable
 		return $eventName;
 	}
 
+	/**
+     * Set the user's email.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setEmailAttribute($value): void
+    {
+        $this->attributes['email'] = strtolower($value);
+    }
+
     public function roles()
     {
 	    return $this->belongsToMany(Role::class);

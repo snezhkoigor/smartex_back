@@ -5,6 +5,7 @@ namespace App\Transformers;
 use App\Models\Exchange;
 use App\Models\Payment;
 use App\Repositories\CurrencyRepository;
+use App\Repositories\ExchangeRepository;
 use League\Fractal\TransformerAbstract;
 use League\Fractal\Resource\Item;
 
@@ -45,6 +46,8 @@ class ExchangeTransformer extends TransformerAbstract
 			'out_payee' => $exchange->out_payee,
 			'out_date' => $exchange->out_date,
 			'out_payment' => $exchange->out_payment,
+
+			'status' => ExchangeRepository::getStatus($exchange)
 		];
 
 		$data['in_currency_amount'] = $data['in_prefix'] . $data['in_amount'];
