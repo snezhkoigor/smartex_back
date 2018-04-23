@@ -2,13 +2,18 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\SystemErrorException;
+use App\Helpers\CurrencyHelper;
+use App\Models\Commission;
 use App\Models\Exchange;
 use App\Models\Payment;
 use App\Models\PaymentSystem;
 use App\Models\User;
+use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class ExchangeRepository
@@ -92,34 +97,73 @@ class ExchangeRepository
 	 * @param Exchange $exchange
 	 * @return int
 	 */
-	public static function getStatus(Exchange $exchange)
+	public static function getStatus(Exchange $exchange): int
 	{
-		if ($exchange->in_id_pay === 0 && $exchange->out_id_pay === 0)
-		{
-			return 0;
-		}
-		if ($exchange->in_id_pay !== 0 && $exchange->out_id_pay === 0)
-		{
-			$payment = Payment::query()->where('id', $exchange->in_id_pay)->first();
-			if ($payment === null || ($payment && $payment->confirm === 0))
-			{
-				return 1;
-			}
+		$in_payment = Payment::query()->where('id', $exchange->in_id_pay)->first();
+		$out_payment = Payment::query()->where('id', $exchange->out_id_pay)->first();
 
+		if ($in_payment === null || ($in_payment && $in_payment->confirm === 0))
+		{
+			return 1;
+		}
+		if ($out_payment && $out_payment->confirm === 0)
+		{
 			return 2;
 		}
-		if ($exchange->out_id_pay !== 0)
+
+		return 3;
+	}
+
+
+	/**
+	 * @param $user
+	 * @param $commission_id
+	 * @param $in_amount
+	 * @param $out_payee
+	 * @return Exchange|null
+	 * @throws \Exception
+	 */
+	public static function createExchange($user, $commission_id, $in_amount, $out_payee): ?Exchange
+	{
+		$exchange = null;
+
+		try
 		{
-			$payment = Payment::query()->where('id', $exchange->out_id_pay)->first();
-			if ($payment === null || ($payment && $payment->confirm === 0))
-			{
-				return 3;
-			}
-			
-			return 4;
+			$ps_commission = Commission::query()->where('id', $commission_id)->first();
+			$wallet = Wallet::query()->where('id', $ps_commission->wallet_id)->first();
+			$payment_system = PaymentSystem::query()->where('id', $ps_commission->payment_system_id)->first($ps_commission->payment_system_id);
+
+			$discount = round($ps_commission->commission * (int)$user->discount/100, 4);
+			$fee = round($in_amount * ($ps_commission->commission/100 - $discount), 4);
+			$amount = (float)$in_amount - $fee;
+
+			$exchange = new Exchange();
+			$exchange->date = Carbon::today()->format('Y-m-d H:i:s');
+			$exchange->id_user = $user->id;
+			$exchange->in_payment = $wallet->ps_type;
+			$exchange->in_id_pay = 0;
+			$exchange->in_currency = $wallet->currency;
+			$exchange->in_amount = $amount;
+			$exchange->in_fee = $fee;
+			$exchange->out_payment = $payment_system->code;
+			$exchange->out_id_pay = 0;
+			$exchange->out_currency = $ps_commission->currency;
+			$exchange->out_amount = CurrencyHelper::convert($wallet->currency, $ps_commission->currency, $amount);
+			$exchange->out_payee = $out_payee;
+			$exchange->out_fee = 0;
+			$exchange->in_discount = (int)$user->discount;
+
+			$exchange->save();
+
+			PaymentRepository::createPayment($exchange, 1, false);
+			PaymentRepository::createPayment($exchange, 2, false);
+		}
+		catch (\Exception $e)
+		{
+			throw new SystemErrorException('Adding exchange by user failed', $e);
 		}
 
-		return 0;
+		return $exchange;
 	}
 
 
