@@ -203,7 +203,7 @@ class PerfectMoneyService
 		{
 			throw new SystemErrorException('Wrong PAYMENT_AMOUNT and PAYMENT_UNITS');
 		}
-		
+
 		$string =
 		      $data['PAYMENT_ID'] . ':' . $data['PAYEE_ACCOUNT'] . ':' .
 		      $data['PAYMENT_AMOUNT'] . ':' . $data['PAYMENT_UNITS'] . ':' .

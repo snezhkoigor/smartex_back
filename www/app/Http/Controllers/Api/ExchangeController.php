@@ -194,8 +194,6 @@ class ExchangeController extends Controller
 			$exchange->in_discount = (int)$user->discount;
 
 			$exchange->save();
-
-			Mail::to($user->email)->send(new ExchangeCreatedMail($user, $exchange));
 		}
 		catch (\Exception $e)
 	    {
@@ -203,6 +201,8 @@ class ExchangeController extends Controller
 	    }
 
 	    $form = PaymentRepository::getFormRedirect($wallet->ps_type, $ps_commission->wallet_id, $exchange->in_amount, $exchange->in_currency, $exchange->id);
+		Mail::to($user->email)->send(new ExchangeCreatedMail($user, $exchange, $form['hash']));
+
 		return response()->json([ 'data' => $form ],Response::HTTP_OK);
 	}
 

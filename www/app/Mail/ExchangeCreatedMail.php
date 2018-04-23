@@ -15,6 +15,7 @@ class ExchangeCreatedMail extends Mailable
 
     private $user;
     private $exchange;
+    private $hash;
     
     /**
      * Create a new message instance.
@@ -23,10 +24,11 @@ class ExchangeCreatedMail extends Mailable
      * @param $exchange
      * @return void
      */
-    public function __construct(User $user, Exchange $exchange)
+    public function __construct(User $user, Exchange $exchange, string $hash = null)
     {
         $this->user = $user;
         $this->exchange = $exchange;
+        $this->hash = $hash;
     }
 
     /**
@@ -39,7 +41,8 @@ class ExchangeCreatedMail extends Mailable
         return $this->view('emails.user.exchanges.created.html')
 	        ->with([
 	            'exchange' => $this->exchange,
-	            'user' => $this->user
+	            'user' => $this->user,
+	            'hash' => $this->hash
             ])
 	        ->subject('Order accepted on ' . config('app.name') . '.')
 	        ->text('emails.user.exchanges.created.plain');
