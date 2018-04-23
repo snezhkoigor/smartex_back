@@ -153,10 +153,13 @@ class ExchangeRepository
 			$exchange->out_fee = 0;
 			$exchange->in_discount = (int)$user->discount;
 
-			$exchange->save();
+			$in_payment = PaymentRepository::createPayment($exchange, 1, false);
+			$out_payment = PaymentRepository::createPayment($exchange, 2, false);
 
-			PaymentRepository::createPayment($exchange, 1, false);
-			PaymentRepository::createPayment($exchange, 2, false);
+			$exchange->in_id_pay = $in_payment->id;
+			$exchange->out_id_pay = $out_payment->id;
+			
+			$exchange->save();
 		}
 		catch (\Exception $e)
 		{
