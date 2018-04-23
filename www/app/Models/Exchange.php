@@ -29,6 +29,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property double $out_fee
  * @property string $out_batch
  * @property string $out_date
+ * @property integer $rating
  *
  * @property Payment $inPayment
  * @property Payment $outPayment
@@ -69,7 +70,8 @@ class Exchange extends Model
 		'out_fee',
 		'out_batch',
 		'out_date',
-		'in_discount'
+		'in_discount',
+		'rating'
 	];
 	
 	public function inPayment()

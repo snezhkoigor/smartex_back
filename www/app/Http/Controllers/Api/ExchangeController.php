@@ -102,6 +102,44 @@ class ExchangeController extends Controller
 	}
 
 
+	/**
+	 * @param Request $request
+	 * @return JsonResponse
+	 * @throws \Exception
+	 */
+	public function saveComment(Request $request): JsonResponse
+	{
+		$user = \Auth::user();
+		if ($user === null) {
+			throw new NotFoundHttpException('User not found');
+		}
+		$exchange = Exchange::query()->where([
+			['id', '=', $request->get('exchange_id')],
+			['id_user', '=', $user->id]
+		])->first();
+		if ($exchange === null) {
+			throw new NotFoundHttpException('Exchange not found');
+		}
+
+		try
+		{
+			$exchange->comment = $request->get('comment') ?? '';
+			$exchange->rating = $request->get('rating') ?? 0;
+			$exchange->save();
+		}
+		catch (\Exception $e)
+		{
+			throw new SystemErrorException('Adding exchange comment failed', $e);
+		}
+
+		return response()->json(null, Response::HTTP_OK);
+	}
+	
+
+	/**
+	 * @param Request $request
+	 * @return JsonResponse
+	 */
 	public function canExecuteCurrentUser(Request $request): JsonResponse
 	{
 		if (UserRepository::canDoExchange($request->get('amount'), $request->get('currency')) === false)
