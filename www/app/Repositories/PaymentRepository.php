@@ -113,12 +113,12 @@ class PaymentRepository
 	        $payment->confirm = $confirmed;
 	        $payment->date_confirm = $confirmed ? Carbon::today()->format('Y-m-d H:i:s') : null;
 			$payment->comment = null;
-			$payment->btc_check = null;
+			$payment->btc_check = false;
 
 	        $payment->save();
 	    }
 	    catch (\Exception $e)
-	    {
+	    {var_dump($e);die;
 		    throw new SystemErrorException('Creating out payment by confirm in payment failed', $e);
 	    }
 

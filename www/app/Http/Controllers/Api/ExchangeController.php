@@ -155,6 +155,7 @@ class ExchangeController extends Controller
 
 		$this->validate($request, $this->rules(), $this->messages());
 
+
 		try {
 			// псевдорегистрация
 			$user = User::query()->where('email', $request->get('email'))->first();
@@ -167,7 +168,7 @@ class ExchangeController extends Controller
 				$user->save();
 			}
 
-			$exchange = ExchangeRepository::createExchange($user, $ps_commission, $request->get('commission_id'), $request->get('out_payee'));
+			$exchange = ExchangeRepository::createExchange($user, $request->get('commission_id'), $request->get('in_amount'), $request->get('out_payee'));
 			if ($exchange)
 			{
 				$form = PaymentRepository::getFormRedirect($wallet->ps_type, $ps_commission->wallet_id, $exchange->in_amount, $exchange->in_currency, $exchange->id);

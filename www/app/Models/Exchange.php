@@ -71,13 +71,6 @@ class Exchange extends Model
 		'out_date',
 		'in_discount'
 	];
-
-	protected $guarded = [];
-
-	protected $dates = [
-//		'date',
-//		'out_date'
-	];
 	
 	public function inPayment()
 	{

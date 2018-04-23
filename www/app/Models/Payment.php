@@ -64,9 +64,6 @@ class Payment extends Model
 	];
 
 
-	protected $guarded = [];
-
-
 	protected $dates = [
 		'date',
 		'date_confirm'

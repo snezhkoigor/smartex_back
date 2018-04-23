@@ -131,7 +131,7 @@ class ExchangeRepository
 		{
 			$ps_commission = Commission::query()->where('id', $commission_id)->first();
 			$wallet = Wallet::query()->where('id', $ps_commission->wallet_id)->first();
-			$payment_system = PaymentSystem::query()->where('id', $ps_commission->payment_system_id)->first($ps_commission->payment_system_id);
+			$payment_system = PaymentSystem::query()->where('id', $ps_commission->payment_system_id)->first();
 
 			$discount = round($ps_commission->commission * (int)$user->discount/100, 4);
 			$fee = round($in_amount * ($ps_commission->commission/100 - $discount), 4);
@@ -162,7 +162,7 @@ class ExchangeRepository
 			$exchange->save();
 		}
 		catch (\Exception $e)
-		{
+		{var_dump($e);die;
 			throw new SystemErrorException('Adding exchange by user failed', $e);
 		}
 
