@@ -35,6 +35,7 @@ class CreateExchangesTable extends Migration
 			    $table->double('out_fee', 15, 8)->nullable();
 			    $table->string('out_batch', 255)->nullable();
 			    $table->dateTime('out_date')->nullable();
+			    $table->integer('rating')->default(0);
 		    });
 	    }
     }
