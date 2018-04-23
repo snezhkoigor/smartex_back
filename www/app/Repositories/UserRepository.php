@@ -89,7 +89,7 @@ class UserRepository
 
 		if ($user !== null)
 		{
-//			if ($amount_in_eur < 25000)
+//			if ($amount_in_eur < 1000)
 //			{
 //				return true;
 //			}
@@ -99,7 +99,7 @@ class UserRepository
 			}
 		}
 
-		return $amount_in_eur < 1000 && $user === null;
+		return $amount_in_eur < 1000/* && $user === null*/;
 	}
 
 
