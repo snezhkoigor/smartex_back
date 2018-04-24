@@ -344,7 +344,7 @@ class ExchangeRepository
 					{
 						$query->where(function(Builder $query) {
 							$query->where('in_id_pay', '<>', 0)
-								->whereHas('payments', function(Builder $query)
+								->whereHas('inPayment', function(Builder $query)
 								{
 								    $query->where('type', 1)
 									    ->whereNull('date_confirm');
@@ -355,7 +355,7 @@ class ExchangeRepository
 					{
 						$query->where(function(Builder $query) {
 							$query->where('in_id_pay', '<>', 0)
-								->whereHas('payments', function(Builder $query)
+								->whereHas('inPayment', function(Builder $query)
 								{
 								    $query->where('type', 1)
 									    ->whereNotNull('date_confirm');
@@ -366,7 +366,7 @@ class ExchangeRepository
 					{
 						$query->where(function(Builder $query) {
 							$query->where('out_id_pay', '<>', 0)
-								->whereHas('payments', function(Builder $query)
+								->whereHas('outPayment', function(Builder $query)
 								{
 								    $query->where('type', 2)
 									    ->whereNotNull('date_confirm');
