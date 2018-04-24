@@ -347,7 +347,7 @@ class ExchangeRepository
 								->whereHas('inPayment', function(Builder $query)
 								{
 								    $query->where('type', 1)
-									    ->whereNull('date_confirm');
+									    ->where('confirm', 0);
 								});
 						});
 					}
@@ -358,12 +358,12 @@ class ExchangeRepository
 								->whereHas('inPayment', function(Builder $query)
 								{
 								    $query->where('type', 1)
-									    ->whereNotNull('date_confirm');
+									    ->where('confirm', 1);
 								})
 								->whereHas('outPayment', function(Builder $query)
 								{
 								    $query->where('type', 2)
-									    ->whereNull('date_confirm');
+									    ->where('confirm', 0);
 								});
 						});
 					}
@@ -374,12 +374,12 @@ class ExchangeRepository
 								->whereHas('inPayment', function(Builder $query)
 								{
 								    $query->where('type', 1)
-									    ->whereNotNull('date_confirm');
+									    ->where('confirm', 1);
 								})
 								->whereHas('outPayment', function(Builder $query)
 								{
 								    $query->where('type', 2)
-									    ->whereNotNull('date_confirm');
+									    ->where('confirm', 1);
 								});
 						});
 					}
