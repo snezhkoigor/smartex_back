@@ -101,23 +101,6 @@ class PaymentController extends Controller
 		    throw new NotFoundHttpException('Exchange not found');
 	    }
 
-	    // если подтверждаем вручную приходящий платеж
-	    // то надо создать исходящий
-	    if ($payment->type === 1 && $exchange->out_id_pay === 0)
-	    {
-	    	try
-		    {
-		    	$out_payment = PaymentRepository::createPayment($exchange, 2, false);
-
-		        $exchange->out_id_pay = $out_payment->id;
-		        $exchange->save();
-		    }
-		    catch (\Exception $e)
-		    {
-			    throw new SystemErrorException('Creating out payment by confirm in payment failed', $e);
-		    }
-	    }
-
 	    try
 	    {
 		    $payment->confirm = true;
