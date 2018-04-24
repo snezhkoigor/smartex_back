@@ -104,17 +104,18 @@ class ExchangeController extends Controller
 
 	/**
 	 * @param Request $request
+	 * @param $exchange_id
 	 * @return JsonResponse
 	 * @throws \Exception
 	 */
-	public function saveComment(Request $request): JsonResponse
+	public function saveComment(Request $request, $exchange_id): JsonResponse
 	{
 		$user = \Auth::user();
 		if ($user === null) {
 			throw new NotFoundHttpException('User not found');
 		}
 		$exchange = Exchange::query()->where([
-			['id', '=', $request->get('exchange_id')],
+			['id', '=', $exchange_id],
 			['id_user', '=', $user->id]
 		])->first();
 		if ($exchange === null) {

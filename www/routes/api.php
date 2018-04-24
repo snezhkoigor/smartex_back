@@ -49,7 +49,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 	Route::get('/user/not-auth/exchanges/{hash}', 'ExchangeController@notAuthUserExchange');
 
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_USER.','])->group(function() {
-		Route::put('/user/exchanges/{exchange_id}', 'ExchangeController@saveComment');
+		Route::put('/user/exchanges/{exchange_id}/comment', 'ExchangeController@saveComment');
 	});
 
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_ADMIN.'|'.Role::ROLE_USER.','])->group(function() {

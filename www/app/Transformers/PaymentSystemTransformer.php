@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\PaymentSystem;
+use Illuminate\Support\Facades\Storage;
 use League\Fractal\TransformerAbstract;
 use League\Fractal\Resource\Collection;
 
@@ -27,6 +28,7 @@ class PaymentSystemTransformer extends TransformerAbstract
 			'id' => (int)$payment_system->id,
 			'name' => $payment_system->name,
 			'logo' => $payment_system->logo,
+			'logo_link' => $payment_system->logo ? Storage::disk('logo')->url($payment_system->logo) : '',
 			'active' => (bool)$payment_system->active,
 			'is_account_multi_line' => (bool)$payment_system->is_account_multi_line,
 			'created_at' => $payment_system->created_at,
