@@ -343,22 +343,34 @@ class ExchangeRepository
 					if ($value === 'create')
 					{
 						$query->where(function(Builder $query) {
-							$query->where('in_id_pay', '=', 0)
-								->where('out_id_pay', '=', 0);
+							$query->where('in_id_pay', '<>', 0)
+								->whereHas('payments', function(Builder $query)
+								{
+								    $query->where('type', 1)
+									    ->whereNull('date_confirm');
+								});
 						});
 					}
 					elseif ($value === 'start')
 					{
 						$query->where(function(Builder $query) {
 							$query->where('in_id_pay', '<>', 0)
-								->where('out_id_pay', '=', 0);
+								->whereHas('payments', function(Builder $query)
+								{
+								    $query->where('type', 1)
+									    ->whereNotNull('date_confirm');
+								});
 						});
 					}
 					else
 					{
 						$query->where(function(Builder $query) {
-							$query->where('in_id_pay', '<>', 0)
-								->where('out_id_pay', '<>', 0);
+							$query->where('out_id_pay', '<>', 0)
+								->whereHas('payments', function(Builder $query)
+								{
+								    $query->where('type', 2)
+									    ->whereNotNull('date_confirm');
+								});
 						});
 					}
 					break;
