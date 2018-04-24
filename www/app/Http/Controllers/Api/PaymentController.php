@@ -109,15 +109,15 @@ class PaymentController extends Controller
 		    $payment->save();
 
 		    // завершили перевод
-		    if ($payment->type === 2)
-		    {
-		    	// :TODO: отправить деньги в зависимости от out_payment
-		        $user = User::query()->where('id', $exchange->id_user)->first();
-			    if ($user === null) {
-				    throw new NotFoundHttpException('Exchange user not found');
-			    }
-			    Mail::to($user->email)->send(new ExchangeCompletedMail($exchange));
-		    }
+//		    if ($payment->type === 2)
+//		    {
+//		    	// :TODO: отправить деньги в зависимости от out_payment
+//		        $user = User::query()->where('id', $exchange->id_user)->first();
+//			    if ($user === null) {
+//				    throw new NotFoundHttpException('Exchange user not found');
+//			    }
+//			    Mail::to($user->email)->send(new ExchangeCompletedMail($exchange));
+//		    }
 	    }
 	    catch (\Exception $e)
 	    {
