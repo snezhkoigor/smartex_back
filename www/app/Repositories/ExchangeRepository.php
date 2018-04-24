@@ -359,6 +359,11 @@ class ExchangeRepository
 								{
 								    $query->where('type', 1)
 									    ->whereNotNull('date_confirm');
+								})
+								->whereHas('outPayment', function(Builder $query)
+								{
+								    $query->where('type', 2)
+									    ->whereNull('date_confirm');
 								});
 						});
 					}
@@ -366,6 +371,11 @@ class ExchangeRepository
 					{
 						$query->where(function(Builder $query) {
 							$query->where('out_id_pay', '<>', 0)
+								->whereHas('inPayment', function(Builder $query)
+								{
+								    $query->where('type', 1)
+									    ->whereNotNull('date_confirm');
+								})
 								->whereHas('outPayment', function(Builder $query)
 								{
 								    $query->where('type', 2)
