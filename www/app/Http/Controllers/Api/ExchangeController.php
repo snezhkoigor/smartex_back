@@ -194,10 +194,11 @@ class ExchangeController extends Controller
 
 		$this->validate($request, $this->rules(), $this->messages());
 
+		$email = $user ? $user->email : $request->get('email');
 
 		try {
 			// псевдорегистрация
-			$user = User::query()->where('email', $request->get('email'))->first();
+			$user = User::query()->where('email', $email)->first();
 			if ($user === null)
 			{
 				$user = new User();
