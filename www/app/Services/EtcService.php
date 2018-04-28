@@ -9,10 +9,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
- * Class BtcService
+ * Class EtcService
  * @package App\Services
  */
-class BtcService
+class EtcService
 {
 	/**
 	 * @param $user

@@ -6,6 +6,8 @@ use App\Exceptions\SystemErrorException;
 use App\Models\Exchange;
 use App\Models\Payment;
 use App\Services\Advcash\AdvcashService;
+use App\Services\BtcService;
+use App\Services\EtcService;
 use App\Services\PayeerService;
 use App\Services\PerfectMoneyService;
 use Carbon\Carbon;
@@ -80,6 +82,10 @@ class PaymentRepository
 				return AdvcashService::getForm($wallet_id, $amount, $currency, $exchange_id);
 			case 'payeer':
 				return PayeerService::getForm($wallet_id, $amount, $currency, $exchange_id);
+			case 'btc':
+				return BtcService::getForm($wallet_id, $amount, $currency, $exchange_id);
+			case 'etc':
+				return EtcService::getForm($wallet_id, $amount, $currency, $exchange_id);
 		}
 
 		return [];
@@ -118,7 +124,7 @@ class PaymentRepository
 	        $payment->save();
 	    }
 	    catch (\Exception $e)
-	    {var_dump($e);die;
+	    {
 		    throw new SystemErrorException('Creating out payment by confirm in payment failed', $e);
 	    }
 
