@@ -27,12 +27,17 @@ class PerfectMoneyService
 	 * @param $password
 	 * @param $wallet
 	 *
-	 * @throws UnprocessableEntityHttpException
+	 * @throws \Exception
 	 *
 	 * @return float|null|UnprocessableEntityHttpException
 	 */
 	public static function getWalletBalance($user, $password, $wallet)
 	{
+		$walletObj = Wallet::query()->where('account', $wallet)->first();
+		if ($walletObj === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
+
 		$balance = null;
 
 		$f = fopen('https://perfectmoney.is/acct/balance.asp?AccountID=' . $user . '&PassPhrase=' . $password, 'rb');
@@ -64,6 +69,9 @@ class PerfectMoneyService
 		if ($balance === null) {
 			throw new UnprocessableEntityHttpException('No balance found for wallet "' . $wallet . '"');
 		}
+
+		$walletObj->balance = $balance;
+		$walletObj->save();
 
 		return $balance;
 	}

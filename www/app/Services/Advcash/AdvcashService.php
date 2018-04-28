@@ -24,6 +24,11 @@ class AdvcashService
 	{
 		$balance = null;
 		$merchantWebService = new MerchantWebService();
+		
+		$walletObj = Wallet::query()->where('account', $wallet)->first();
+		if ($walletObj === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
 
 		$arg0 = new authDTO();
 		$arg0->apiName = $id_payee;
@@ -49,6 +54,9 @@ class AdvcashService
 		if (empty($balance)) {
 			throw new UnprocessableEntityHttpException('No balance found for wallet "' . $wallet . '"');
 		}
+
+		$walletObj->balance = $balance;
+		$walletObj->save();
 
 		return $balance;
 	}

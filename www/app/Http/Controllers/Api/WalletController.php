@@ -185,7 +185,9 @@ class WalletController extends Controller
 					return response()->json(['message' => 'This payment system not support access check'], Response::HTTP_UNPROCESSABLE_ENTITY);
 
 				case 'pm':
-					return response()->json(['balance' => PerfectMoneyService::getWalletBalance($request->get('user', ''), $request->get('password', ''), $request->get('account', ''))], Response::HTTP_OK);
+					return response()->json([
+						'balance' => PerfectMoneyService::getWalletBalance($request->get('user', ''), $request->get('password', ''), $request->get('account', ''))
+					], Response::HTTP_OK);
 
 				case 'payeer':
 					return response()->json(['balance' => PayeerService::getWalletBalance($request->get('user', ''), $request->get('password', ''), $request->get('account', ''), $request->get('currency', ''))], Response::HTTP_OK);

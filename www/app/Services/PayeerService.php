@@ -21,7 +21,7 @@ class PayeerService
 	 * @param $wallet
 	 * @param $currency
 	 *
-	 * @throws UnprocessableEntityHttpException
+	 * @throws \Exception
 	 *
 	 * @return null|float
 	 *
@@ -30,6 +30,11 @@ class PayeerService
 	{
 		$balance = null;
 		$response = self::getResponse(['action' => 'balance', 'account' => $wallet, 'apiId' => $user, 'apiPass' => $password]);
+
+		$walletObj = Wallet::query()->where('account', $wallet)->first();
+		if ($walletObj === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
 
 		foreach($response['balance'] as $key => $value) {
 			if (mb_strtolower($key) === mb_strtolower($currency)) {
@@ -40,6 +45,9 @@ class PayeerService
 		if (empty($balance)) {
 			throw new UnprocessableEntityHttpException('No balance found for wallet "' . $wallet . '"');
 		}
+
+		$walletObj->balance = $balance;
+		$walletObj->save();
 
 		return $balance;
 	}
