@@ -13,7 +13,6 @@ use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class ExchangeRepository
@@ -403,6 +402,11 @@ class ExchangeRepository
 					
 				case 'out_payment':
 					$query->where('out_payment', $value);
+					break;
+
+				case 'need_moderate':
+					$query->where('is_moderated', 0);
+					$query->whereNotNull('comment');
 					break;
 			}
 		}

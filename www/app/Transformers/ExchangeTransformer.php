@@ -37,7 +37,8 @@ class ExchangeTransformer extends TransformerAbstract
 			'in_payment' => $exchange->in_payment,
 			'in_fee' => (float)$exchange->in_fee,
 			'in_payee' => $exchange->in_payee,
-			'comment' => $exchange->comment,
+			'comment' => $exchange->is_moderated ? (string)$exchange->comment : '',
+			'clear_comment' => (string)$exchange->comment,
 			'out_id_pay' => (int)$exchange->out_id_pay,
 			'out_currency' => $exchange->out_currency,
 			'out_prefix' => CurrencyRepository::getAvailableCurrencies()[strtolower($exchange->out_currency)]['prefix'],
@@ -46,6 +47,9 @@ class ExchangeTransformer extends TransformerAbstract
 			'out_payee' => $exchange->out_payee,
 			'out_date' => $exchange->out_date,
 			'out_payment' => $exchange->out_payment,
+			'rating' => $exchange->is_moderated ? $exchange->rating : 0,
+			'clear_rating' => $exchange->rating,
+			'is_moderated' => (bool)$exchange->is_moderated,
 
 			'status' => ExchangeRepository::getStatus($exchange)
 		];

@@ -163,6 +163,33 @@ class ExchangeController extends Controller
 
 
 	/**
+	 * @param $exchange_id
+	 * @return JsonResponse
+	 *
+	 * @throws \Exception
+	 */
+	public function moderateComment($exchange_id): JsonResponse
+	{
+		$exchange = Exchange::query()->where('id', '=', $exchange_id)->first();
+		if ($exchange === null) {
+			throw new NotFoundHttpException('Exchange not found');
+		}
+		
+		try
+		{
+			$exchange->is_moderated = true;
+			$exchange->save();
+		}
+		catch (\Exception $e)
+		{
+			throw new SystemErrorException('Exchange comment moderation failed', $e);
+		}
+
+		return response()->json(null, Response::HTTP_OK);
+	}
+
+
+	/**
 	 * @param Request $request
 	 * @return \Illuminate\Http\JsonResponse
 	 *
@@ -245,11 +272,11 @@ class ExchangeController extends Controller
 			'currencies' => array_values(CurrencyRepository::getAvailableCurrencies()),
 		    'statuses' => [
 		    	[
-		    		'label' => 'no income',
+		    		'label' => 'no income / not confirmed',
 				    'value' => 'create'
 			    ],
 			    [
-		    		'label' => 'has income without withdrawal',
+		    		'label' => 'without withdrawal / not confirmed',
 				    'value' => 'start'
 			    ],
 			    [

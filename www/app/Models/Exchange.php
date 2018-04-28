@@ -30,6 +30,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property string $out_batch
  * @property string $out_date
  * @property integer $rating
+ * @property boolean $is_moderated
  *
  * @property Payment $inPayment
  * @property Payment $outPayment
@@ -71,7 +72,8 @@ class Exchange extends Model
 		'out_batch',
 		'out_date',
 		'in_discount',
-		'rating'
+		'rating',
+		'is_moderated'
 	];
 	
 	public function inPayment()
