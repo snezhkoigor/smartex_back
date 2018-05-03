@@ -3,6 +3,7 @@
 namespace App\Services\Advcash;
 
 use App\Models\Exchange;
+use App\Models\Payment;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -139,5 +140,33 @@ class AdvcashService
 				]
 			]
 		];
+	}
+
+
+	/**
+	 * @param $data
+	 * @return Payment
+	 * @throws \Exception
+	 *
+	 * 1 - ввод
+	 * 2 - вывод
+	 */
+	public static function processIncomeTransaction($data): Payment
+	{
+	
+	}
+
+
+	/**
+	 * @param $data
+	 * @return Payment
+	 * @throws \Exception
+	 *
+	 * 1 - ввод
+	 * 2 - вывод
+	 */
+	public static function processOutTransaction($data): Payment
+	{
+	
 	}
 }

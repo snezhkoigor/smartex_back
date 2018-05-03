@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Exchange;
+use App\Models\Payment;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Redis;
 use Intervention\Image\Exception\NotFoundException;
@@ -172,5 +173,19 @@ class PayeerService
 				]
 			]
 		];
+	}
+
+
+	/**
+	 * @param $data
+	 * @return Payment
+	 * @throws \Exception
+	 *
+	 * 1 - ввод
+	 * 2 - вывод
+	 */
+	public static function processIncomeTransaction($data): Payment
+	{
+	
 	}
 }

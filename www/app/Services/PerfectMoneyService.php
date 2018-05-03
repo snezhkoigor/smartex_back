@@ -187,6 +187,12 @@ class PerfectMoneyService
 		{
 			throw new NotFoundHttpException('Exchange transaction not found');
 		}
+		
+		$payment = Payment::query()->where('id', $exchange->in_id_pay)->first();
+		if ($payment === null)
+		{
+			throw new NotFoundHttpException('Exchange income transaction not found');
+		}
 
 		$user = User::query()->where('id', $exchange->id_user)->first();
 		if ($user === null)
@@ -199,14 +205,11 @@ class PerfectMoneyService
 			throw new NotFoundHttpException('Wallet not found');
 		}
 
-		if ((int)$exchange->in_id_pay > 0)
-		{
-			throw new SystemErrorException('in_id_pay is already created');
-		}
 		if ($data['PAYEE_ACCOUNT'] !== $wallet->account)
 		{
 			throw new SystemErrorException('Wrong PAYEE_ACCOUNT');
 		}
+
 		if ($exchange->in_amount !== $data['PAYMENT_AMOUNT'] && $data['PAYMENT_UNITS'] !== strtoupper($exchange->in_currency))
 		{
 			throw new SystemErrorException('Wrong PAYMENT_AMOUNT and PAYMENT_UNITS');
@@ -227,12 +230,9 @@ class PerfectMoneyService
 
 		try
 		{
-			$payment = PaymentRepository::createPayment($exchange, 1, true);
-			$out_payment = PaymentRepository::createPayment($exchange, 2, false);
-
-			$exchange->in_id_pay = $payment->id;
-			$exchange->out_id_pay = $out_payment->id;
-			$exchange->save();
+			$payment->confirm = true;
+			$payment->date_confirm = Carbon::now()->format('Y-m-d H:i:s');
+			$payment->save();
 
 			Mail::to($user->email)->send(new IncomePaymentSucceedMail($payment, $exchange));
 		}
@@ -242,5 +242,19 @@ class PerfectMoneyService
 		}
 
 		return $payment;
+	}
+
+
+	/**
+	 * @param $data
+	 * @return Payment
+	 * @throws \Exception
+	 *
+	 * 1 - ввод
+	 * 2 - вывод
+	 */
+	public static function processOutTransaction($data): Payment
+	{
+	
 	}
 }

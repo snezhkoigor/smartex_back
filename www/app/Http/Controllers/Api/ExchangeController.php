@@ -251,6 +251,34 @@ class ExchangeController extends Controller
 	}
 
 
+	public function notAuthUserExchangeView(Request $request)
+	{
+		$filters = $this->getFilters($request);
+	    $sorts = $this->getSortParameters($request);
+	    $limit = $this->getPaginationLimit($request);
+	    $offset = $this->getPaginationOffset($request);
+
+	    $relations = $this->getRelationsFromIncludes($request);
+
+	    $payment_systems = ExchangeRepository::getExchanges($filters, $sorts, $relations, ['*'], null, $limit, $offset);
+
+	    $meta = [
+		    'count' => ExchangeRepository::getExchangesCount($filters, null)
+	    ];
+
+	    return fractal($payment_systems, new ExchangeTransformer())
+		    ->parseIncludes(['inPayment', 'outPayment', 'inPayment.paymentSystem', 'outPayment.paymentSystem'])
+		    ->parseFieldsets([
+			        '' => [ 'date', 'in_prefix', 'in_amount', 'comment', 'rating', 'status', 'in_prefix', 'in_amount', 'out_prefix', 'out_amount', 'inPayment', 'outPayment' ],
+				    'inPayment' => [ 'paymentSystem' ],
+				    'outPayment' => ['paymentSystem'],
+			        'paymentSystem' => [ 'name' ]
+			    ])
+		    ->addMeta($meta)
+		    ->respond();
+	}
+
+
 	public function getExchanges(Request $request)
     {
 	    $filters = $this->getFilters($request);
