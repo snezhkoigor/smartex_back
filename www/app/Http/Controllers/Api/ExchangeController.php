@@ -47,26 +47,58 @@ class ExchangeController extends Controller
 
 
 	/**
+	 *
+	 * @param Request $request
 	 * @param $hash
 	 * @return JsonResponse
 	 * @throws \Exception
 	 */
-	public function notAuthUserExchange($hash): JsonResponse
+	public function notAuthUserExchange(Request $request, $hash = null): JsonResponse
 	{
-		$id = Redis::get($hash);
-		if (!$id)
-	    {
-	    	throw new NotFoundHttpException('Not found your exchange hash information');
-	    }
-	    $exchange = Exchange::query()->where('id', $id)->first();
-		if ($exchange === null)
-	    {
-	    	throw new NotFoundHttpException('Not found your exchange information');
-	    }
+		if ($hash)
+		{
+			$id = Redis::get($hash);
+			if (!$id)
+		    {
+		        throw new NotFoundHttpException('Not found your exchange hash information');
+		    }
+		    $exchange = Exchange::query()->where('id', $id)->first();
+			if ($exchange === null)
+		    {
+		        throw new NotFoundHttpException('Not found your exchange information');
+		    }
+	
+		    return fractal($exchange, new ExchangeTransformer())
+			    ->parseIncludes(['inPayment', 'outPayment', 'inPayment.paymentSystem', 'outPayment.paymentSystem'])
+			    ->respond();
+		}
+		else
+		{
+			$filters = $this->getFilters($request);
+		    $sorts = $this->getSortParameters($request);
+		    $limit = $this->getPaginationLimit($request);
+		    $offset = $this->getPaginationOffset($request);
 
-	    return fractal($exchange, new ExchangeTransformer())
-		    ->parseIncludes(['inPayment', 'outPayment', 'inPayment.paymentSystem', 'outPayment.paymentSystem'])
-		    ->respond();
+		    $relations = $this->getRelationsFromIncludes($request);
+	
+		    $exchanges = ExchangeRepository::getExchanges($filters, $sorts, $relations, ['*'], null, $limit, $offset);
+
+		    $meta = [
+			    'count' => ExchangeRepository::getExchangesCount($filters, null)
+		    ];
+
+		    return fractal($exchanges, new ExchangeTransformer())
+			    ->parseIncludes(['inPayment', 'outPayment', 'inPayment.paymentSystem', 'outPayment.paymentSystem', 'user'])
+			    ->parseFieldsets([
+				        '' => [ 'date', 'in_prefix', 'in_amount', 'comment', 'rating', 'status', 'in_prefix', 'in_amount', 'out_prefix', 'out_amount', 'inPayment', 'outPayment', 'user' ],
+					    'inPayment' => [ 'paymentSystem' ],
+					    'outPayment' => ['paymentSystem'],
+				        'user' => [ 'name', 'family' ],
+				        'paymentSystem' => [ 'name', 'logo_link' ]
+				    ])
+			    ->addMeta($meta)
+			    ->respond();
+		}
 	}
 
 

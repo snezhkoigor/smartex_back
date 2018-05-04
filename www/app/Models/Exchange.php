@@ -34,6 +34,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  *
  * @property Payment $inPayment
  * @property Payment $outPayment
+ * @property User $user
  *
  * @method static Exchange|QueryBuilder|EloquentBuilder query()
  *
@@ -84,5 +85,10 @@ class Exchange extends Model
 	public function outPayment()
 	{
 		return $this->hasOne(Payment::class, 'id', 'out_id_pay');
+	}
+	
+	public function user()
+	{
+		return $this->hasOne(User::class, 'id', 'id_user');
 	}
 }

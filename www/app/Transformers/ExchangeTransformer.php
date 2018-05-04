@@ -4,6 +4,7 @@ namespace App\Transformers;
 
 use App\Models\Exchange;
 use App\Models\Payment;
+use App\Models\User;
 use App\Repositories\CurrencyRepository;
 use App\Repositories\ExchangeRepository;
 use League\Fractal\TransformerAbstract;
@@ -17,7 +18,8 @@ class ExchangeTransformer extends TransformerAbstract
 {
 	protected $availableIncludes = [
 		'inPayment',
-		'outPayment'
+		'outPayment',
+		'user'
 	];
 
 
@@ -30,6 +32,7 @@ class ExchangeTransformer extends TransformerAbstract
 		$data = [
 			'id' => (int)$exchange->id,
 			'date' => $exchange->date,
+			'id_user' => (int)$exchange->id_user,
 			'in_id_pay' => (int)$exchange->in_id_pay,
 			'in_currency' => $exchange->in_currency,
 			'in_prefix' => CurrencyRepository::getAvailableCurrencies()[strtolower($exchange->in_currency)]['prefix'],
@@ -85,6 +88,21 @@ class ExchangeTransformer extends TransformerAbstract
 		if ($exchange->out_id_pay && Payment::query()->where('id', $exchange->out_id_pay)->first())
 		{
 			return $this->item($exchange->outPayment, new PaymentTransformer(), 'outPayment');
+		}
+
+		return null;
+	}
+	
+	
+	/**
+	 * @param Exchange $exchange
+	 * @return Item|null
+	 */
+	public function includeUser(Exchange $exchange)
+	{
+		if ($exchange->id_user && User::query()->where('id', $exchange->id_user)->first())
+		{
+			return $this->item($exchange->user, new UserTransformer(), 'user');
 		}
 
 		return null;
