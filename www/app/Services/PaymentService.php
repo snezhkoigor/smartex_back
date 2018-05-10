@@ -62,11 +62,11 @@ class PaymentService
 					PayeerService::processOutTransaction($exchange);
 				}
 
-//				Mail::to($user->email)->send(new ExchangeCompletedMail($exchange, $user));
+				Mail::to($user->email)->send(new ExchangeCompletedMail($exchange, $user));
 			}
 		}
 		catch (\Exception $e)
-		{
+		{var_dump($e);die;
 			throw new NotFoundHttpException('Payment confirm error.');
 		}
 
