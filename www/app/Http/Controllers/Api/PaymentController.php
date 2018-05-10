@@ -10,6 +10,10 @@ use App\Models\Payment;
 use App\Models\PaymentSystem;
 use App\Models\User;
 use App\Repositories\PaymentRepository;
+use App\Services\Advcash\AdvcashService;
+use App\Services\PayeerService;
+use App\Services\PaymentService;
+use App\Services\PerfectMoneyService;
 use App\Transformers\PaymentTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -103,21 +107,7 @@ class PaymentController extends Controller
 
 	    try
 	    {
-		    $payment->confirm = true;
-		    $payment->date_confirm = Carbon::now()
-			    ->format('Y-m-d H:i:s');
-		    $payment->save();
-
-		    // завершили перевод
-		    if ($payment->type === 2)
-		    {
-		    	// :TODO: отправить деньги в зависимости от out_payment
-		        $user = User::query()->where('id', $exchange->id_user)->first();
-			    if ($user === null) {
-				    throw new NotFoundHttpException('Exchange user not found');
-			    }
-			    Mail::to($user->email)->send(new ExchangeCompletedMail($exchange, $user));
-		    }
+	    	PaymentService::confirm($payment);
 	    }
 	    catch (\Exception $e)
 	    {

@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\ParseCoursesCommand::class
+        Commands\ParseCoursesCommand::class,
+        Commands\SciProcessCommand::class
     ];
 
     /**
@@ -24,8 +25,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-	    $schedule->command('activitylog:clean')->daily();
-	    $schedule->command('courses:parse')->hourly();
+	    $schedule->command('activitylog:clean')->daily()->withoutOverlapping();
+	    $schedule->command('courses:parse')->hourly()->withoutOverlapping();
+	    $schedule->command('sci:process')->everyMinute()->withoutOverlapping();
     }
 
     /**

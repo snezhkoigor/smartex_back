@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
+use App\Exceptions\SystemErrorException;
 use App\Models\Exchange;
 use App\Models\Payment;
+use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Redis;
-use Intervention\Image\Exception\NotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -186,6 +187,130 @@ class PayeerService
 	 */
 	public static function processIncomeTransaction($data): Payment
 	{
-	
+		if (!isset($data['m_orderid']))
+		{
+			throw new SystemErrorException('Exchange transaction not set');
+		}
+
+		$exchange = Exchange::query()->where('id', $data['m_orderid'])->first();
+		if ($exchange === null)
+		{
+			throw new NotFoundHttpException('Exchange transaction not found');
+		}
+
+		$payment = Payment::query()->where([
+			[ 'id', $exchange->in_id_pay ],
+			[ 'confirm', '=', 0 ]
+		])->first();
+		if ($payment === null)
+		{
+			throw new NotFoundHttpException('Exchange income transaction not found or confirmed');
+		}
+
+		$user = User::query()->where('id', $exchange->id_user)->first();
+		if ($user === null)
+		{
+			throw new NotFoundHttpException('Exchange user transaction not found');
+		}
+
+		$wallet = Wallet::query()->where('account', $data['m_shop'])->first();
+		if ($wallet === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
+
+		if ($data['m_shop'] !== $wallet->account)
+		{
+			throw new SystemErrorException('Wrong m_shop');
+		}
+
+		if (!isset($data['m_status']) || $data['m_status'] !== 'success' || $wallet->account !== $data['m_shop'] || $exchange->in_amount !== $data['m_amount'] || $data['m_curr'] !== strtoupper($exchange->in_currency))
+		{
+			throw new SystemErrorException('Wrong m_amount and m_curr m_status m_shop');
+		}
+
+		$arHash = [
+			$data['m_operation_id'],
+			$data['m_operation_ps'],
+			$data['m_operation_date'],
+			$data['m_operation_pay_date'],
+			$data['m_shop'],
+			$data['m_orderid'],
+			$data['m_amount'],
+			$data['m_curr'],
+			$data['m_desc'],
+			$data['m_status'],
+			$wallet->secret
+		];
+
+		$hash = strtoupper(hash('sha256', implode(':', $arHash)));
+		if ($hash !== $data['m_sign'])
+		{
+			throw new SystemErrorException('Wrong m_sign');
+		}
+
+		try
+		{
+			PaymentService::confirm($payment);
+		}
+		catch (\Exception $e)
+		{
+			throw new SystemErrorException('Adding income payment failed');
+		}
+
+		return $payment;
+	}
+
+
+	/**
+	 * @param $exchange
+	 * @return Payment
+	 * @throws \Exception
+	 *
+	 * 1 - ввод
+	 * 2 - вывод
+	 */
+	public static function processOutTransaction(Exchange $exchange): Payment
+	{
+		$payment = Payment::query()->where([
+			[ 'id', $exchange->out_id_pay ],
+			[ 'confirm', '=', 0 ]
+		])->first();
+		if ($payment === null)
+		{
+			throw new NotFoundHttpException('Exchange outcome transaction not found or confirmed');
+		}
+
+		$wallet = Wallet::query()->where([
+			[ 'ps_type', $exchange->out_payment ],
+			[ 'currency', $exchange->out_currency ]
+		])->first();
+		if ($wallet === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
+
+		$user = User::query()->where('id', $exchange->id_user)->first();
+		if ($user === null)
+		{
+			throw new NotFoundHttpException('Exchange user transaction not found');
+		}
+		
+		try
+		{
+			self::getResponse([
+				'action' => 'transfer',
+				'account' => $wallet->account,
+				'apiId' => $wallet->user,
+				'apiPass' => $wallet->password,
+				'curIn' => strtoupper($wallet->currency),
+				'sum' => $exchange->out_amount,
+				'curOut' => $exchange->out_currency,
+				'sumOut' => $exchange->out_amount,
+				'to' => $exchange->out_payee,
+				'comment' => 'Transaction ' . $exchange->out_id_pay
+			]);
+		}
+		catch (\Exception $e) {
+			throw new NotFoundHttpException('Can not withdrawal by adv.');
+		}
 	}
 }

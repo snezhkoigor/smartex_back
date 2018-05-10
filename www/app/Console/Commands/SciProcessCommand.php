@@ -47,7 +47,7 @@ class SciProcessCommand extends Command
         $items = \DB::table('payment_answers_queue')
 	        ->where('active', '=', true)
 	        ->get();
-        
+
         if (\count($items) > 0)
         {
         	foreach ($items as $item)
@@ -64,6 +64,9 @@ class SciProcessCommand extends Command
 
 	                case 'adv':
 			        	AdvcashService::processIncomeTransaction(json_decode($item['post'], true));
+			        	break;
+			        	
+			        case 'bank':
 			        	break;
 		        }
 	        }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\SystemErrorException;
+use App\Mail\ExchangeCompletedMail;
 use App\Mail\IncomePaymentSucceedMail;
 use App\Models\Exchange;
 use App\Models\Payment;
@@ -188,10 +189,13 @@ class PerfectMoneyService
 			throw new NotFoundHttpException('Exchange transaction not found');
 		}
 		
-		$payment = Payment::query()->where('id', $exchange->in_id_pay)->first();
+		$payment = Payment::query()->where([
+			[ 'id', $exchange->in_id_pay ],
+			[ 'confirm', '=', 0 ]
+		])->first();
 		if ($payment === null)
 		{
-			throw new NotFoundHttpException('Exchange income transaction not found');
+			throw new NotFoundHttpException('Exchange income transaction not found or confirmed');
 		}
 
 		$user = User::query()->where('id', $exchange->id_user)->first();
@@ -210,7 +214,7 @@ class PerfectMoneyService
 			throw new SystemErrorException('Wrong PAYEE_ACCOUNT');
 		}
 
-		if ($exchange->in_amount !== $data['PAYMENT_AMOUNT'] && $data['PAYMENT_UNITS'] !== strtoupper($exchange->in_currency))
+		if ($exchange->in_amount !== $data['PAYMENT_AMOUNT'] || $data['PAYMENT_UNITS'] !== strtoupper($exchange->in_currency))
 		{
 			throw new SystemErrorException('Wrong PAYMENT_AMOUNT and PAYMENT_UNITS');
 		}
@@ -230,11 +234,7 @@ class PerfectMoneyService
 
 		try
 		{
-			$payment->confirm = true;
-			$payment->date_confirm = Carbon::now()->format('Y-m-d H:i:s');
-			$payment->save();
-
-			Mail::to($user->email)->send(new IncomePaymentSucceedMail($payment, $exchange));
+			PaymentService::confirm($payment);
 		}
 		catch (\Exception $e)
 		{
@@ -246,15 +246,64 @@ class PerfectMoneyService
 
 
 	/**
-	 * @param $data
+	 * @param $exchange
 	 * @return Payment
 	 * @throws \Exception
 	 *
 	 * 1 - ввод
 	 * 2 - вывод
 	 */
-	public static function processOutTransaction($data): Payment
+	public static function processOutTransaction(Exchange $exchange): Payment
 	{
-	
+		/*
+			This script demonstrates transfer proccess between two
+			PerfectMoney accounts using PerfectMoney API interface.
+		*/
+		$payment = Payment::query()->where([
+			[ 'id', $exchange->out_id_pay ],
+			[ 'confirm', '=', 0 ]
+		])->first();
+		if ($payment === null)
+		{
+			throw new NotFoundHttpException('Exchange outcome transaction not found or confirmed');
+		}
+
+		$wallet = Wallet::query()->where([
+			[ 'ps_type', $exchange->out_payment ],
+			[ 'currency', $exchange->out_currency ]
+		])->first();
+		if ($wallet === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
+
+		$user = User::query()->where('id', $exchange->id_user)->first();
+		if ($user === null)
+		{
+			throw new NotFoundHttpException('Exchange user transaction not found');
+		}
+
+		// trying to open URL to process PerfectMoney Spend request
+		$f = fopen('https://perfectmoney.is/acct/confirm.asp?AccountID=' . $wallet->user . '&PassPhrase=' . $wallet->password . '&Payer_Account=' . $wallet->account . '&Payee_Account=' . $exchange->out_payee . '&Amount=' . $exchange->out_amount . '&PAY_IN=1&PAYMENT_ID=' . $exchange->out_id_pay, 'rb');
+		
+		if ($f===false)
+		{
+		   throw new NotFoundHttpException('error opening url');
+		}
+
+		// getting data
+		$out = '';
+		while (!feof($f))
+		{
+			$out .= fgets($f);
+		}
+
+		fclose($f);
+
+		// searching for hidden fields
+		if (!preg_match_all("/<input name='(.*)' type='hidden' value='(.*)'>/", $out, $result, PREG_SET_ORDER)){
+		   throw new NotFoundHttpException('Ivalid output');
+		}
+
+		return $payment;
 	}
 }

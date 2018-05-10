@@ -143,6 +143,7 @@ class ExchangeRepository
 			$exchange->in_id_pay = 0;
 			$exchange->in_currency = $wallet->currency;
 			$exchange->in_amount = $amount;
+			$exchange->in_payee = $wallet->account;
 			$exchange->in_fee = $fee;
 			$exchange->out_payment = $payment_system->code;
 			$exchange->out_id_pay = 0;
@@ -157,11 +158,11 @@ class ExchangeRepository
 
 			$exchange->in_id_pay = $in_payment->id;
 			$exchange->out_id_pay = $out_payment->id;
-			
+
 			$exchange->save();
 		}
 		catch (\Exception $e)
-		{var_dump($e);die;
+		{
 			throw new SystemErrorException('Adding exchange by user failed', $e);
 		}
 

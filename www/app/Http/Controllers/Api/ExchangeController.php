@@ -72,33 +72,31 @@ class ExchangeController extends Controller
 			    ->parseIncludes(['inPayment', 'outPayment', 'inPayment.paymentSystem', 'outPayment.paymentSystem'])
 			    ->respond();
 		}
-		else
-		{
-			$filters = $this->getFilters($request);
-		    $sorts = $this->getSortParameters($request);
-		    $limit = $this->getPaginationLimit($request);
-		    $offset = $this->getPaginationOffset($request);
 
-		    $relations = $this->getRelationsFromIncludes($request);
-	
-		    $exchanges = ExchangeRepository::getExchanges($filters, $sorts, $relations, ['*'], null, $limit, $offset);
+		$filters = $this->getFilters($request);
+	    $sorts = $this->getSortParameters($request);
+	    $limit = $this->getPaginationLimit($request);
+	    $offset = $this->getPaginationOffset($request);
 
-		    $meta = [
-			    'count' => ExchangeRepository::getExchangesCount($filters, null)
-		    ];
+	    $relations = $this->getRelationsFromIncludes($request);
 
-		    return fractal($exchanges, new ExchangeTransformer())
-			    ->parseIncludes(['inPayment', 'outPayment', 'inPayment.paymentSystem', 'outPayment.paymentSystem', 'user'])
-			    ->parseFieldsets([
-				        '' => [ 'date', 'in_prefix', 'in_amount', 'comment', 'rating', 'status', 'in_prefix', 'in_amount', 'out_prefix', 'out_amount', 'inPayment', 'outPayment', 'user' ],
-					    'inPayment' => [ 'paymentSystem' ],
-					    'outPayment' => ['paymentSystem'],
-				        'user' => [ 'name', 'family' ],
-				        'paymentSystem' => [ 'name', 'logo_link' ]
-				    ])
-			    ->addMeta($meta)
-			    ->respond();
-		}
+	    $exchanges = ExchangeRepository::getExchanges($filters, $sorts, $relations, ['*'], null, $limit, $offset);
+
+	    $meta = [
+		    'count' => ExchangeRepository::getExchangesCount($filters, null)
+	    ];
+
+	    return fractal($exchanges, new ExchangeTransformer())
+		    ->parseIncludes(['inPayment', 'outPayment', 'inPayment.paymentSystem', 'outPayment.paymentSystem', 'user'])
+		    ->parseFieldsets([
+			        '' => [ 'date', 'in_prefix', 'in_amount', 'comment', 'rating', 'status', 'in_prefix', 'in_amount', 'out_prefix', 'out_amount', 'inPayment', 'outPayment', 'user' ],
+				    'inPayment' => [ 'paymentSystem' ],
+				    'outPayment' => ['paymentSystem'],
+			        'user' => [ 'name', 'family' ],
+			        'paymentSystem' => [ 'name', 'logo_link' ]
+			    ])
+		    ->addMeta($meta)
+		    ->respond();
 	}
 
 
@@ -280,34 +278,6 @@ class ExchangeController extends Controller
 	    }
 
 		return response()->json([ 'data' => $form ],Response::HTTP_OK);
-	}
-
-
-	public function notAuthUserExchangeView(Request $request)
-	{
-		$filters = $this->getFilters($request);
-	    $sorts = $this->getSortParameters($request);
-	    $limit = $this->getPaginationLimit($request);
-	    $offset = $this->getPaginationOffset($request);
-
-	    $relations = $this->getRelationsFromIncludes($request);
-
-	    $payment_systems = ExchangeRepository::getExchanges($filters, $sorts, $relations, ['*'], null, $limit, $offset);
-
-	    $meta = [
-		    'count' => ExchangeRepository::getExchangesCount($filters, null)
-	    ];
-
-	    return fractal($payment_systems, new ExchangeTransformer())
-		    ->parseIncludes(['inPayment', 'outPayment', 'inPayment.paymentSystem', 'outPayment.paymentSystem'])
-		    ->parseFieldsets([
-			        '' => [ 'date', 'in_prefix', 'in_amount', 'comment', 'rating', 'status', 'in_prefix', 'in_amount', 'out_prefix', 'out_amount', 'inPayment', 'outPayment' ],
-				    'inPayment' => [ 'paymentSystem' ],
-				    'outPayment' => ['paymentSystem'],
-			        'paymentSystem' => [ 'name' ]
-			    ])
-		    ->addMeta($meta)
-		    ->respond();
 	}
 
 

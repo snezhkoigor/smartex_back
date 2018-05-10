@@ -2,9 +2,12 @@
 
 namespace App\Services\Advcash;
 
+use App\Exceptions\SystemErrorException;
 use App\Models\Exchange;
 use App\Models\Payment;
+use App\Models\User;
 use App\Models\Wallet;
+use App\Services\PaymentService;
 use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -25,7 +28,7 @@ class AdvcashService
 	{
 		$balance = null;
 		$merchantWebService = new MerchantWebService();
-		
+
 		$walletObj = Wallet::query()->where('account', $wallet)->first();
 		if ($walletObj === null) {
 			throw new NotFoundHttpException('Wallet not found');
@@ -153,20 +156,130 @@ class AdvcashService
 	 */
 	public static function processIncomeTransaction($data): Payment
 	{
-	
+		if (!isset($data['ac_order_id']))
+		{
+			throw new SystemErrorException('Exchange transaction not set');
+		}
+
+		$exchange = Exchange::query()->where('id', $data['ac_order_id'])->first();
+		if ($exchange === null)
+		{
+			throw new NotFoundHttpException('Exchange transaction not found');
+		}
+
+		$payment = Payment::query()->where([
+			[ 'id', $exchange->in_id_pay ],
+			[ 'confirm', '=', 0 ]
+		])->first();
+		if ($payment === null)
+		{
+			throw new NotFoundHttpException('Exchange income transaction not found or confirmed');
+		}
+
+		$user = User::query()->where('id', $exchange->id_user)->first();
+		if ($user === null)
+		{
+			throw new NotFoundHttpException('Exchange user transaction not found');
+		}
+
+		$wallet = Wallet::query()->where('account', $data['ac_dest_wallet'])->first();
+		if ($wallet === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
+
+		if ($data['ac_dest_wallet'] !== $wallet->account)
+		{
+			throw new SystemErrorException('Wrong ac_dest_wallet');
+		}
+
+		if ($data['ac_sci_name'] !== $wallet->adv_sci || $exchange->in_amount !== $data['ac_amount'] || $data['ac_merchant_currency'] !== strtoupper($exchange->in_currency))
+		{
+			throw new SystemErrorException('Wrong ac_amount and ac_merchant_currency ac_sci_name');
+		}
+
+		$string = $data['ac_transfer'].':'.$data['ac_start_date'].':'.$data['ac_sci_name'].':'.$data['ac_src_wallet'].':'.$data['ac_dest_wallet'].':'.$data['ac_order_id'].':'.$data['ac_amount'].':'.$data['ac_merchant_currency'].':'.$wallet->secret;
+		$hash = hash('sha256', $string);
+		if ($hash !== $data['ac_hash'])
+		{
+			throw new SystemErrorException('Wrong ac_hash');
+		}
+
+		try
+		{
+			PaymentService::confirm($payment);
+		}
+		catch (\Exception $e)
+		{
+			throw new SystemErrorException('Adding income payment failed');
+		}
+
+		return $payment;
 	}
 
 
 	/**
-	 * @param $data
+	 * @param $exchange
 	 * @return Payment
 	 * @throws \Exception
 	 *
 	 * 1 - ввод
 	 * 2 - вывод
 	 */
-	public static function processOutTransaction($data): Payment
+	public static function processOutTransaction(Exchange $exchange): Payment
 	{
-	
+		$payment = Payment::query()->where([
+			[ 'id', $exchange->out_id_pay ],
+			[ 'confirm', '=', 0 ]
+		])->first();
+		if ($payment === null)
+		{
+			throw new NotFoundHttpException('Exchange outcome transaction not found or confirmed');
+		}
+
+		$wallet = Wallet::query()->where([
+			[ 'ps_type', $exchange->out_payment ],
+			[ 'currency', $exchange->out_currency ]
+		])->first();
+		if ($wallet === null) {
+			throw new NotFoundHttpException('Wallet not found');
+		}
+
+		$user = User::query()->where('id', $exchange->id_user)->first();
+		if ($user === null)
+		{
+			throw new NotFoundHttpException('Exchange user transaction not found');
+		}
+
+		try {
+			$merchantWebService = new MerchantWebService();
+
+			$arg0 = new authDTO();
+			$arg0->apiName = $wallet->id_payee;
+			$arg0->accountEmail = $wallet->user;
+			$arg0->authenticationToken = $merchantWebService->getAuthenticationToken($wallet->password);
+
+			$arg1 = new sendMoneyRequest();
+			$arg1->amount = $exchange->out_amount;
+			$arg1->currency = strtoupper($exchange->out_currency);
+			$arg1->email = $exchange->out_payee;
+			//$arg1->walletId = "U000000000000";
+			$arg1->note = 'Transaction ' . $exchange->out_id_pay;
+			$arg1->savePaymentTemplate = false;
+
+			$validationSendMoney = new validationSendMoney();
+			$validationSendMoney->arg0 = $arg0;
+			$validationSendMoney->arg1 = $arg1;
+
+			$sendMoney = new sendMoney();
+			$sendMoney->arg0 = $arg0;
+			$sendMoney->arg1 = $arg1;
+
+		    $merchantWebService->validationSendMoney($validationSendMoney);
+		    $merchantWebService->sendMoney($sendMoney);
+		} catch (\Exception $e) {
+			throw new NotFoundHttpException('Can not withdrawal by adv.');
+		}
+
+		return $payment;
 	}
 }
