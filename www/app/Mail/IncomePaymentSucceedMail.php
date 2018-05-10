@@ -17,11 +17,12 @@ class IncomePaymentSucceedMail extends Mailable
     private $user;
     private $payment;
     private $exchange;
-    
+
     /**
      * Create a new message instance.
      *
      * @param $payment
+     * @param $user
      * @param $exchange
      * @return void
      */
