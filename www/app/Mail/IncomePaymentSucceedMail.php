@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Models\Exchange;
 use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -13,6 +14,7 @@ class IncomePaymentSucceedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    private $user;
     private $payment;
     private $exchange;
     
@@ -23,8 +25,9 @@ class IncomePaymentSucceedMail extends Mailable
      * @param $exchange
      * @return void
      */
-    public function __construct(Payment $payment, Exchange $exchange)
+    public function __construct(User $user, Payment $payment, Exchange $exchange)
     {
+    	$this->user = $user;
         $this->payment = $payment;
         $this->exchange = $exchange;
     }
@@ -38,6 +41,7 @@ class IncomePaymentSucceedMail extends Mailable
     {
         return $this->view('emails.user.payments.received.html')
 	        ->with([
+	        	'user' => $this->user,
 	            'payment' => $this->payment,
 	            'exchange' => $this->exchange
             ])

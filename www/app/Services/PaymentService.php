@@ -45,7 +45,7 @@ class PaymentService
 
 			if ($payment->type === 1)
 			{
-			    Mail::to($user->email)->send(new IncomePaymentSucceedMail($payment, $exchange));
+			    Mail::to($user->email)->send(new IncomePaymentSucceedMail($user, $payment, $exchange));
 			}
 			else
 			{
@@ -62,7 +62,7 @@ class PaymentService
 					PayeerService::processOutTransaction($exchange);
 				}
 
-//				Mail::to($user->email)->send(new ExchangeCompletedMail($exchange, $user));
+				Mail::to($user->email)->send(new ExchangeCompletedMail($exchange, $user));
 			}
 		}
 		catch (\Exception $e)
