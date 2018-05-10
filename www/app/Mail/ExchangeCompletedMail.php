@@ -20,6 +20,7 @@ class ExchangeCompletedMail extends Mailable
      * Create a new message instance.
      *
      * @param $exchange
+     * @param $user
      * @return void
      */
     public function __construct(Exchange $exchange, User $user)
