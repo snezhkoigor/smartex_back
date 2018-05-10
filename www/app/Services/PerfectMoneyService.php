@@ -126,7 +126,7 @@ class PerfectMoneyService
 				[
 					'type' => 'hidden',
 					'name' => 'PAYMENT_AMOUNT',
-					'value' => $amount //number_format($amount, 2, '.', ''),
+					'value' => number_format($amount, 2, '.', ''),
 				],
 				[
 					'type' => 'hidden',
@@ -214,7 +214,7 @@ class PerfectMoneyService
 			throw new SystemErrorException('Wrong PAYEE_ACCOUNT');
 		}
 
-		if ($exchange->in_amount !== $data['PAYMENT_AMOUNT'] || $data['PAYMENT_UNITS'] !== strtoupper($exchange->in_currency))
+		if (number_format($exchange->in_amount, 2, '.', '') !== $data['PAYMENT_AMOUNT'] || $data['PAYMENT_UNITS'] !== strtoupper($exchange->in_currency))
 		{
 			throw new SystemErrorException('Wrong PAYMENT_AMOUNT and PAYMENT_UNITS');
 		}

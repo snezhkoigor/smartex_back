@@ -137,7 +137,7 @@ class ExchangeRepository
 			$amount = (float)$in_amount + $fee;
 
 			$exchange = new Exchange();
-			$exchange->date = Carbon::today()->format('Y-m-d H:i:s');
+			$exchange->date = Carbon::now()->format('Y-m-d H:i:s');
 			$exchange->id_user = $user->id;
 			$exchange->in_payment = $wallet->ps_type;
 			$exchange->in_id_pay = 0;

@@ -65,7 +65,7 @@ class SciProcessCommand extends Command
 	                case 'adv':
 			        	AdvcashService::processIncomeTransaction(json_decode($item['post'], true));
 			        	break;
-			        	
+
 			        case 'bank':
 			        	break;
 		        }
