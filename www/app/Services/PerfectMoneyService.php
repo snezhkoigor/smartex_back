@@ -288,7 +288,7 @@ class PerfectMoneyService
 		}
 
 		// trying to open URL to process PerfectMoney Spend request
-		$f = fopen('https://perfectmoney.is/acct/confirm.asp?AccountID=' . $wallet->user . '&PassPhrase=' . $wallet->password . '&Payer_Account=' . $wallet->account . '&Payee_Account=' . $exchange->out_payee . '&Amount=' . $exchange->out_amount . '&PAY_IN=1&PAYMENT_ID=' . $exchange->out_id_pay, 'rb');
+		$f = fopen('https://perfectmoney.is/acct/confirm.asp?AccountID=' . $wallet->user . '&PassPhrase=' . $wallet->password . '&Payer_Account=' . $wallet->account . '&Payee_Account=' . $exchange->out_payee . '&Amount=' . number_format($exchange->out_amount, 2, '.', '') . '&PAY_IN=1&PAYMENT_ID=' . $exchange->out_id_pay, 'rb');
 		
 		if ($f===false)
 		{
