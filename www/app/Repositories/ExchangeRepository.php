@@ -134,7 +134,7 @@ class ExchangeRepository
 
 			$discount = round($ps_commission->commission * (int)$user->discount/100, 4);
 			$fee = round($in_amount * ($ps_commission->commission/100 - $discount), 4);
-			$amount = (float)$in_amount + $fee;
+			$amount = (float)$in_amount - $fee;
 
 			$exchange = new Exchange();
 			$exchange->date = Carbon::now()->format('Y-m-d H:i:s');
