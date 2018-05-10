@@ -17,7 +17,7 @@ class CurrencyHelper
 		if (mb_strtoupper($in) !== mb_strtoupper($out))
 		{
 			$course = CourseRepository::getCourse($in, $out);
-			return round((float)$course * $amount, 4);
+			return round((float)$course * $amount, 8);
 		}
 
 		return (float)$amount;
