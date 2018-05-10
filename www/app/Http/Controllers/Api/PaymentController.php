@@ -134,11 +134,13 @@ class PaymentController extends Controller
 		try
 		{
 			\DB::table('payment_answers_queue')
-			->insert([
-				'active' => true,
-				'post' => json_encode($request->all()),
-				'ps_code' => $ps_code
-			]);
+				->insert([
+					'active' => true,
+					'post' => json_encode($request->all()),
+					'ps_code' => $ps_code,
+					'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+					'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+				]);
 		}
 		catch (\Exception $e)
 		{
