@@ -117,7 +117,7 @@ class PaymentRepository
 	        $payment->fee = $type === 2 ? $exchange->out_fee : $exchange->in_fee;
 	        $payment->batch = $type === 2 ? $exchange->out_batch : null;
 	        $payment->confirm = $confirmed;
-	        $payment->date_confirm = $confirmed ? Carbon::today()->format('Y-m-d H:i:s') : null;
+	        $payment->date_confirm = $confirmed ? Carbon::now()->format('Y-m-d H:i:s') : null;
 			$payment->comment = null;
 			$payment->btc_check = false;
 
