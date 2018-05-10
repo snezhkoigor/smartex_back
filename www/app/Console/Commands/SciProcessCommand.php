@@ -52,23 +52,27 @@ class SciProcessCommand extends Command
         {
         	foreach ($items as $item)
 	        {
-	        	switch ($item['ps_code'])
+	        	switch ($item->ps_code)
 		        {
 			        case 'pm':
-			        	PerfectMoneyService::processIncomeTransaction(json_decode($item['post'], true));
+			        	PerfectMoneyService::processIncomeTransaction(json_decode($item->post, true), $item->id);
 			        	break;
 
 		            case 'payeer':
-			        	PayeerService::processIncomeTransaction(json_decode($item['post'], true));
+			        	PayeerService::processIncomeTransaction(json_decode($item->post, true), $item->id);
 			        	break;
 
 	                case 'adv':
-			        	AdvcashService::processIncomeTransaction(json_decode($item['post'], true));
+			        	AdvcashService::processIncomeTransaction(json_decode($item->post, true), $item->id);
 			        	break;
 
 			        case 'bank':
 			        	break;
 		        }
+
+		        \DB::table('payment_answers_queue')
+			        ->where('id', $item->id)
+			        ->update(['active' => 0]);
 	        }
         }
     }

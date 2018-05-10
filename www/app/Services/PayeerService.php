@@ -179,13 +179,14 @@ class PayeerService
 
 	/**
 	 * @param $data
+	 * @param $queue_id
 	 * @return Payment
 	 * @throws \Exception
 	 *
 	 * 1 - ввод
 	 * 2 - вывод
 	 */
-	public static function processIncomeTransaction($data): Payment
+	public static function processIncomeTransaction($data, $queue_id): Payment
 	{
 		if (!isset($data['m_orderid']))
 		{
@@ -254,6 +255,10 @@ class PayeerService
 		}
 		catch (\Exception $e)
 		{
+			\DB::table('payment_answers_queue')
+		        ->where('id', $queue_id)
+		        ->update(['active' => 0]);
+
 			throw new SystemErrorException('Adding income payment failed');
 		}
 

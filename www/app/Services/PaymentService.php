@@ -62,7 +62,7 @@ class PaymentService
 					PayeerService::processOutTransaction($exchange);
 				}
 
-				Mail::to($user->email)->send(new ExchangeCompletedMail($exchange, $user));
+//				Mail::to($user->email)->send(new ExchangeCompletedMail($exchange, $user));
 			}
 		}
 		catch (\Exception $e)

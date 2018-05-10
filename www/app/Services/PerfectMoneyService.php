@@ -170,13 +170,14 @@ class PerfectMoneyService
 	
 	/**
 	 * @param $data
+	 * @param $queue_id
 	 * @return Payment
 	 * @throws \Exception
 	 *
 	 * 1 - ввод
 	 * 2 - вывод
 	 */
-	public static function processIncomeTransaction($data): Payment
+	public static function processIncomeTransaction($data, $queue_id): Payment
 	{
 		if (!isset($data['PAYMENT_ID']))
 		{
@@ -188,7 +189,7 @@ class PerfectMoneyService
 		{
 			throw new NotFoundHttpException('Exchange transaction not found');
 		}
-		
+
 		$payment = Payment::query()->where([
 			[ 'id', $exchange->in_id_pay ],
 			[ 'confirm', '=', 0 ]
@@ -214,7 +215,7 @@ class PerfectMoneyService
 			throw new SystemErrorException('Wrong PAYEE_ACCOUNT');
 		}
 
-		if (number_format($exchange->in_amount, 2, '.', '') !== $data['PAYMENT_AMOUNT'] || $data['PAYMENT_UNITS'] !== strtoupper($exchange->in_currency))
+		if (number_format($exchange->in_amount, 2, '.', '') !== $data['PAYMENT_AMOUNT'] || strtoupper($data['PAYMENT_UNITS']) !== strtoupper($exchange->in_currency))
 		{
 			throw new SystemErrorException('Wrong PAYMENT_AMOUNT and PAYMENT_UNITS');
 		}
@@ -238,6 +239,10 @@ class PerfectMoneyService
 		}
 		catch (\Exception $e)
 		{
+			\DB::table('payment_answers_queue')
+		        ->where('id', $queue_id)
+		        ->update(['active' => 0]);
+
 			throw new SystemErrorException('Adding income payment failed');
 		}
 
