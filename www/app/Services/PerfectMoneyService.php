@@ -126,7 +126,7 @@ class PerfectMoneyService
 				[
 					'type' => 'hidden',
 					'name' => 'PAYMENT_AMOUNT',
-					'value' => $amount,
+					'value' => number_format($amount, 2, '.', ''),
 				],
 				[
 					'type' => 'hidden',
