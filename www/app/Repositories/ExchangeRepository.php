@@ -142,7 +142,7 @@ class ExchangeRepository
 			$exchange->in_payment = $wallet->ps_type;
 			$exchange->in_id_pay = 0;
 			$exchange->in_currency = $wallet->currency;
-			$exchange->in_amount = $amount;
+			$exchange->in_amount = $in_amount;
 			$exchange->in_payee = $wallet->account;
 			$exchange->in_fee = $fee;
 			$exchange->out_payment = $payment_system->code;
