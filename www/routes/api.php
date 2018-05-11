@@ -47,6 +47,7 @@ Route::group(['middleware' => [\App\Http\Middleware\Cors::class], 'namespace'  =
 	Route::post('/user/exchanges/can', 'ExchangeController@canExecuteCurrentUser');
 	Route::post('/sci/payment/{ps_code}', 'PaymentController@Sci');
 	Route::get('/user/not-auth/exchanges/{hash?}', 'ExchangeController@notAuthUserExchange');
+	Route::put('/user/exchanges/{exchange_id}/income/confirm', 'PaymentController@manualConfirmIncomeByUser');
 
 	Route::middleware(['auth:api', 'ability:'.Role::ROLE_USER.','])->group(function() {
 		Route::put('/user/exchanges/{exchange_id}/comment', 'ExchangeController@saveComment');

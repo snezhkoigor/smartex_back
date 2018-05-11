@@ -25,6 +25,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property string $date_confirm
  * @property string $comment
  * @property integer $confirm
+ * @property boolean $user_confirm
  * @property integer $btc_check
  *
  * @property User $user
@@ -60,6 +61,7 @@ class Payment extends Model
 		'date_confirm',
 		'comment',
 		'confirm',
+		'user_confirm',
 		'btc_check'
 	];
 

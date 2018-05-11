@@ -38,6 +38,7 @@ class PaymentTransformer extends TransformerAbstract
 			'prefix' => CurrencyRepository::getAvailableCurrencies()[strtolower($payment->currency)]['prefix'],
 			'fee' => $payment->fee,
 			'confirm' => $payment->confirm,
+			'user_confirm' => $payment->user_confirm,
 			'date_confirm' => $payment->date_confirm,
 			'payer' => $payment->payer,
 			'payee' => $payment->payee

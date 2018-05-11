@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Helpers\CurrencyHelper;
 use App\Models\Currency;
+use App\Models\Exchange;
 use App\Models\LogActivity;
 use App\Models\User;
 use Carbon\Carbon;
@@ -48,6 +49,55 @@ class UserRepository
 	}
 
 
+	public static function updateDiscount(User $user): void
+	{
+		$query = Exchange::query()
+			->where('id_user', $user->id);
+		$query->whereHas('inPayment', function(Builder $query) use ($user)
+        {
+            $query->where('id_user', (int)$user->id)
+                ->where('confirm', 1);
+        });
+		$query->whereHas('outPayment', function(Builder $query) use ($user)
+        {
+            $query->where('id_user', (int)$user->id)
+                ->where('confirm', 1);
+        });
+
+		$exchanges = $query->get();
+		
+		if ($exchanges)
+		{
+			$sum = 0;
+			foreach ($exchanges as $exchange)
+			{
+				$sum += CurrencyHelper::convert($exchange->in_currency, Currency::CURRENCY_USD, $exchange->in_amount);
+			}
+
+			if ($sum > 0)
+			{
+				if ($sum >= 10 && $sum < 1000)
+				{
+					$user->discount = 3;
+				}
+				elseif ($sum >= 1000 && $sum < 10000)
+				{
+					$user->discount = 5;
+				}
+				elseif ($sum >= 10000 && $sum < 100000)
+				{
+					$user->discount = 7;
+				}
+				else
+				{
+					$user->discount = 15;
+				}
+
+				$user->save();
+			}
+		}
+	}
+	
 	/**
 	 * @param array $filters
 	 * @param null $search_string

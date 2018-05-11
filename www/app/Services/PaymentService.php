@@ -7,6 +7,7 @@ use App\Mail\IncomePaymentSucceedMail;
 use App\Models\Exchange;
 use App\Models\Payment;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use App\Services\Advcash\AdvcashService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -62,11 +63,13 @@ class PaymentService
 					PayeerService::processOutTransaction($exchange);
 				}
 
+				UserRepository::updateDiscount($user);
+
 				Mail::to($user->email)->send(new ExchangeCompletedMail($exchange, $user));
 			}
 		}
 		catch (\Exception $e)
-		{var_dump($e);die;
+		{
 			throw new NotFoundHttpException('Payment confirm error.');
 		}
 

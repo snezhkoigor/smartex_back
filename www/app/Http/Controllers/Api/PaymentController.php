@@ -85,6 +85,37 @@ class PaymentController extends Controller
     }
 
 
+    /**
+	 * @param $exchange_id
+	 * @return JsonResponse
+	 *
+	 * @throws \Exception
+	 */
+	public function manualConfirmIncomeByUser($exchange_id): JsonResponse
+	{
+		$exchange = Exchange::query()->where('id', '=', $exchange_id)->first();
+		if ($exchange === null) {
+			throw new NotFoundHttpException('Exchange not found');
+		}
+		$payment = Payment::query()->where('id', '=', $exchange->in_id_pay)->first();
+		if ($payment === null) {
+			throw new NotFoundHttpException('Income payment not found');
+		}
+
+		try
+		{
+			$payment->user_confirm = true;
+			$payment->save();
+		}
+		catch (\Exception $e)
+		{
+			throw new SystemErrorException('Income payment manual confirm failed', $e);
+		}
+
+		return response()->json(null, Response::HTTP_OK);
+	}
+
+
 	/**
 	 * @param $payment_id
 	 * @return JsonResponse
