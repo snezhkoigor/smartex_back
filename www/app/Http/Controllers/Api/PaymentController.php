@@ -105,8 +105,7 @@ class PaymentController extends Controller
 
 		try
 		{
-			$payment->user_confirm = true;
-			$payment->save();
+			PaymentService::confirm($payment);
 		}
 		catch (\Exception $e)
 		{
