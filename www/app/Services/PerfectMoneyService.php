@@ -288,9 +288,9 @@ class PerfectMoneyService
 		}
 
 		// trying to open URL to process PerfectMoney Spend request
-		$f = fopen('https://perfectmoney.is/acct/confirm.asp?AccountID=' . $wallet->user . '&PassPhrase=' . $wallet->password . '&Payer_Account=' . $wallet->account . '&Payee_Account=' . $exchange->out_payee . '&Amount=' . number_format($exchange->out_amount, 2, '.', '') . '&PAYMENT_ID=' . $exchange->out_id_pay, 'rb');
-		
-		if ($f===false)
+		$f = file_get_contents('https://perfectmoney.is/acct/confirm.asp?AccountID=' . $wallet->user . '&PassPhrase=' . $wallet->password . '&Payer_Account=' . $wallet->account . '&Payee_Account=' . $exchange->out_payee . '&Amount=' . number_format($exchange->out_amount, 2, '.', '') . '&PAYMENT_ID=' . $exchange->out_id_pay);
+
+		if ($f === false)
 		{
 		   throw new NotFoundHttpException('error opening url');
 		}
