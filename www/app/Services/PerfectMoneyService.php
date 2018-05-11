@@ -288,21 +288,28 @@ class PerfectMoneyService
 		}
 
 		// trying to open URL to process PerfectMoney Spend request
-		$f = file_get_contents('https://perfectmoney.is/acct/confirm.asp?AccountID=' . $wallet->user . '&PassPhrase=' . $wallet->password . '&Payer_Account=' . $wallet->account . '&Payee_Account=' . $exchange->out_payee . '&Amount=' . number_format($exchange->out_amount, 2, '.', '') . '&PAYMENT_ID=' . $exchange->out_id_pay);
+//		$f = file_get_contents('https://perfectmoney.is/acct/confirm.asp?AccountID=' . $wallet->user . '&PassPhrase=' . $wallet->password . '&Payer_Account=' . $wallet->account . '&Payee_Account=' . $exchange->out_payee . '&Amount=' . number_format($exchange->out_amount, 2, '.', '') . '&PAYMENT_ID=' . $exchange->out_id_pay);
 
-		if ($f === false)
-		{
-		   throw new NotFoundHttpException('error opening url');
-		}
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, 'https://perfectmoney.is/acct/confirm.asp?AccountID=' . $wallet->user . '&PassPhrase=' . $wallet->password . '&Payer_Account=' . $wallet->account . '&Payee_Account=' . $exchange->out_payee . '&Amount=' . number_format($exchange->out_amount, 2, '.', '') . '&PAYMENT_ID=' . $exchange->out_id_pay);
+	    curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+	    $out = curl_exec($curl);
+//	    echo $out;
+	    curl_close($curl);
 
-		// getting data
-		$out = '';
-		while (!feof($f))
-		{
-			$out .= fgets($f);
-		}
-
-		fclose($f);
+//		if ($f === false)
+//		{
+//		   throw new NotFoundHttpException('error opening url');
+//		}
+//
+//		// getting data
+//		$out = '';
+//		while (!feof($f))
+//		{
+//			$out .= fgets($f);
+//		}
+//
+//		fclose($f);
 
 		// searching for hidden fields
 		if (!preg_match_all("/<input name='(.*)' type='hidden' value='(.*)'>/", $out, $result, PREG_SET_ORDER)){
