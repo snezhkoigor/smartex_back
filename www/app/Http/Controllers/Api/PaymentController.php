@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\SystemErrorException;
 use App\Http\Controllers\Controller;
 use App\Mail\ExchangeCompletedMail;
+use App\Mail\IncomePaymentManualConfirmMail;
 use App\Models\Exchange;
 use App\Models\Payment;
 use App\Models\PaymentSystem;
