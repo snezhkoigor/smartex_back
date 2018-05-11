@@ -31,7 +31,6 @@ class CreatePaymentsTable extends Migration
 			    $table->dateTime('date_confirm')->nullable();
 			    $table->text('comment')->nullable();
 			    $table->boolean('confirm')->default(false);
-			    $table->boolean('user_confirm')->default(false);
 			    $table->boolean('btc_check')->default(false);
 		    });
 	    }

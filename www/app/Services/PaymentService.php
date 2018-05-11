@@ -39,7 +39,6 @@ class PaymentService
 
 		try
 		{
-			$payment->user_confirm = true;
 			$payment->confirm = true;
 		    $payment->date_confirm = Carbon::now()
 			    ->format('Y-m-d H:i:s');
